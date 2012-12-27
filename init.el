@@ -54,7 +54,7 @@
 	c-eldoc
 	dired-sort
 	hide-region
-	gist
+	;; gist
 	org-mode
 	markdown-mode
 	expand-region
@@ -76,10 +76,6 @@
    python-mode
    git-emacs
    visual-basic-mode
-
-
-   (:name jdee :description "Integrated Development Environment for Java" :type emacsmirror :pkgname "jdee" :required ((("arc-mode" arc-mode) ("avl-tree" avl-tree) ("browse-url" browse-url) ("cc-mode" cc-fonts cc-mode) ("cedet" eieio speedbar) ("cl" cl) ("comint" comint) ("compile" compile) ("custom" cus-edit custom) ("easymenu" easymenu) ("eldoc" eldoc) ("elib" avltree) ("emacs-core" font-lock overlay sort) ("emacs-obsolete" lmenu) ("etags" etags) ("executable" executable) ("flymake" flymake) ("htmlize" htmlize) ("imenu" imenu) ("jdee" jde-autoload) ("regexp-opt" regexp-opt) ("reporter" reporter) ("tempo" tempo) ("thingatpt" thingatpt) ("tree-widget" tree-widget) ("widget" wid-edit widget) (nil semantic/senator))) :depends (elib cedet cc-mode))
-
 
 
    (:name undo-tree
@@ -169,7 +165,7 @@
 (el-get 'sync my:el-get-packages)
 
 (require 'hide-region)
-(require 'gist)
+;; (require 'gist)
 ;; on to the visual settings
 (if window-system
     (let ((comment "IndianRed2"))
@@ -595,7 +591,7 @@ channels in a tmp buffer."
 (add-to-list 'desktop-globals-to-save 'file-name-history)
 (setq make-backup-files nil)
 
-(global-set-key "\C-cdc" (lambda nil (iunteractive) (when (y-or-n-p "Really kill all buffers?") (desktop-clear))))
+(global-set-key "\C-cdc" (lambda nil (interactive) (when (y-or-n-p "Really kill all buffers?") (desktop-clear))))
 
 ;; CC-MODE
 (defun my-cc-newline-and-indent ()
@@ -626,43 +622,43 @@ channels in a tmp buffer."
 (add-to-list 'auto-mode-alist '("*.pl$" . prolog-mode))
 (setq prolog-system 'gnu)
 
-(defadvice gist-region (around su/advice/gist/gist-region/around/dirty-hack
-			       a c pre)
-  "Dirty hack to prevent gist-region from choking on buffers which contain
-`%' character"
-  (save-window-excursion
-    (let* ((delete-old-versions t)
-	   (dummy "foo")
-	   (beg (ad-get-arg 0))
-	   (end (ad-get-arg 1))
-	   (min-beg-end (min beg end))
-	   (original-text (buffer-substring beg end))
-	   gistid buf proc)
-      (kill-region beg end)
-      (insert-for-yank-1 dummy)
-      (ad-set-arg 0 min-beg-end)
-      (ad-set-arg 1 (point))
-      ad-do-it
-      (sleep-for 0.5) ;; deep magic
-      (dolist (buf (buffer-list))
-	(when (string-match "^\\s-\\*http api\\.github\\.com:443\\*$" (buffer-name
-								       buf))
-	  (setq proc (get-buffer-process buf))
-	  (when proc (kill-process proc))
-	  ))
-      (delete-region min-beg-end (point))
-      (insert-for-yank-1 original-text)
-      (setq gistid (car (last (split-string (car kill-ring)
-					    "/"))))
-      (setq buf (gist-fetch gistid))
-      (with-current-buffer buf
-	(delete-region (point-min)
-		       (point-max))
-	(insert-for-yank-1 original-text)
-	(gist-mode-save-buffer)
-	(kill-buffer))
+;; (defadvice gist-region (around su/advice/gist/gist-region/around/dirty-hack
+;; 			       a c pre)
+;;   "Dirty hack to prevent gist-region from choking on buffers which contain
+;; `%' character"
+;;   (save-window-excursion
+;;     (let* ((delete-old-versions t)
+;; 	   (dummy "foo")
+;; 	   (beg (ad-get-arg 0))
+;; 	   (end (ad-get-arg 1))
+;; 	   (min-beg-end (min beg end))
+;; 	   (original-text (buffer-substring beg end))
+;; 	   gistid buf proc)
+;;       (kill-region beg end)
+;;       (insert-for-yank-1 dummy)
+;;       (ad-set-arg 0 min-beg-end)
+;;       (ad-set-arg 1 (point))
+;;       ad-do-it
+;;       (sleep-for 0.5) ;; deep magic
+;;       (dolist (buf (buffer-list))
+;; 	(when (string-match "^\\s-\\*http api\\.github\\.com:443\\*$" (buffer-name
+;; 								       buf))
+;; 	  (setq proc (get-buffer-process buf))
+;; 	  (when proc (kill-process proc))
+;; 	  ))
+;;       (delete-region min-beg-end (point))
+;;       (insert-for-yank-1 original-text)
+;;       (setq gistid (car (last (split-string (car kill-ring)
+;; 					    "/"))))
+;;       (setq buf (gist-fetch gistid))
+;;       (with-current-buffer buf
+;; 	(delete-region (point-min)
+;; 		       (point-max))
+;; 	(insert-for-yank-1 original-text)
+;; 	(gist-mode-save-buffer)
+;; 	(kill-buffer))
 
-      )))
+;;       )))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
