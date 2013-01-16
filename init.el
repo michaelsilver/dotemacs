@@ -132,14 +132,6 @@
 	  :features "yasnippet"
 	  :compile "yasnippet.el")
 
-   (:name yasnippet
-	  :website "https://github.com/capitaomorte/yasnippet.git"
-	  :description "YASnippet is a template system for Emacs."
-	  :type github
-	  :pkgname "capitaomorte/yasnippet"
-	  :features "yasnippet"
-	  :compile "yasnippet.el")
-
    (:name bm
 	  :description "Simple bookmark manager"
 	  :type github
@@ -281,7 +273,7 @@
 (setq yas-snippet-dirs "~/.emacs.d/el-get/yasnippet/snippets/")
 (yas--initialize)
 (yas/load-directory yas-snippet-dirs)
-
+(yas/load-directory "~/.emacs.d/my-snippets/")
 
 
 ;; Auto Complete
@@ -595,7 +587,7 @@ channels in a tmp buffer."
 (add-to-list 'desktop-globals-to-save 'file-name-history)
 (setq make-backup-files nil)
 
-(global-set-key "\C-cdc" (lambda nil (iunteractive) (when (y-or-n-p "Really kill all buffers?") (desktop-clear))))
+(global-set-key "\C-cdc" (lambda nil (interactive) (when (y-or-n-p "Really kill all buffers?") (desktop-clear))))
 
 ;; CC-MODE
 (defun my-cc-newline-and-indent ()
