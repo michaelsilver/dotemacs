@@ -295,6 +295,9 @@
 (setq ac-use-fuzzy t)
 (set-default 'ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-filename ac-source-words-in-same-mode-buffers))
 
+;; Fixed some weird error with emacs 24.3
+(defalias 'cl-defsubst-expand 'cl--defsubst-expand)
+
 ;; ORG mode
 (require 'org)
 (add-hook 'org-mode-hook
@@ -325,6 +328,11 @@
       org-support-shift-select 'always)
 
 ;; Python
+
+;; Fix docstring paragraph filling
+(add-hook 'python-mode-hook (lambda ()
+			      (setq paragraph-start (concat paragraph-start "\\|\\s-*\"\"\".*$"))))
+
 (defun py-my-indent-region (&optional min max)
   "Stupidly clamp indentation to the closest multiple of 4 spaces."
   (interactive)
