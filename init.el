@@ -51,7 +51,7 @@
 	smex
 
 	;; Misc
-;;	slime
+	;;	slime
 	smartparens
 	nrepl
 	vimperator-mode
@@ -369,7 +369,8 @@
 (define-key python-mode-map "\C-cp" '(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
 (define-key python-mode-map "\C-ch" 'pylookup-lookup)
 (define-key python-mode-map "\C-x\\" 'py-my-indent-region)
-;; (define-key python-mode map "\M-q"   'py-fill-paragraph)
+
+(setq py-split-windows-on-execute-p nil)
 
 (defadvice compile (before ad-compile-smart activate)
   "Advises `compile' so it sets the argument COMINT to t
@@ -415,6 +416,8 @@ if breakpoints are present in `python-mode' files"
 (defun fakedrake-erc-start-or-switch ()
   "Connect to ERC, or switch to last active buffer"
   (interactive)
+  (select-frame (make-frame '((name . "Emacs IRC")
+ 			      (minibuffer . t))))
   (if (get-buffer "irc.freenode.net:6667") ;; ERC already active?
       (erc-track-switch-buffer 1) ;; yes: switch to last active
     (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
