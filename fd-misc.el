@@ -28,4 +28,8 @@
 (put 'set-goal-column 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
+(setq display-time-day-and-date t
+      display-time-24hr-format t)
+(display-time)
+
 (provide 'fd-misc)
