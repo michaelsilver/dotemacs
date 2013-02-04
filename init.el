@@ -51,6 +51,10 @@
 	smex
 
 	;; Misc
+	;;	slime
+	smartparens
+	nrepl
+	vimperator-mode
 	c-eldoc
 	dired-sort
 	hide-region
@@ -77,6 +81,12 @@
    git-emacs
    visual-basic-mode
 
+   (:name jdee :description "Integrated Development Environment for Java" :type emacsmirror :pkgname "jdee" :required ((("arc-mode" arc-mode) ("avl-tree" avl-tree) ("browse-url" browse-url) ("cc-mode" cc-fonts cc-mode) ("cedet" eieio speedbar) ("cl" cl) ("comint" comint) ("compile" compile) ("custom" cus-edit custom) ("easymenu" easymenu) ("eldoc" eldoc) ("elib" avltree) ("emacs-core" font-lock overlay sort) ("emacs-obsolete" lmenu) ("etags" etags) ("executable" executable) ("flymake" flymake) ("htmlize" htmlize) ("imenu" imenu) ("jdee" jde-autoload) ("regexp-opt" regexp-opt) ("reporter" reporter) ("tempo" tempo) ("thingatpt" thingatpt) ("tree-widget" tree-widget) ("widget" wid-edit widget) (nil semantic/senator))) :depends (elib cedet cc-mode))
+
+   (:name vimperator-mode
+	  :description "Edit vimperator files"
+	  :type github
+	  :pkgname "xcezx/vimperator-mode")
 
    (:name undo-tree
 	  :description "Visualize undo history as a tree"
@@ -116,14 +126,6 @@
 	  :type github
 	  :pkgname "orfelyus/ido-speed-hack"
 	  :compile "ido-speed-hack.el")
-
-   (:name yasnippet
-	  :website "https://github.com/capitaomorte/yasnippet.git"
-	  :description "YASnippet is a template system for Emacs."
-	  :type github
-	  :pkgname "capitaomorte/yasnippet"
-	  :features "yasnippet"
-	  :compile "yasnippet.el")
 
    (:name yasnippet
 	  :website "https://github.com/capitaomorte/yasnippet.git"
@@ -244,8 +246,9 @@
     (message "Skipping server creation, one already exists")
   (server-start))
 (delete-selection-mode t)
-(show-paren-mode t)
-(electric-pair-mode t)
+(show-paren-mode
+ t)
+(smartparens-global-mode t)
 (set-face-attribute 'default nil :height 90)
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup/")))
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -274,7 +277,7 @@
 (setq yas-snippet-dirs "~/.emacs.d/el-get/yasnippet/snippets/")
 (yas--initialize)
 (yas/load-directory yas-snippet-dirs)
-
+(yas/load-directory "~/.emacs.d/my-snippets/")
 
 
 ;; Auto Complete
@@ -291,6 +294,9 @@
 (add-to-list 'ac-modes '(org-mode))
 (setq ac-use-fuzzy t)
 (set-default 'ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-filename ac-source-words-in-same-mode-buffers))
+
+;; Fixed some weird error with emacs 24.3
+(defalias 'cl-defsubst-expand 'cl--defsubst-expand)
 
 ;; ORG mode
 (require 'org)
@@ -322,6 +328,11 @@
       org-support-shift-select 'always)
 
 ;; Python
+
+;; Fix docstring paragraph filling
+(add-hook 'python-mode-hook (lambda ()
+			      (setq paragraph-start (concat paragraph-start "\\|\\s-*\"\"\".*$"))))
+
 (defun py-my-indent-region (&optional min max)
   "Stupidly clamp indentation to the closest multiple of 4 spaces."
   (interactive)
@@ -358,7 +369,8 @@
 (define-key python-mode-map "\C-cp" '(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
 (define-key python-mode-map "\C-ch" 'pylookup-lookup)
 (define-key python-mode-map "\C-x\\" 'py-my-indent-region)
-;; (define-key python-mode map "\M-q"   'py-fill-paragraph)
+
+(setq py-split-windows-on-execute-p nil)
 
 (defadvice compile (before ad-compile-smart activate)
   "Advises `compile' so it sets the argument COMINT to t
@@ -404,6 +416,8 @@ if breakpoints are present in `python-mode' files"
 (defun fakedrake-erc-start-or-switch ()
   "Connect to ERC, or switch to last active buffer"
   (interactive)
+  (select-frame (make-frame '((name . "Emacs IRC")
+ 			      (minibuffer . t))))
   (if (get-buffer "irc.freenode.net:6667") ;; ERC already active?
       (erc-track-switch-buffer 1) ;; yes: switch to last active
     (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
@@ -421,9 +435,7 @@ if breakpoints are present in `python-mode' files"
 (global-set-key (kbd "C-c e s") 'fakedrake-erc-start-or-switch) ;; ERC
 (global-set-key (kbd "C-c e k") 'my-destroy-erc)
 
-
 (require 'lisppaste)
-
 
 ;; BOOKMARKS
 (require 'bm)
@@ -500,7 +512,6 @@ ubiquitous exceptions, but it also tries to use imenu before
 actually trying to use gtags. This way if we have a single file
 project we do not need gtags to jump around. Also we dont need to
 regenerate gtags for local symbols."
-
   (interactive)
   (let* ((current-token (gtags-current-token))
 	 (imenu-tokens (mapcar 'car (imenu--make-index-alist)))
@@ -664,6 +675,7 @@ channels in a tmp buffer."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(py-shell-name "ipython")
  '(safe-local-variable-values (quote ((gtags-rootdir . "~/Projects/linux-3.7-rc8/") (eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook" (add-hook (quote write-contents-functions) (lambda nil (delete-trailing-whitespace) nil)) (require (quote whitespace)) "Sometimes the mode needs to be toggled off and on." (whitespace-mode 0) (whitespace-mode 1)) (whitespace-line-column . 80) (whitespace-style face trailing lines-tail) (require-final-newline . t)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -694,3 +706,11 @@ channels in a tmp buffer."
 (require 'c-eldoc)
 (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
 (add-to-list 'ido-ignore-buffers ".*-preprocessed\*")
+(require 'vimperator-mode)
+(add-to-list 'auto-mode-alist '(".*.vimperatorrc$" . vimperator-mode))
+
+;; Slime
+(require 'nrepl)
+
+;; Aspell
+(setq ispell-program-name "aspell")
