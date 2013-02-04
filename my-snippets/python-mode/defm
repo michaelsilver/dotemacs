@@ -1,0 +1,9 @@
+# -*- coding: utf-8 -*-
+# name: defm
+# author: Chris "fakedrake" Perivolaropoulos <darksaga2006@gmail.com>
+# key: defm
+# --
+def ${1:name}(self${2:$(if (string= "" (replace-regexp-in-string "[[:blank:]]*$" "" text)) "" ", ")}$2):
+    """ $3
+    """
+    $0
