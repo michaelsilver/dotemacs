@@ -23,6 +23,7 @@
 (require 'fd-prolog)
 (require 'fd-vimperator)
 (require 'fd-org)
+(require 'fd-midnight)
 
 ;; Customs
 (custom-set-variables

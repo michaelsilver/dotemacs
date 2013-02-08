@@ -61,8 +61,13 @@
    zencoding-mode
    python-pep8
    python-mode
-   git-emacs
    visual-basic-mode
+
+   (:name git-emacs
+	  :description "Fakedrake's take on git-emacs"
+	  :type github
+	  :pkgname "fakedrake/git-emacs"
+	  :features git-emacs)
 
    (:name vimperator-mode
 	  :description "Edit vimperator files"
