@@ -6,6 +6,11 @@
                                   (revert-buffer-function " %b"
                                                           ("%b - Dir:  " default-directory)))))))
 
+;; Extra keywords
+(setq my:elisp-extra-keywords '("and" "interactive" "or" "cons" "list" "setq-default" "setq" "setf" "set"))
+
+(font-lock-add-keywords 'emacs-lisp-mode (list (cons (regexp-opt my:elisp-extra-keywords 'words) font-lock-keyword-face)))
+
 (if window-system
     (let ((comment "IndianRed2"))
       (global-hl-line-mode t)
