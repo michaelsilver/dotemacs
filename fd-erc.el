@@ -15,9 +15,7 @@
 ;; name can be be a bit different, which would screw up autoconnect
 (erc-autojoin-mode t)
 (setq erc-autojoin-channels-alist
-      '((".*\\.freenode.net" "#emacs")
-	(".*\\.freenode.net" "#ngep")
-	(".*\\.freenode.net" "#plone")))
+      '((".*\\.freenode.net" "#emacs")))
 
 (defun fakedrake-erc-start-or-switch ()
   "Connect to ERC, or switch to last active buffer"
@@ -37,11 +35,10 @@
       (with-current-buffer i
 	(cond
 	 ((eq major-mode 'erc-mode) (kill-buffer (current-buffer))))))))
+
 ;; switch to ERC with Ctrl+c e
 (global-set-key (kbd "C-c e s") 'fakedrake-erc-start-or-switch) ;; ERC
 (global-set-key (kbd "C-c e k") 'my-destroy-erc)
-
-(require 'lisppaste)
 
 (add-hook 'erc-mode-hook '(lambda() (set (make-local-variable 'global-hl-line-mode) nil)))
 

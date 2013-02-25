@@ -2,12 +2,12 @@
 (require 'org)
 
 ;; Set up org-mode capture system
-(if (and (file-exists-p my-orgmode-agenda-dir)
-	 (eq t (car (file-attributes my-orgmode-agenda-dir)))) ; It is actually a directory
-    (setq org-default-notes-file (concat my-orgmode-agenda-dir my-notes-file))
-  (message (format "Ormode directory is not valid: %s" my-orgmode-agenda-dir)))
+(if (and (file-exists-p my-orgmode-dir)
+	 (eq t (car (file-attributes my-orgmode-dir)))) ; It is actually a directory
+    (setq org-default-notes-file (concat my-orgmode-dir my-notes-file))
+  (message (format "Ormode directory is not valid: %s" my-orgmode-dir)))
 
-(add-to-list 'org-modules "org-habit")
+(add-to-list 'org-modules 'org-habit)
 (setq org-log-repeat "time")
 
 (setq org-agenda-custom-commands
@@ -18,8 +18,9 @@
           (org-agenda-log-mode-items '(state))
           (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp ":DAILY:"))))))
 
-(setq org-directory "~/Ubuntu One/OrgMode/")
-(setq org-mobile-directory "~/Ubuntu One/OrgMode/")
+(setq org-directory my-orgmode-dir)
+(setq org-mobile-directory my-orgmode-dir)
+(setq org-agenda-files (mapcar (lambda (x) (concat org-directory x)) my-agenda-files))
 
 ;; Org mode key bindings
 (global-set-key "\C-cc" 'org-capture)
@@ -36,11 +37,6 @@
 (add-hook 'org-mode-hook
           #'(lambda ()
 	      (define-key org-mode-map [(tab)] nil)))
-
-;; Org agenda
-(setq org-agenda-files (list my-orgmode-agenda-dir)
-      org-hierarchical-todo-statistics nil
-      org-support-shift-select 'always)
 
 ;; Aspell
 (setq ispell-program-name "aspell")

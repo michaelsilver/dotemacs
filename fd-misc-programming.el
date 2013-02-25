@@ -1,14 +1,11 @@
 ;; Programming realted miscelaneous
-;; Requires: smartparens
-
 (which-function-mode t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq require-final-newline 'query)
 (add-hook 'term-mode-hook (lambda() (yas-minor-mode -1))) ;; fix tabcompletion
 
-;; Smart parens
-(require 'smartparens-config)
-(smartparens-global-mode t)
+(require 'autopair)
+(autopair-global-mode) ;; enable autopair in all buffers
 
 ;; Extra automodes
 (add-to-list 'auto-mode-alist '("[.]zcml" . nxml-mode))

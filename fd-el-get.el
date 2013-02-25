@@ -1,5 +1,5 @@
 ;; EL-GET
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+(add-to-list 'load-path (concat dotemacs-dir "el-get/el-get"))
 
 (unless (require 'el-get nil t)
   (url-retrieve
@@ -12,10 +12,7 @@
 (setq my:el-get-packages
       '(
 	;; Python
-	;; ipython
-	python-mode
-	python-pep8
-	pylookup
+	python
 
 	;; Auto Complete packages
 	yasnippet
@@ -35,7 +32,7 @@
 
 	;; Misc
 	;;	slime
-	smartparens
+	autopair
 	nrepl
 	vimperator-mode
 	c-eldoc
@@ -128,7 +125,7 @@
 
    (:name smex				; a better (ido like) M-x
 	  :after (progn
-		   (setq smex-save-file "~/.emacs.d/.smex-items")
+		   (setq smex-save-file (my-expand-path ".smex-items"))
 		   (global-set-key (kbd "M-x") 'smex)
 		   (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
    (:name goto-last-change		; move pointer back to last change

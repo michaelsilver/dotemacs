@@ -4,12 +4,12 @@
 ;; with emacs here.
 
 ;; Ensure that personal.el exists
-(cond ((not (file-readable-p "~/.emacs.d/personal.el"))
+(cond ((not (file-readable-p (my-expand-path "personal.el")))
        (progn
-	 (copy-file "~/.emacs.d/dummy-personal.el" "~/.emacs.d/personal.el")
+	 (copy-file (my-expand-path "dummy-personal.el") (my-expand-path "personal.el"))
 	 (message "Copied dummy personal preferences to personal.el"))))
 
-(load-file   "~/.emacs.d/personal.el")
+(load-file (my-expand-path "personal.el"))
 
 ;; Server configuration
 (require 'server)
@@ -19,7 +19,7 @@
 
 ;; Configurations
 (delete-selection-mode t)
-(setq backup-directory-alist '(("." . "~/.emacs.d/backup/")))
+(setq backup-directory-alist '(("." . (my-expand-path "backup/"))))
 (set-input-method 'greek)
 (toggle-input-method)
 (setq scroll-step 1)

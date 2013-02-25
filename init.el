@@ -1,5 +1,10 @@
 (require 'cl)
-(add-to-list 'load-path "~/.emacs.d/")
+
+(setq dotemacs-dir "~/.emacs.d/")
+(y-or-n-p (format "are you ok with dotemacs: %s" dotemacs-dir))
+(add-to-list 'load-path dotemacs-dir)
+
+(defun my-expand-path (f) (concat dotemacs-dir f))
 
 (require 'fd-el-get)
 (require 'fd-misc)
