@@ -3,13 +3,10 @@
 ;; Do not include anything that requires anything that isnt packaged
 ;; with emacs here.
 
-;; Ensure that personal.el exists
-(cond ((not (file-readable-p (my-expand-path "personal.el")))
-       (progn
-	 (copy-file (my-expand-path "dummy-personal.el") (my-expand-path "personal.el"))
-	 (message "Copied dummy personal preferences to personal.el"))))
-
-(load-file (my-expand-path "personal.el"))
+(let ((personal-el  "~/Ubuntu One/elisp/personal.el"))
+  (if (file-readable-p personal-el)
+      (load-file personal-el)
+    (load-file (my-expand-path "dummy-personal.el"))))
 
 ;; Server configuration
 (require 'server)
@@ -31,5 +28,12 @@
 (setq display-time-day-and-date t
       display-time-24hr-format t)
 (display-time)
+
+(defun add-mode-line-dirtrack ()
+  "When editing a file, show the last 2 directories of the current path in the mode line."
+  (add-to-list 'mode-line-buffer-identification
+	       '(:eval (substring default-directory
+				  (+ 1 (string-match "/[^/]+/[^/]+/$" default-directory)) nil))))
+(add-hook 'find-file-hook 'add-mode-line-dirtrack)
 
 (provide 'fd-misc)
