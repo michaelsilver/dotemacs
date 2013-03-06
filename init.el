@@ -29,6 +29,7 @@
 (require 'fd-vimperator)
 (require 'fd-org)
 (require 'fd-midnight)
+(require 'fd-dired)
 
 ;; Customs
 (custom-set-variables
