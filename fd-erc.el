@@ -24,8 +24,7 @@
  			      (minibuffer . t))))
   (if (get-buffer "irc.freenode.net:6667") ;; ERC already active?
       (erc-track-switch-buffer 1) ;; yes: switch to last active
-    (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
-      (erc :server "irc.freenode.net" :port 6667 :nick my-freenode-nick :full-name my-freenode-fullname :password my-freenode-password))))
+      (erc :server "irc.freenode.net" :port 6667 :nick my-freenode-nick :full-name my-freenode-fullname :password my-freenode-password)))
 
 (defun my-destroy-erc ()
   "Kill all erc buffers!!"

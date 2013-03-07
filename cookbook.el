@@ -19,4 +19,4 @@
   (interactive)
   (save-excursion
     (beginning-of-buffer)
-    (replace-regexp "^filesize[0-9]+| " "")))
+    (replace-regexp "^filesize:[0-9]+| " "")))
