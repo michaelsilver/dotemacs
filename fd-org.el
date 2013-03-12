@@ -36,7 +36,8 @@
 	     (define-key org-mode-map "\M-p" 'org-backward-element)))
 (add-hook 'org-mode-hook
           #'(lambda ()
-	      (define-key org-mode-map [(tab)] nil)))
+	      (define-key org-mode-map [(tab)] nil)
+	      (flyspell-mode t)))
 
 ;; Aspell
 (setq ispell-program-name "aspell")
