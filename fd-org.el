@@ -42,4 +42,35 @@
 ;; Aspell
 (setq ispell-program-name "aspell")
 
+
+(require 'org-latex)
+
+;; #+LaTeX_CLASS: fakedrake-org-article
+(add-to-list 'org-export-latex-classes
+	     '("fakedrake-org-article"
+	       "\\documentclass[11pt,a4paper]{article}
+\\usepackage[T1]{fontenc}
+\\usepackage{fontspec}
+\\usepackage{graphicx}
+\\defaultfontfeatures{Mapping=tex-text}
+\\setmainfont{DejaVu Sans}
+\\setmonofont[Scale=0.8]{FreeMono}
+\\usepackage{geometry}
+\\geometry{a4paper, textwidth=6.5in, textheight=10in,
+            marginparsep=7pt, marginparwidth=.6in}
+\\usepackage[usenames,dvipsnames]{xcolor}
+\\usepackage[bookmarks, colorlinks, breaklinks]{hyperref}
+\\hypersetup{linkcolor=black, citecolor=blue,filecolor=black,urlcolor=MidnightBlue}
+\\pagestyle{empty}
+      [NO-DEFAULT-PACKAGES]
+      [NO-PACKAGES]"
+	       ("\\section{%s}" . "\\section*{%s}")
+	       ("\\subsection{%s}" . "\\subsection*{%s}")
+	       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+	       ("\\paragraph{%s}" . "\\paragraph*{%s}")
+	       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+(setq org-latex-to-pdf-process
+      '("xelatex -interaction nonstopmode %f"
+	"xelatex -interaction nonstopmode %f")) ;; for multiple passes
 (provide 'fd-org)
