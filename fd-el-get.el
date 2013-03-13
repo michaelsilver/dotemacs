@@ -49,7 +49,6 @@
 	bm
 	goto-last-change
 	find-file-in-project
-	xml-rpc lisppaste
 	undo-tree))
 
 (setq
