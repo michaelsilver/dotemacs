@@ -49,7 +49,6 @@
 	bm
 	goto-last-change
 	find-file-in-project
-	xml-rpc lisppaste
 	undo-tree))
 
 (setq
@@ -60,11 +59,11 @@
    python-mode
    visual-basic-mode
 
-   (:name git-emacs
-	  :description "Fakedrake's take on git-emacs"
+   (:name python
+	  :description "Python's flying circus support for Emacs"
 	  :type github
-	  :pkgname "fakedrake/git-emacs"
-	  :features git-emacs)
+	  :pkgname "ryuslash/python.el"
+	  :branch "emacs-24")
 
    (:name vimperator-mode
 	  :description "Edit vimperator files"

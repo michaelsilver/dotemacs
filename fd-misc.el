@@ -16,7 +16,7 @@
 
 ;; Configurations
 (delete-selection-mode t)
-(setq backup-directory-alist '(("." . (my-expand-path "backup/"))))
+(setq backup-directory-alist (list (cons "." (my-expand-path "backup/"))))
 (set-input-method 'greek)
 (toggle-input-method)
 (setq scroll-step 1)
