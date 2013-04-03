@@ -46,6 +46,7 @@
 (require 'org-latex)
 
 ;; #+LaTeX_CLASS: fakedrake-org-article
+;; #+LaTeX_HEADER: <some extra headings>
 (add-to-list 'org-export-latex-classes
 	     '("fakedrake-org-article"
 	       "\\documentclass[11pt,a4paper]{article}
@@ -62,6 +63,7 @@
 \\usepackage[bookmarks, colorlinks, breaklinks]{hyperref}
 \\hypersetup{linkcolor=black, citecolor=blue,filecolor=black,urlcolor=MidnightBlue}
 \\pagestyle{empty}
+\\usepackage{amsmath}
       [NO-DEFAULT-PACKAGES]
       [NO-PACKAGES]"
 	       ("\\section{%s}" . "\\section*{%s}")
