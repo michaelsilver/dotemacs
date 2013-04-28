@@ -45,7 +45,6 @@
 	etags-table
 	zencoding-mode
 	git-emacs
-	visual-basic-mode
 	bm
 	goto-last-change
 	find-file-in-project
@@ -57,12 +56,11 @@
    zencoding-mode
    python-pep8
    python-mode
-   visual-basic-mode
 
    (:name python
 	  :description "Python's flying circus support for Emacs"
 	  :type github
-	  :pkgname "ryuslash/python.el"
+	  :pkgname "fgallina/python.el"
 	  :branch "emacs-24")
 
    (:name vimperator-mode
