@@ -2,7 +2,8 @@
 
 ;; Fix docstring paragraph filling
 (add-hook 'python-mode-hook (lambda ()
-			      (setq paragraph-start (concat paragraph-start "\\|\\s-*\"\"\".*$"))))
+			      (setq paragraph-start (concat paragraph-start "\\|\\s-*\"\"\".*$"))
+			      (define-key python-mode-map (kbd "C-c r") 'recompile)))
 
 (require 'python)
 ;; (defun py-my-indent-region (&optional min max)
@@ -20,5 +21,10 @@
 
 
 (define-key python-mode-map "\C-cp" '(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
+
+;; (defun previous-error (before ad-wrap-around (arg reset) activate)
+;;   "If next-error never called go to last error."
+;;   (interactive "p")
+;;   (next-error (- (or n 1)))
 
 (provide 'fd-python)

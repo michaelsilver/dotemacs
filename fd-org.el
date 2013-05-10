@@ -29,15 +29,22 @@
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
 
+;; Bindings
 (add-hook 'org-mode-hook
           '(lambda ()
              (define-key org-mode-map "\M-j" 'org-meta-return)
 	     (define-key org-mode-map "\M-n" 'org-forward-element)
 	     (define-key org-mode-map "\M-p" 'org-backward-element)))
+
+;; FlySpell
 (add-hook 'org-mode-hook
           #'(lambda ()
 	      (define-key org-mode-map [(tab)] nil)
 	      (flyspell-mode t)))
+
+;; AutoPairs
+;; (add-hook 'org-mode-hook
+;;           #'(lambda () (add-to-list 'autopair-extra-pairs '(:everywhere ("=" . "=")))))
 
 ;; Aspell
 (setq ispell-program-name "aspell")
@@ -75,4 +82,6 @@
 (setq org-latex-to-pdf-process
       '("xelatex -interaction nonstopmode %f"
 	"xelatex -interaction nonstopmode %f")) ;; for multiple passes
+
+
 (provide 'fd-org)
