@@ -18,6 +18,7 @@
       (load-theme 'naquadah t)
       (custom-theme-set-faces
        'naquadah
+       `(default ((t (:family "DeJavu Sans Mono"))))
        `(mode-line ((t (:height 1.1 :background "gray30"))))
        `(minibuffer-prompt ((t (:foreground "orange1"))))
        `(region ((t (:background "gray25"))))
@@ -38,6 +39,7 @@
 (column-number-mode 1)	; column numbers in the mode line
 (mouse-avoidance-mode 'banish)
 (tool-bar-mode -1)	; no tool bar with icons
+(menu-bar-mode -1)
 (scroll-bar-mode -1)	; no scroll bars
 (add-hook 'find-file-hook (lambda () (setq show-trailing-whitespace t)))
 (global-linum-mode 1)	; add line numbers on the left
@@ -58,7 +60,7 @@
 (defun djcb-zoom (n)
   "with positive N, increase the font size, otherwise decrease it"
   (set-face-attribute 'default (selected-frame) :height
-		      (+ (face-attribute 'default :height) (* (if (> n 0) 1 -1) 10)))
+		      (+ (face-attribute 'default :height) (* (if (> n 0) 1 -1) 5)))
   (message (format "Font size: %d" (face-attribute 'default :height))))
 
 (global-set-key (kbd "M-+")      #'(lambda nil (interactive) (djcb-zoom 1)))
