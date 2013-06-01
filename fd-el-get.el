@@ -32,6 +32,7 @@
 
 	;; Misc
 	;;	slime
+	yaml-mode
 	autopair
 	nrepl
 	vimperator-mode
@@ -56,6 +57,11 @@
    zencoding-mode
    python-pep8
    python-mode
+
+   (:name emacs-redmine
+	  :description "Redmine for emacs."
+	  :type github
+	  :pkgname "gtp/emacs-redmine")
 
    (:name python
 	  :description "Python's flying circus support for Emacs"
