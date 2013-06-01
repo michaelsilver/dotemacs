@@ -13,6 +13,7 @@
       '(
 	;; Python
 	python
+	django-mode
 
 	;; Auto Complete packages
 	yasnippet

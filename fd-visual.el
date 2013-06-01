@@ -21,9 +21,9 @@
        `(default ((t (:family "DeJavu Sans Mono"))))
        `(mode-line ((t (:height 1.1 :background "gray30"))))
        `(minibuffer-prompt ((t (:foreground "orange1"))))
-       `(region ((t (:background "gray25"))))
-
-
+       `(region ((t (:background "gray35"))))
+       `(hl-line ((t (:background "gray25"))))
+       `(ido-only-match ((t (:foreground "dark green" :bold nil))))
 
        ;; Development
        `(font-lock-comment-face ((t (:foreground ,comment))))
