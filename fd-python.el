@@ -21,6 +21,8 @@
 
 
 (define-key python-mode-map "\C-cp" '(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
+(add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))
+
 
 ;; (defun previous-error (before ad-wrap-around (arg reset) activate)
 ;;   "If next-error never called go to last error."
