@@ -2,7 +2,8 @@
 
 ;; Fix docstring paragraph filling
 (add-hook 'python-mode-hook (lambda ()
-			      (setq paragraph-start (concat paragraph-start "\\|\\s-*\"\"\".*$"))
+			      (setq paragraph-start (concat paragraph-start "\\|\\s-*\"\"\".*$")
+				    python-fill-docstring-style 'django)
 			      (define-key python-mode-map (kbd "C-c r") 'recompile)))
 
 (require 'python)
