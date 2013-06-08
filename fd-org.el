@@ -53,11 +53,14 @@
 (require 'org-latex)
 (setq org-latex-default-figure-position "H")
 
-;; XXX: ensure the fonts are all there
+;; XXX: ensure the fonts are all there.
+;; For arch that would be:
+;; pacman -S ttf-dejavu ttf-freefont.
+;;
 ;; Usage: on top of the .org doc put these.
 ;; #+LaTeX_CLASS: fakedrake-org-article
 ;; #+LaTeX_HEADER: <some extra headings>
-(add-to-list 'org-latex-classes
+(add-to-list 'org-export-latex-classes
 	     '("fakedrake-org-article"
 	       "\\documentclass[11pt,a4paper]{article}
 \\usepackage[T1]{fontenc}
@@ -85,6 +88,8 @@
 
 
 ;; XXX: Ensure pdflatex is available
+;; for arch that would be:
+;; pacman -S texlive-most texlive-lang
 (setq org-latex-to-pdf-process
       '("xelatex -interaction nonstopmode %f"
 	"xelatex -interaction nonstopmode %f")) ;; for multiple passes
