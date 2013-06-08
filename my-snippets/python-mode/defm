@@ -4,6 +4,7 @@
 # key: defm
 # --
 def ${1:name}(self${2:$(if (string= "" (replace-regexp-in-string "[[:blank:]]*$" "" text)) "" ", ")}$2):
-    """ $3
+    """
+    $3
     """
     $0

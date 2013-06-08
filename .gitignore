@@ -1,1 +1,16 @@
 personal.el
+*.elc
+*~
+.saves*
+backup
+*.bak
+session.*
+.svn
+el-get
+eshell
+ac-comphist.dat
+.ido.last
+bookmarks
+tramp
+.smex-items
+#*

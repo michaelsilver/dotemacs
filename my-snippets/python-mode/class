@@ -6,28 +6,32 @@
 # key: class
 # --
 class ${1:ClassName}(${2:object}):
-    """ $3
+    """
+    $3
     """
 
     def __init__(self${4:$(if (string= "" (replace-regexp-in-string "[[:blank:]]*$" "" text)) "" ", ")}$4):
-        """ $5
+        """
+	$5
 	"""
-        ${4:$
-	(replace-regexp-in-string "\n*$" ""
-        (mapconcat
-         '(lambda (x)
-            (if (and (not (string= (nth 0 x) "")) (not (string= (substring (nth 0 x) 0 1) "*")))
-                (concat "self." (nth 0 x) " = " (nth 0 x))))
-         (mapcar
-          '(lambda (x)
-             (mapcar
-              '(lambda (x)
-                 (replace-regexp-in-string "[[:blank:]]*$" ""
-                  (replace-regexp-in-string "^[[:blank:]]*" "" x)))
-              x))
-          (mapcar '(lambda (x) (split-string x "="))
-                  (split-string text ",")))
-         (concat "\n" (make-string (current-column) 32))))
+
+	${4:$(replace-regexp-in-string "\n*$" ""
+			  (mapconcat
+			   '(lambda (x)
+			      (if (and (not (string= (nth 0 x) "")) (not (string= (substring (nth 0 x) 0 1) "*")))
+				  (format "self.%s = %s" (nth 0 x) (nth 0 x))))
+			   (mapcar
+			    ;; Strip whitespaces
+			    '(lambda (x)
+			       (mapcar
+				'(lambda (x)
+				   (replace-regexp-in-string "[[:blank:]]*$" ""
+							     (replace-regexp-in-string "^[[:blank:]]*" "" x)))
+				x))
+			    ;; Get the variable names
+			    (mapcar '(lambda (x) (split-string x "=")) ; keep only before the '='
+				    (split-string text ",")))          ; split on commas
+			   (concat "\n" (make-string (current-column) 32))))
         }
 
         $0

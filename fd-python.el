@@ -2,7 +2,8 @@
 
 ;; Fix docstring paragraph filling
 (add-hook 'python-mode-hook (lambda ()
-			      (setq paragraph-start (concat paragraph-start "\\|\\s-*\"\"\".*$"))
+			      (setq paragraph-start (concat paragraph-start "\\|\\s-*\"\"\".*$")
+				    python-fill-docstring-style 'django)
 			      (define-key python-mode-map (kbd "C-c r") 'recompile)))
 
 (require 'python)
@@ -20,7 +21,8 @@
 ;; 	(next-line) (end-of-line)))))
 
 
-(define-key python-mode-map "\C-cp" '(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
+(add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))
+
 
 ;; (defun previous-error (before ad-wrap-around (arg reset) activate)
 ;;   "If next-error never called go to last error."

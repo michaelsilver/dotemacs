@@ -17,12 +17,11 @@
 
 	;; Auto Complete packages
 	yasnippet
+	yasnippet-snippets
 	auto-complete
 
 	;; themes I like
-	tomorrow-night-paradise-theme
 	naquadah-theme
-	obsidian-theme
 
 	;; ido
 	ido-mode-el
@@ -59,10 +58,14 @@
    python-pep8
    python-mode
 
-   (:name emacs-redmine
-	  :description "Redmine for emacs."
+   (:name yasnippet-snippets
+	  :description "Some snippets."
 	  :type github
-	  :pkgname "gtp/emacs-redmine")
+	  :pkgname "AndreaCrotti/yasnippet-snippets"
+	  :depends yasnippet
+	  :post-init (add-to-list 'yas/root-directory
+				    (concat el-get-dir
+					    (file-name-as-directory "yasnippet-snippets"))))
 
    (:name python
 	  :description "Python's flying circus support for Emacs"
@@ -84,11 +87,6 @@
 	  :description "Etags is smart enough to look for a table in fs."
 	  :type github
 	  :pkgname "fakedrake/etags-table")
-
-   (:name obsidian-theme
-	  :description "My theme"
-	  :type github
-	  :pkgname "fakedrake/obsidian-theme")
 
    ;; This is temporary until the pull request is dealt with in upstream
    (:name find-file-in-project
@@ -113,14 +111,6 @@
 	  :type github
 	  :pkgname "orfelyus/ido-speed-hack"
 	  :compile "ido-speed-hack.el")
-
-   (:name yasnippet
-	  :website "https://github.com/capitaomorte/yasnippet.git"
-	  :description "YASnippet is a template system for Emacs."
-	  :type github
-	  :pkgname "capitaomorte/yasnippet"
-	  :features "yasnippet"
-	  :compile "yasnippet.el")
 
    (:name bm
 	  :description "Simple bookmark manager"
