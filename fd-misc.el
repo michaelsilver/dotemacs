@@ -31,9 +31,10 @@
 
 (defun add-mode-line-dirtrack ()
   "When editing a file, show the last 2 directories of the current path in the mode line."
-  (add-to-list 'mode-line-buffer-identification
-	       '(:eval (substring default-directory
-				  (+ 1 (string-match "/[^/]+/[^/]+/$" default-directory)) nil))))
+  (when current-file-name
+    (add-to-list 'mode-line-buffer-identification
+		 '(:eval (substring default-directory
+				    (+ 1 (string-match "/[^/]+/[^/]+/$" default-directory)) nil)))))
 (add-hook 'find-file-hook 'add-mode-line-dirtrack)
 
 ;; Rename files
@@ -55,5 +56,13 @@
                (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
 
 (setq require-final-newline t)
+
+(defadvice save-buffer (around save-buffer-as-root-around activate)
+  "Use sudo to save the current buffer."
+  (interactive "p")
+  (if (and (buffer-file-name) (not (file-writable-p (buffer-file-name))))
+      (let ((buffer-file-name (format "/sudo::%s" buffer-file-name)))
+	ad-do-it)
+    ad-do-it))
 
 (provide 'fd-misc)

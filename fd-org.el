@@ -57,7 +57,7 @@
 ;; Usage: on top of the .org doc put these.
 ;; #+LaTeX_CLASS: fakedrake-org-article
 ;; #+LaTeX_HEADER: <some extra headings>
-(add-to-list 'org-latex-classes
+(add-to-list 'org-export-latex-classes
 	     '("fakedrake-org-article"
 	       "\\documentclass[11pt,a4paper]{article}
 \\usepackage[T1]{fontenc}
@@ -84,7 +84,7 @@
 	       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
 
-;; XXX: Ensure pdflatex is available
+;; XXX: Ensure xetexlatex is available
 (setq org-latex-to-pdf-process
       '("xelatex -interaction nonstopmode %f"
 	"xelatex -interaction nonstopmode %f")) ;; for multiple passes
