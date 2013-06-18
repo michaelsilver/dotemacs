@@ -31,7 +31,7 @@
 
 (defun add-mode-line-dirtrack ()
   "When editing a file, show the last 2 directories of the current path in the mode line."
-  (when current-file-name
+  (when buffer-file-name
     (add-to-list 'mode-line-buffer-identification
 		 '(:eval (substring default-directory
 				    (+ 1 (string-match "/[^/]+/[^/]+/$" default-directory)) nil)))))
