@@ -37,6 +37,14 @@
 				    (+ 1 (string-match "/[^/]+/[^/]+/$" default-directory)) nil)))))
 (add-hook 'find-file-hook 'add-mode-line-dirtrack)
 
+(defun chmod-this ()
+  "Add executable permissions to the current file."
+  (interactive)
+  (if buffer-file-name
+    (let ((new-mode (logior #o111 (file-modes buffer-file-name))))
+      (set-file-modes buffer-file-name new-mode))
+  (message "No such file to make executable.")))
+
 ;; Rename files
 (defun rename-this-buffer-and-file ()
   "Renames current buffer and file it is visiting."
