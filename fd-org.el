@@ -1,5 +1,6 @@
 ;; ORG mode
 (require 'org)
+(load-library "org-compat") 		;XXX this is bad but i see no better way.
 
 ;; Set up org-mode capture system
 (if (and (file-exists-p my-orgmode-dir)
