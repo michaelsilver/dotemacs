@@ -36,7 +36,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/Ubuntu One/OrgMode/health.org" "/home/fakedrake/.orgmode/agenda/notes.org")))
+ '(org-agenda-files (quote ("~/Sandbox/TODO.org" "~/Ubuntu One/OrgMode/health.org" "/home/fakedrake/.orgmode/agenda/notes.org")))
  '(safe-local-variable-values (quote ((eval progn (c-set-offset (quote innamespace) (quote 0)) (c-set-offset (quote inline-open) (quote 0))) (gtags-path-style quote root) (gtags-rootdir . "/homes/cperivol/Projects/Nema/ZYNQ/linux-zynq/") (gtags-rootdir . "~/Projects/linux-3.7-rc8/") (eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook" (add-hook (quote write-contents-functions) (lambda nil (delete-trailing-whitespace) nil)) (require (quote whitespace)) "Sometimes the mode needs to be toggled off and on." (whitespace-mode 0) (whitespace-mode 1)) (whitespace-line-column . 80) (whitespace-style face trailing lines-tail) (require-final-newline . t)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

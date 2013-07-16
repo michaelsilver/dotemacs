@@ -53,12 +53,22 @@ With negative N, comment out original line and use the absolute value."
 
 (global-set-key (kbd"C-c d") 'duplicate-line-or-region)
 
+(defun fd-new-buf-extension (dir &optional default path-len)
+  "Return either the last two directories, or default"
+  (if dir
+      (let* ((path-len (or path-len 2))
+	     (dirs (reverse (split-string dir "/" t)))
+	     (top-dirs-raw (reverse (remove nil (subseq dirs 0 path-len))))
+	     (top-dirs (if (and (< (length top-dirs-raw) path-len) (not (equal "~" (car top-dirs-raw))))
+			   (cons "" top-dirs-raw) top-dirs)))
+	(mapconcat (lambda (s) (format "%s/" s)) (reverse top-dirs) nil))
+    default))
+
 (defun add-mode-line-dirtrack ()
   "When editing a file, show the last 2 directories of the current path in the mode line."
   (when buffer-file-name
     (add-to-list 'mode-line-buffer-identification
-		 '(:eval (substring default-directory
-				    (+ 1 (string-match "/[^/]+/[^/]+/$" default-directory)) nil)))))
+		 '(:eval (fd-new-buf-extension default-directory "unlinked: ")))))
 (add-hook 'find-file-hook 'add-mode-line-dirtrack)
 
 (defun chmod+x-this ()
@@ -74,18 +84,18 @@ With negative N, comment out original line and use the absolute value."
   "Renames current buffer and file it is visiting."
   (interactive)
   (let ((name (buffer-name))
-        (filename (buffer-file-name)))
+	(filename (buffer-file-name)))
     (if (not (and filename (file-exists-p filename)))
-        (error "Buffer '%s' is not visiting a file!" name)
+	(error "Buffer '%s' is not visiting a file!" name)
       (let ((new-name (read-file-name "New name: " filename)))
-        (cond ((get-buffer new-name)
-               (error "A buffer named '%s' already exists!" new-name))
-              (t
-               (rename-file filename new-name 1)
-               (rename-buffer new-name)
-               (set-visited-file-name new-name)
-               (set-buffer-modified-p nil)
-               (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
+	(cond ((get-buffer new-name)
+	       (error "A buffer named '%s' already exists!" new-name))
+	      (t
+	       (rename-file filename new-name 1)
+	       (rename-buffer new-name)
+	       (set-visited-file-name new-name)
+	       (set-buffer-modified-p nil)
+	       (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
 
 (setq require-final-newline t)
 
