@@ -90,13 +90,4 @@
       '("xelatex -interaction nonstopmode %f"
 	"xelatex -interaction nonstopmode %f")) ;; for multiple passes
 
-;; Blog
-(setq org2blog/wp-blog-alist
-      '(("wordpress"
-	 :url "http://sudowork.wordpress.com/xmlrpc.php"
-	 :username "fakedrake"
-	 :default-title "Hello World"
-	 :default-categories ("emacs")
-	 :tags-as-categories nil)))
-
 (provide 'fd-org)

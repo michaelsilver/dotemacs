@@ -32,7 +32,6 @@
 
 	;; Misc
 	;;	slime
-	org2blog
 	yaml-mode
 	autopair
 	nrepl
