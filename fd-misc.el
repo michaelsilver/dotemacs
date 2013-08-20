@@ -103,8 +103,14 @@ With negative N, comment out original line and use the absolute value."
   "Use sudo to save the current buffer."
   (interactive "p")
   (if (and (buffer-file-name) (not (file-writable-p (buffer-file-name))))
-      (let ((buffer-file-name (format "/sudo::%s" buffer-file-name)))
+      (let ((buffer-file-name (format "/sudo:%s@%s:%s"
+				      (user-login-name)
+				      (system-name)
+				      buffer-file-name)))
 	ad-do-it)
     ad-do-it))
+
+;; Info
+(add-to-list 'Info-default-directory-list (my-expand-path "info"))
 
 (provide 'fd-misc)
