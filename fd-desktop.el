@@ -16,7 +16,7 @@
 (add-to-list 'desktop-globals-to-save 'file-name-history)
 (setq make-backup-files nil)
 
-(global-set-key "\C-cdc" (lambda nil (interactive) (when (y-or-n-p "Really kill all buffers?") (desktop-clear))))
+(global-set-key "\C-ckb" (lambda nil (interactive) (when (y-or-n-p "Really kill all buffers?") (desktop-clear))))
 
 
 

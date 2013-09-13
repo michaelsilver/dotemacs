@@ -7,6 +7,13 @@
 (require 'autopair)
 (autopair-global-mode) ;; enable autopair in all buffers
 
+
+(add-hook 'term-mode-hook
+           #'(lambda ()
+               (setq autopair-dont-activate t) ;; for emacsen < 24
+               (autopair-mode -1))             ;; for emacsen >= 24
+)
+
 ;; Extra automodes
 (add-to-list 'auto-mode-alist '("[.]zcml" . nxml-mode))
 (add-to-list 'auto-mode-alist '("[.]pt" . html-mode))

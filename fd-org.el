@@ -1,5 +1,6 @@
 ;; ORG mode
 (require 'org)
+(load-library "org-compat") 		;XXX this is bad but i see no better way.
 
 ;; Set up org-mode capture system
 (if (and (file-exists-p my-orgmode-dir)
@@ -96,9 +97,9 @@
 ;; XXX: Ensure pdflatex is available
 ;; for arch that would be:
 ;; pacman -S texlive-most texlive-lang
+;; XXX: Ensure xetexlatex is available
 (setq org-latex-to-pdf-process
       '("xelatex -interaction nonstopmode %f"
 	"xelatex -interaction nonstopmode %f")) ;; for multiple passes
-
 
 (provide 'fd-org)
