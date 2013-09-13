@@ -37,6 +37,12 @@
 	     (define-key org-mode-map "\M-p" 'org-backward-element)))
 
 ;; FlySpell
+;; For this you would need word lists. For arch install:
+;; pacman -S aspell-en
+;;
+;; Usage:
+;; F8 - Run ispell to the whole document
+;; M-$ - Current word
 (add-hook 'org-mode-hook
           #'(lambda ()
 	      (define-key org-mode-map [(tab)] nil)

@@ -9,7 +9,7 @@
 ;; (require 'auto-complete-emacs-lisp)
 (ac-config-default)
 (add-to-list 'ac-dictionary-directories (expand-file-name "dictionaries"))
-(add-to-list 'ac-modes '(org-mode))
+(add-to-list 'ac-modes 'org-mode)
 (setq ac-use-fuzzy t)
 (set-default 'ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-filename ac-source-words-in-same-mode-buffers))
 (setq ac-ignore-case nil)
