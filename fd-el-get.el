@@ -32,6 +32,7 @@
 
 	;; Misc
 	;;	slime
+	multi-term
 	yaml-mode
 	autopair
 	nrepl
