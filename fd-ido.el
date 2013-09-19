@@ -19,4 +19,21 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
+
+;; TODO: if you actually are at the buffer at point, rotate.
+(defun ido-for-mode(prompt the-mode)
+  "Switch to buffer of the-mode using prompt"
+  (switch-to-buffer
+   (ido-completing-read prompt
+                        (save-excursion
+                          (delq
+                           nil
+                           (mapcar (lambda (buf)
+                                     (when (and (buffer-live-p buf) (not (eq (current-buffer) buf)))
+                                       (with-current-buffer buf
+                                         (and (eq major-mode the-mode)
+                                              (buffer-name buf)))))
+                                   (buffer-list)))))))
+
+
 (provide 'fd-ido)
