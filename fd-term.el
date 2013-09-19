@@ -26,5 +26,11 @@
 (add-to-list 'ido-ignore-buffers
 	     (format "\*%s<[0-9]*>\*" multi-term-buffer-name))
 
+(defadvice term-send-raw (after update-current-directory)
+  (let* ((pid (process-id (get-buffer-process (current-buffer))))
+         (cwd (file-truename (format "/proc/%d/cwd" pid))))
+    (cd cwd)))
+
+(ad-activate 'term-send-raw)
 
 (provide 'fd-term)
