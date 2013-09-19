@@ -14,7 +14,7 @@
 ;; only needed if you use autopair
 (add-hook 'term-mode-hook
   #'(lambda () (setq autopair-dont-activate t)
-      (define-key term-mode-map (kbd "M-m") 'fd-term-beginning-of-line)))
+      (define-key term-raw-map (kbd "M-m") 'fd-term-beginning-of-line)))
 
 (defun ido-term-buffer()
   (interactive)
