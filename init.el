@@ -29,6 +29,7 @@
 (require 'fd-org)
 (require 'fd-midnight)
 (require 'fd-dired)
+(require 'fd-term)
 
 ;; Customs
 (custom-set-variables
