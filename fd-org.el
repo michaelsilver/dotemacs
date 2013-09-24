@@ -49,26 +49,27 @@ point at the last found one."
   (search-backward-regexp "[^[:space:]]" nil t)
   (end-of-line))
 
-(defun org-insert-first-child (name &optional no-root)
+(defun org-insert-first-child (name)
   "Insert a heading as the first child of the current
 heading. Non nil no-root means do not create a root node."
   (org-end-of-element)
 
   (insert "\n")
   (org-insert-heading)
-  (unless (and (looking-back "^\* ") (not no-root))
+  (unless (equal (org-outline-level) 0)
     (org-demote))
   (insert name))
 
-(defun org-heading-create-path (hlist &optional no-root)
+(defun org-heading-create-path (hlist)
   "Create a path of headings under the current. Non-nil no-root
 means the first element is definitely not a root node."
   (when hlist
-    (org-insert-first-child (car hlist) no-root)
-    (org-heading-create-path (cdr hlist) t)))
+    (org-insert-first-child (car hlist))
+    (org-heading-create-path (cdr hlist))))
 
 (defun org-search-or-insert-path (hlist)
   "Search for path or insert it."
+  (show-all)
   (org-heading-create-path
    (org-heading-search-path hlist)))
 
@@ -170,14 +171,14 @@ means the first element is definitely not a root node."
 
 ;; OCTOPRESS
 (setq org-publish-project-alist
-   '(("blog" .  (:base-directory "~/Projects/blog/org_posts/"
-                 :base-extension "org"
-                 :publishing-directory "~/Projects/source/bblog/_posts/"
-                 :sub-superscript ""
-                 :recursive t
-                 :publishing-function org-publish-org-to-html
-                 :headline-levels 4
-                 :html-extension "markdown"
-                 :body-only t))))
+      '(("blog" .  (:base-directory "~/Projects/blog/org_posts/"
+				    :base-extension "org"
+				    :publishing-directory "~/Projects/source/bblog/_posts/"
+				    :sub-superscript ""
+				    :recursive t
+				    :publishing-function org-publish-org-to-html
+				    :headline-levels 4
+				    :html-extension "markdown"
+				    :body-only t))))
 
 (provide 'fd-org)
