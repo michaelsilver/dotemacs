@@ -40,17 +40,24 @@ Return output file name."
   (org-publish-org-to 'octopress filename ".markdown" plist pub-dir))
 
 ;; Personal config
-(defun fd-interactive-octopress-command (command &optional no-compile)
-  "Use single quotes only in command."
-  (let ((cmd (read-string "Run command like so: "
-			  (format "bash -c \"cd %s && bundle exec %s\"" fd-octopress-root command))))
+(defun fd-interactive-octopress-command (commands &optional no-compile)
+  "Run command or list of commands. Non-nil no-compile means run
+as async-shell. Use single quotes only in command."
+  (let* ((cmds (if (stringp commands) (list commands) commands))
+	(cmd (read-string "Run command like so: "
+			  (format "bash -c \"cd %s && %s\"" fd-octopress-root
+				  (mapconcat (lambda (x) (format "bundle exec %s" x)) cmds " && ")))))
     (if no-compile
 	(async-shell-command cmd)
       (compile cmd t))))
 
-(defun org-octopress-preview ()
+(defun fd-octopress-preview ()
   (interactive)
   (fd-interactive-octopress-command "rake preview" t))
+
+(defun fd-octopress-generate ()
+  (interactive)
+  (fd-interactive-octopress-command "rake generate"))
 
 (setq fd-org-commit-on-export nil)
 (defun org-octopress-save-then-publish ()
@@ -66,7 +73,7 @@ Return output file name."
     (git-commit-file))
   (org-save-all-org-buffers)
   (org-publish-current-project)
-  (fd-interactive-octopress-command "rake generate")
+  (fd-octopress-generate)
   (message "Published."))
 
 (defun org-octopress-upload ()
@@ -77,7 +84,8 @@ Return output file name."
 (setq fd-octopress-root "~/Projects/fakedrake.github.com/"
       fd-publishing-dir (format "%s/source/" fd-octopress-root)
       fd-org-posts (format "%s/org_posts/" fd-publishing-dir)
-      fd-posts (format "%s/_posts/" fd-publishing-dir))
+      fd-posts (format "%s/_posts/" fd-publishing-dir)
+      fd-octopress-themes (format "%s/.themes/" fd-octopress-root))
 
 (setq org-publish-project-alist
       (list (cons "blog-org"  (list :base-directory fd-org-posts
@@ -132,5 +140,9 @@ things up."
   ;; Create the org files
   (fd-interactive-octopress-command (format "rake new_post['%s']" title))
   (message "Once compilation finishes do M-x fd-open-created-post. To tidy up and open the post."))
+
+(defun fd-octopress-activate-theme (theme)
+  (interactive (list (completing-read "Theme: " (directory-files fd-octopress-themes))))
+  (fd-interactive-octopress-command (list (format "rake install['%s']" theme) "rake generate")))
 
 (provide 'fd-octopress)
