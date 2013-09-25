@@ -130,7 +130,7 @@ things up."
       (rename-file generated-file correct-file))
 
     (shell-command (format "cd %s && git add %s" fd-org-posts org-filename))
-    (find-file (concat fd-posts "/" org-filename))
+    (find-file (concat fd-posts "/" correct-file))
     (message "Publish with M-x save-then-publish.")))
 
 (defun fd-org-new-octopress-post (title)
