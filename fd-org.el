@@ -55,9 +55,10 @@ heading. Non nil no-root means do not create a root node."
   (org-end-of-element)
 
   (insert "\n")
-  (org-insert-heading)
-  (unless (equal (org-outline-level) 0)
-    (org-demote))
+  (let  ((demote (/= (org-outline-level) 0)))
+    (org-insert-heading)
+    (when demote
+      (org-demote)))
   (insert name))
 
 (defun org-heading-create-path (hlist)
@@ -73,8 +74,15 @@ means the first element is definitely not a root node."
   (org-heading-create-path
    (org-heading-search-path hlist)))
 
+(defun fd-org-journal-space (newlines-sep)
+  "Makse sure there is correct spacing from the current line."
+  (let ((nls (1+ (or newlines-sep 0))))
+    (if (looking-at (format "\n\\{%d\\} *\n" nls))
+	(progn (forward-char nls) (end-of-line))
+      (dotimes (i nls) (insert "\n"))))
+  (org-indent-line))
 
-(defun org-journal-entry ()
+(defun org-journal-entry (heading &optional newlines-sep)
   "Create a new diary entry for today or append to an existing one."
   (interactive)
   (switch-to-buffer (find-file org-journal-file))
@@ -83,18 +91,19 @@ means the first element is definitely not a root node."
   ;; Insert a heading for today if there is none
   (let ((today (format-time-string org-journal-date-format)))
     (beginning-of-buffer)
-    (org-search-or-insert-path (list "Journal" today))
+    (org-search-or-insert-path (list heading today))
 
     (org-end-of-element)
-    (insert "\n")
-    (newline-and-indent)
+    (fd-org-journal-space newlines-sep)
+
     (when (not (looking-at "\n[:space:]*\n"))
       (insert "\n")
       (backward-char))))
 
 ;; Org mode key bindings
 (global-set-key "\C-cb" 'org-iswitchb)
-(global-set-key "\C-cj" 'org-journal-entry)
+(global-set-key "\C-cj" (lambda () (interactive) (org-journal-entry "Journal" 1)))
+(global-set-key (kbd "C-c w") (lambda () (interactive) (org-journal-entry "Workout")))
 
 ;; Bindings
 (add-hook 'org-mode-hook
