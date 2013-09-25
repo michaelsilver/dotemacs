@@ -177,17 +177,4 @@ means the first element is definitely not a root node."
       '("xelatex -interaction nonstopmode %f"
 	"xelatex -interaction nonstopmode %f")) ;; for multiple passes
 
-
-;; OCTOPRESS
-(setq org-publish-project-alist
-      '(("blog" .  (:base-directory "~/Projects/blog/org_posts/"
-				    :base-extension "org"
-				    :publishing-directory "~/Projects/source/bblog/_posts/"
-				    :sub-superscript ""
-				    :recursive t
-				    :publishing-function org-publish-org-to-html
-				    :headline-levels 4
-				    :html-extension "markdown"
-				    :body-only t))))
-
 (provide 'fd-org)
