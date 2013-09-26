@@ -4,7 +4,6 @@
 (require 'etags-table)
 (setq etags-table-search-up-depth 10
       etags-table-generate-tags t)
-(add-to-list 'ido-ubiquitous-command-exceptions 'find-tag)
 
 ;; CC-MODE
 (defun gtags-generate-gtags ()
@@ -64,7 +63,10 @@ regenerate gtags for local symbols."
 	       (define-key c-mode-base-map "\C-ct" 'gtags-generate-or-update))))
 
 
+;; This is just because of an update
+(setq ido-ubiquitous-command-exceptions nil)
 (add-to-list 'ido-ubiquitous-command-exceptions 'gtags-find-tag)
 (add-to-list 'ido-ubiquitous-command-exceptions 'gtags-wrap-find-tag)
+(add-to-list 'ido-ubiquitous-command-exceptions 'find-tag)
 
 (provide 'fd-tags)

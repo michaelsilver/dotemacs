@@ -60,7 +60,7 @@ With negative N, comment out original line and use the absolute value."
 	     (dirs (reverse (split-string dir "/" t)))
 	     (top-dirs-raw (reverse (remove nil (subseq dirs 0 path-len))))
 	     (top-dirs (if (and (< (length top-dirs-raw) path-len) (not (equal "~" (car top-dirs-raw))))
-			   (cons "" top-dirs-raw) top-dirs)))
+			   (cons "" top-dirs-raw))))
 	(mapconcat (lambda (s) (format "%s/" s)) (reverse top-dirs) nil))
     default))
 

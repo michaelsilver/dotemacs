@@ -8,32 +8,107 @@
     (setq org-default-notes-file (concat my-orgmode-dir my-notes-file))
   (message (format "Ormode directory is not valid: %s" my-orgmode-dir)))
 
-(add-to-list 'org-modules 'org-habit)
-(setq org-log-repeat "time")
 
-(setq org-agenda-custom-commands
-      '(("h" "Daily habits"
-         ((agenda ""))
-         ((org-agenda-show-log t)
-          (org-agenda-ndays 7)
-          (org-agenda-log-mode-items '(state))
-          (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp ":DAILY:"))))))
+(defvar org-journal-file "~/.orgmode/journal.org"
+  "Path to OrgMode journal file.")
+(defvar org-journal-date-format "%Y-%m-%d"
+  "Date format string for journal headings.")
 
-(setq org-directory my-orgmode-dir)
-(setq org-mobile-directory my-orgmode-dir)
-(setq org-agenda-files (mapcar (lambda (x) (concat org-directory x)) my-agenda-files))
+(defun org-heading-search (string &optional begin-point)
+  "Look for a heading with head in it's name."
+  (let ((p (or begin-point (point))))
+    (if (search-forward string nil t)
+	;; If you are at head stop or keep looking
+	(if (org-at-heading-p)
+	    t
+	  (org-heading-search string p))
+      (goto-char p)
+      nil)))
+
+(defun org-heading-search-path (hlist)
+  "Return the portion of the list that was not found and place
+point at the last found one."
+  (if hlist
+      (save-restriction
+	;; If the head is found, decapitate
+	(if (org-heading-search (car hlist))
+	    (progn
+	      (org-narrow-to-subtree)
+	      (org-heading-search-path (cdr hlist)))
+	  hlist))
+    nil))
+
+(defun org-end-of-element ()
+  "Jump to the end of the text under the current or previous
+  heading. If the point is before the first element it will be
+  set exactly before it."
+  (end-of-line)
+  (if (search-forward-regexp "^\*" nil t)
+      (previous-line)
+    (end-of-buffer))
+  (search-backward-regexp "[^[:space:]]" nil t)
+  (end-of-line))
+
+(defun org-insert-first-child (name)
+  "Insert a heading as the first child of the current
+heading. Non nil no-root means do not create a root node."
+  (org-end-of-element)
+
+  (insert "\n")
+  (let  ((demote (/= (org-outline-level) 0)))
+    (org-insert-heading)
+    (when demote
+      (org-demote)))
+  (insert name))
+
+(defun org-heading-create-path (hlist)
+  "Create a path of headings under the current. Non-nil no-root
+means the first element is definitely not a root node."
+  (when hlist
+    (org-insert-first-child (car hlist))
+    (org-heading-create-path (cdr hlist))))
+
+(defun org-search-or-insert-path (hlist)
+  "Search for path or insert it."
+  (show-all)
+  (org-heading-create-path
+   (org-heading-search-path hlist)))
+
+(defun fd-org-journal-space (newlines-sep)
+  "Makse sure there is correct spacing from the current line."
+  (let ((nls (1+ (or newlines-sep 0))))
+    (if (looking-at (format "\n\\{%d\\} *\n" nls))
+	(progn (forward-char nls) (end-of-line))
+      (dotimes (i nls) (insert "\n"))))
+  (org-indent-line))
+
+(defun org-journal-entry (heading &optional newlines-sep)
+  "Create a new diary entry for today or append to an existing one."
+  (interactive)
+  (switch-to-buffer (find-file org-journal-file))
+  (widen)
+
+  ;; Insert a heading for today if there is none
+  (let ((today (format-time-string org-journal-date-format)))
+    (beginning-of-buffer)
+    (org-search-or-insert-path (list heading today))
+
+    (org-end-of-element)
+    (fd-org-journal-space newlines-sep)
+
+    (when (not (looking-at "\n[:space:]*\n"))
+      (insert "\n")
+      (backward-char))))
 
 ;; Org mode key bindings
-(global-set-key "\C-cc" 'org-capture)
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-cc" 'org-capture)
-(global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
+(global-set-key "\C-cj" (lambda () (interactive) (org-journal-entry "Journal" 1)))
+(global-set-key (kbd "C-c w") (lambda () (interactive) (org-journal-entry "Workout")))
 
 ;; Bindings
 (add-hook 'org-mode-hook
-          '(lambda ()
-             (define-key org-mode-map "\M-j" 'org-meta-return)
+	  '(lambda ()
+	     (define-key org-mode-map "\M-j" 'org-meta-return)
 	     (define-key org-mode-map "\M-n" 'org-forward-element)
 	     (define-key org-mode-map "\M-p" 'org-backward-element)))
 
@@ -45,7 +120,7 @@
 ;; F8 - Run ispell to the whole document
 ;; M-$ - Current word
 (add-hook 'org-mode-hook
-          #'(lambda ()
+	  #'(lambda ()
 	      (define-key org-mode-map [(tab)] nil)
 	      (flyspell-mode t)))
 

@@ -3,8 +3,7 @@
 ;; Fix docstring paragraph filling
 (add-hook 'python-mode-hook (lambda ()
 			      (setq paragraph-start (concat paragraph-start "\\|\\s-*\"\"\".*$")
-				    python-fill-docstring-style 'django)
-			      (define-key python-mode-map (kbd "C-c r") 'recompile)))
+				    python-fill-docstring-style 'django)))
 
 (require 'python)
 ;; (defun py-my-indent-region (&optional min max)
