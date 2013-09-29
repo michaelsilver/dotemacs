@@ -3,9 +3,11 @@
 
 ;; Helpers for sorting grep results
 (defun file-size (filename)
+  "Size of the file."
   (nth 7 (file-attributes filename)))
 
 (defun grep-current-line-filesize ()
+  ""
   (interactive)
   (save-excursion
     (beginning-of-line)
