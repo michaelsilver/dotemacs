@@ -194,36 +194,35 @@ commands."
   done. This runs asyncronous interactive commands."
   (interactive "sInsert git repo url: ")
   (let ((theme-name (replace-regexp-in-string "\\.git$" "" (file-name-nondirectory git-url))))
-      (octopress-interactive-command (format "git clone %s .themes/%s"))))
+    (octopress-interactive-command (format "git clone %s .themes/%s"))))
 
 (defun octopress-setup ()
   "Define te derived backend and setup org-mode publishing."
 
   (org-export-define-derived-backend 'octopress 'md
     :options-alist '((:with-toc nil "toc" t))
-    :translate-alist '((src-block . octopress-code-block))
+    :translate-alist '((src-block . octopress-code-block)))
 
-    (setq org-publish-project-alist
-	  (list (cons "blog-org"  (list :base-directory (octopress-org-posts-dir)
-					:base-extension "org"
-					:publishing-directory (octopress-posts-dir)
-					:sub-superscript ""
-					:recursive t
-					:publishing-function 'octopress-publish-to-octopress
-					:headline-levels 4
-					:with-toc nil
-					:test-val 20
-					:headline-offset 2
-					:markdown-extension "markdown"
-					:octopress-extension "markdown"
-					:body-only t))
-		(cons "blog-extra" (list :base-directory (octopress-org-posts-dir)
-					 :publishing-directory (octopress-publishing-dir)
-					 :base-extension "css\\|pdf\\|png\\|jpg\\|gif\\|svg"
-					 :publishing-function 'org-ox-publish-attachment
-					 :recursive t
-					 :author nil
-					 ))
-		(cons "blog" (list :components (list "blog-org" "blog-extra")))))))
+  (setq org-publish-project-alist
+	(list (cons "blog-org"  (list :base-directory (octopress-org-posts-dir)
+				      :base-extension "org"
+				      :publishing-directory (octopress-posts-dir)
+				      :sub-superscript ""
+				      :recursive t
+				      :publishing-function 'octopress-publish-to-octopress
+				      :headline-levels 4
+				      :markdown-extension "markdown"
+				      :octopress-extension "markdown"
+				      :body-only t))
+	      (cons "blog-extra" (list :base-directory (octopress-org-posts-dir)
+				       :publishing-directory (octopress-publishing-dir)
+				       :base-extension "css\\|pdf\\|png\\|jpg\\|gif\\|svg"
+				       :publishing-function 'org-ox-publish-attachment
+				       :recursive t
+				       :author nil
+				       ))
+	      (cons "blog" (list :components (list "blog-org" "blog-extra")))))))
+
+(octopress-setup)
 
 (provide 'fd-octopress)
