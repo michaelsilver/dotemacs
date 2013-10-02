@@ -10,7 +10,12 @@
        (eval-print-last-sexp)))))
 
 (setq my:el-get-packages
-      '(
+      '(;; Dependencies from who-kows-where
+	dash
+	s
+	pkg-info
+	request
+
 	;; Python
 	python
 	django-mode
@@ -32,6 +37,8 @@
 
 	;; Misc
 	;;	slime
+	cmake-mode
+	multi-term
 	yaml-mode
 	autopair
 	nrepl
@@ -66,11 +73,6 @@
 	  :post-init (add-to-list 'yas/root-directory
 				    (concat el-get-dir
 					    (file-name-as-directory "yasnippet-snippets"))))
-
-   (:name metaweblog.el
-       :description "Metaweblog"
-       :type github
-       :pkgname "punchagan/metaweblog.el")
 
    (:name org2blog
        :description "Blog from Org mode to wordpress"

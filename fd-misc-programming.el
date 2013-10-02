@@ -40,4 +40,6 @@
 ;; Ediff
 (setq ediff-split-window-function 'split-window-horizontally)
 
+(global-set-key (kbd "C-c r") 'recompile)
+
 (provide 'fd-misc-programming)

@@ -27,8 +27,10 @@
 (require 'fd-prolog)
 (require 'fd-vimperator)
 (require 'fd-org)
+(require 'fd-octopress)
 (require 'fd-midnight)
 (require 'fd-dired)
+(require 'fd-term)
 
 ;; Customs
 (custom-set-variables
@@ -46,3 +48,5 @@
  )
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+
+(message "Welcome to emacs!")
