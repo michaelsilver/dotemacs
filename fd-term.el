@@ -33,7 +33,15 @@
   (fd-term-map-key "<M-left>" "M-b")
   (fd-term-map-key "<M-right>" "M-f")
   (fd-term-map-key "<C-left>" "M-b")
-  (fd-term-map-key "<C-right>" "M-f"))
+  (fd-term-map-key "<C-right>" "M-f")
+  (fd-term-map-key "C-k" "C-k")
+  ((fd-term-map-key "C-/" "C-/"))
+  (define-key term-raw-map (kbd "C-y") 'term-send-clipboard)
+  (define-key term-raw-map (kbd "S-insert") 'term-send-clipboard)
+
+(defun term-send-clipboard (&optional arg)
+  (interactive)
+  (term-send-string-raw (current-kill arg)))
 
 (defun kill-all-terminals (&optional dont-ask)
   "Kill all terminal buffers asking just once. If dont-ask is
