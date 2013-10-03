@@ -27,6 +27,7 @@
   (setq autopair-dont-activate t)
   ;; Add your keyboard mappings here.
   (fd-term-map-key "M-b" "M-b")
+  (fd-term-map-key "M-DEL" "M-DEL")
   (fd-term-map-key "M-m" "C-a"))
 
 ;; only needed if you use autopair
