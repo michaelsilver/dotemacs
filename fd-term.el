@@ -27,8 +27,21 @@
   (setq autopair-dont-activate t)
   ;; Add your keyboard mappings here.
   (fd-term-map-key "M-b" "M-b")
+  (fd-term-map-key "M-f" "M-f")
   (fd-term-map-key "M-DEL" "M-DEL")
-  (fd-term-map-key "M-m" "C-a"))
+  (fd-term-map-key "M-m" "C-a")
+  (fd-term-map-key "<M-left>" "M-b")
+  (fd-term-map-key "<M-right>" "M-f")
+  (fd-term-map-key "<C-left>" "M-b")
+  (fd-term-map-key "<C-right>" "M-f"))
+
+(defun kill-all-terminals (&optional dont-ask)
+  "Kill all terminal buffers asking just once. If dont-ask is
+non-nil do not ask the user."
+  (interactive)
+  (when (or dont-ask (y-or-n-p "Kill all terminal buffers?"))
+    (let ((kill-buffer-query-functions))
+      (mapcar 'kill-buffer (fd-mode-buffers 'term-mode)))))
 
 ;; only needed if you use autopair
 (add-hook 'term-mode-hook 'fd-term-mode-hook)
