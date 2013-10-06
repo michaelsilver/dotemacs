@@ -177,4 +177,7 @@ means the first element is definitely not a root node."
       '("xelatex -interaction nonstopmode %f"
 	"xelatex -interaction nonstopmode %f")) ;; for multiple passes
 
+(require 'fd-octopress)
+(octopress-setup)
+
 (provide 'fd-org)
