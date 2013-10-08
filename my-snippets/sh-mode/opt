@@ -1,0 +1,39 @@
+# name: bash top stuff
+# key: opt
+# author: Chris Perivolaropoulos
+# --
+
+HELP_MESSAGE=""
+$JUST="none"
+
+while [[ $# -gt 0 ]]; do
+    case \$1 in
+	"--just") JUST+=":\$1"
+	"--help")
+	    echo "$HELP_MESSAGE"
+	    exit 0;;
+	*)
+	    echo "Unrecognized option '\$1'"
+	    exit 1;;
+    esac
+    shift
+done
+
+if [[ $JUST = "none" ]]; then
+    JUST="all"
+fi
+
+function fail {
+    echo "[FAIL] \$1"
+    exit 2
+}
+
+function should_do {
+    return [[ $JUST =~ ".*\$1.*" || $JUST =~ ".*all.*" ]]
+}
+
+# Extra init here
+
+if should_do "procedure_name"; then
+   $0
+fi
