@@ -2,13 +2,16 @@
 # key: opt
 # author: Chris Perivolaropoulos
 # --
+#!/bin/sh
 
 HELP_MESSAGE=""
 $JUST="none"
+$SKIP="none"
 
 while [[ $# -gt 0 ]]; do
     case \$1 in
-	"--just") JUST+=":\$1"
+	"--just") shift; JUST+=":\$1"; shift;;
+	"--skip") shift; SKIP+=":\$1"; shift;;
 	"--help")
 	    echo "$HELP_MESSAGE"
 	    exit 0;;
@@ -23,17 +26,27 @@ if [[ $JUST = "none" ]]; then
     JUST="all"
 fi
 
+if [[ $SKIP = "none" ]]; then
+    JUST="all"
+fi
+
 function fail {
     echo "[FAIL] \$1"
     exit 2
 }
 
 function should_do {
-    return [[ $JUST =~ ".*\$1.*" || $JUST =~ ".*all.*" ]]
+    if [[ "$JUST" =~ ".*\$1.*" || "$JUST" = "all" ]] && [ ! [ "$SKIP" =~ ".*\$1.*" ]]; then
+	echo "Gonna \$1 ($JUST)"
+	return 0
+    else
+	echo "Skipping \$1 ($JUST)"
+	return 1
+    fi
 }
 
 # Extra init here
 
-if should_do "procedure_name"; then
+if should_do "$1"; then
    $0
 fi
