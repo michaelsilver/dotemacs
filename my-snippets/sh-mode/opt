@@ -36,7 +36,7 @@ function fail {
 }
 
 function should_do {
-    if [[ "$JUST" =~ ".*\$1.*" || "$JUST" = "all" ]] && [ ! [ "$SKIP" =~ ".*\$1.*" ]]; then
+    if  ( test $(echo "$JUST" | grep "\$1") || [[ "$JUST" = "all" ]] ) && [ ! [ "$SKIP" =~ ".*\$1.*" ]]; then
 	echo "Gonna \$1 ($JUST)"
 	return 0
     else
