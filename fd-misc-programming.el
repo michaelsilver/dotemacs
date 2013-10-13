@@ -41,5 +41,6 @@
 (setq ediff-split-window-function 'split-window-horizontally)
 
 (global-set-key (kbd "C-c r") 'recompile)
+(define-key git-global-map "p" (lambda () (interactive) (git-cmd "push")))
 
 (provide 'fd-misc-programming)

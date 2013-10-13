@@ -24,16 +24,18 @@
 (defun ido-for-mode(prompt the-mode)
   "Switch to buffer of the-mode using prompt"
   (switch-to-buffer
-   (ido-completing-read prompt
-                        (save-excursion
-                          (delq
-                           nil
-                           (mapcar (lambda (buf)
-                                     (when (and (buffer-live-p buf) (not (eq (current-buffer) buf)))
-                                       (with-current-buffer buf
-                                         (and (eq major-mode the-mode)
-                                              (buffer-name buf)))))
-                                   (buffer-list)))))))
+   (ido-completing-read prompt (fd-mode-buffers the-mode))))
 
+(defun fd-mode-buffers (the-mode)
+  "List of buffers of mode THE-MODE."
+  (save-excursion
+    (delq
+     nil
+     (mapcar (lambda (buf)
+	       (when (and (buffer-live-p buf) (not (eq (current-buffer) buf)))
+		 (with-current-buffer buf
+		   (and (eq major-mode the-mode)
+			(buffer-name buf)))))
+	     (buffer-list)))))
 
 (provide 'fd-ido)
