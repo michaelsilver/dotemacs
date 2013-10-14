@@ -10,8 +10,8 @@ $SKIP="none"
 
 while [[ $# -gt 0 ]]; do
     case \$1 in
-	"--just") shift; JUST+=":\$1"; shift;;
-	"--skip") shift; SKIP+=":\$1"; shift;;
+	"--just") shift; JUST+=":\$1";;
+	"--skip") shift; SKIP+=":\$1";;
 	"--help")
 	    echo "$HELP_MESSAGE"
 	    exit 0;;
