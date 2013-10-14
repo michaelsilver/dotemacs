@@ -99,11 +99,20 @@ With negative N, comment out original line and use the absolute value."
 
 (setq require-final-newline t)
 
+(defun file-directory-name (fname)
+  "Get the parent dir of the fname. If fname is a dir get the
+parent."
+  (replace-regexp-in-string "[^/]+$" ""
+			    (directory-file-name fname)))
+
+(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
+
 (defadvice save-buffer (around save-buffer-as-root-around activate)
   "Use sudo to save the current buffer."
   (interactive "p")
   (if (and (buffer-file-name)
-	   (file-accessible-directory-p (directory-file-name (buffer-file-name)))
+	   (file-accessible-directory-p
+	    (file-directory-name (buffer-file-name)))
 	   (not (file-writable-p (buffer-file-name))))
       (let ((buffer-file-name (format "/sudo::%s" buffer-file-name)))
 	ad-do-it)

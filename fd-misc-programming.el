@@ -44,9 +44,14 @@
 (define-key git-global-map "p" (lambda () (interactive) (git-cmd "push")))
 
 
+(require 'notifications)
 (defun compilation-end-defun (compilation-buffer result)
   (with-current-buffer compilation-buffer
-    (notifications-notify :title (format "%s: %s" (if (= result 0) "Success" "Fail") compile-command))))
+    (notifications-notify
+     :title (format "%s(%d): %s"
+		    (if (= result 0) "Success" "Fail")
+		    result
+		    compile-command))))
 
 (setq compilation-finish-function 'compilation-end-defun)
 
