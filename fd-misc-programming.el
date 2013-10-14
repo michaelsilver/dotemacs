@@ -18,6 +18,7 @@
 (add-to-list 'auto-mode-alist '("[.]zcml" . nxml-mode))
 (add-to-list 'auto-mode-alist '("[.]pt" . html-mode))
 (add-to-list 'auto-mode-alist '("[.]sim" . asm-mode))
+(add-to-list 'auto-mode-alist '("shrc$" . sh-mode))
 
 ;; Indent buffer
 (defun indent-buffer ()
