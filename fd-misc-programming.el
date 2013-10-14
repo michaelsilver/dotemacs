@@ -51,10 +51,8 @@
 (defun compilation-end-defun (compilation-buffer result)
   (with-current-buffer compilation-buffer
     (notifications-notify
-     :title (format "%s(%d): %s"
-		    (if (= result 0) "Success" "Fail")
-		    result
-		    compile-command))))
+     :title (format "Compilation: %s" result)
+     :body (format "Cmd: %s" compile-command))))
 
 (setq compilation-finish-function 'compilation-end-defun)
 
