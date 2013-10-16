@@ -8,6 +8,7 @@
 (require 'fd-el-get)
 (require 'fd-misc)
 (require 'fd-misc-programming)
+(require 'fd-automode)
 (require 'fd-visual)
 (require 'fd-clipboard)
 (require 'fd-ido)

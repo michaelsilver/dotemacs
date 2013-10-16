@@ -14,14 +14,6 @@
                (autopair-mode -1))             ;; for emacsen >= 24
 )
 
-;; Extra automodes
-(add-to-list 'auto-mode-alist '("[.]zcml" . nxml-mode))
-(add-to-list 'auto-mode-alist '("[.]pt" . html-mode))
-(add-to-list 'auto-mode-alist '("[.]sim" . asm-mode))
-(add-to-list 'auto-mode-alist '("shrc$" . sh-mode))
-(add-to-list 'auto-mode-alist '("[mM]akefile.*$" . sh-mode))
-(add-to-list 'auto-mode-alist '("[.]mk$" . sh-mode))
-
 ;; Indent buffer
 (defun indent-buffer ()
   "Indents an entire buffer using the default intenting scheme."
