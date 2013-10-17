@@ -1,11 +1,11 @@
 PWD := $(shell pwd)
-ELC_FILES=$(shell find . -name "*.el" | sed -e 's/\.el$$/.elc/')
+ELC_FILES=$(shell ls *.el | sed -e 's/\.el$$/.elc/')
 
 clean:
 	rm -rf $(ELC_FILES)
 
 %.elc: %.el
-	emacs --batch --eval '(load-file "fd-essential.el") (byte-compile-file "$^")'
+	emacs --batch --eval '(progn (load-file "fd-essential.el") (byte-compile-file "$^"))'
 
 compile: $(ELC_FILES)
 all: compile

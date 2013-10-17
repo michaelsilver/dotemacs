@@ -1,6 +1,6 @@
 (require 'cl)
 
-(load-file "fd-essential.el")
+(load-file "~/.emacs.d/fd-essential.el")
 (require 'fd-el-get)
 (require 'fd-misc)
 (require 'fd-misc-programming)

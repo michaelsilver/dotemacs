@@ -12,6 +12,6 @@
 (add-hook 'after-save-hook 'byte-compile-current-buffer)
 
 ;; Slime
-(require 'nrepl)
+(require 'cider)
 
 (provide 'fd-lisp)

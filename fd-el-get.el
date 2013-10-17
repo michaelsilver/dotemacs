@@ -1,6 +1,9 @@
 ;; EL-GET
 (add-to-list 'load-path (concat dotemacs-dir "el-get/el-get"))
 
+(require 'package)
+(package-initialize)
+
 (unless (require 'el-get nil t)
   (url-retrieve
    "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
@@ -54,7 +57,6 @@
 	zencoding-mode
 	git-emacs
 	bm
-	goto-last-change
 	find-file-in-project
 	undo-tree))
 
@@ -135,11 +137,7 @@
 	  :after (progn
 		   (setq smex-save-file (my-expand-path ".smex-items"))
 		   (global-set-key (kbd "M-x") 'smex)
-		   (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
-   (:name goto-last-change		; move pointer back to last change
-	  :after (progn
-		   ;; when using AZERTY keyboard, consider C-x C-_
-		   (global-set-key (kbd "C-x C-/") 'goto-last-change)))))
+		   (global-set-key (kbd "M-X") 'smex-major-mode-commands)))))
 
 ;;
 ;; Some recipes require extra tools to be installed
