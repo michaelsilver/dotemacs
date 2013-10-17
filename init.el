@@ -1,10 +1,6 @@
 (require 'cl)
 
-(setq dotemacs-dir "~/.emacs.d/")
-(add-to-list 'load-path dotemacs-dir)
-
-(defun my-expand-path (f) (concat dotemacs-dir f))
-
+(load-file "fd-essential.el")
 (require 'fd-el-get)
 (require 'fd-misc)
 (require 'fd-misc-programming)

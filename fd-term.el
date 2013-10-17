@@ -1,6 +1,8 @@
 ;; Terminals
 ;;
 ;; TODO: Have an org mode style buffer switcher.
+(eval-when-compile
+  (load-file "fd-essential.el"))
 
 (autoload 'multi-term "multi-term" nil t)
 (autoload 'multi-term-next "multi-term" nil t)
