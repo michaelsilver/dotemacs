@@ -86,3 +86,5 @@ with 'pdftotext -layout'."
 	;; The answer is this one plus the rest
 	(cons (buffer-substring start end)
 	      (lesson-codes code-regex (point)))))))
+
+(provide 'fd-cookbook)
