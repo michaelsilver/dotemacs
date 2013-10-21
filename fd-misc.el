@@ -3,6 +3,8 @@
 ;; Do not include anything that requires anything that isnt packaged
 ;; with emacs here.
 
+(require 'cookbook)
+
 (let ((personal-el  "~/Ubuntu One/elisp/personal.el"))
   (if (file-readable-p personal-el)
       (load-file personal-el)
@@ -113,7 +115,8 @@ parent."
   (if (and (buffer-file-name)
 	   (file-accessible-directory-p
 	    (file-directory-name (buffer-file-name)))
-	   (not (file-writable-p (buffer-file-name))))
+	   (not (file-writable-p (buffer-file-name)))
+	   (not (string/starts-with buffer-file-name "/sudo")))
       (let ((buffer-file-name (format "/sudo::%s" buffer-file-name)))
 	ad-do-it)
     ad-do-it))

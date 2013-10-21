@@ -41,19 +41,7 @@
   (expand-file-name
    (or octopress-themes-dir (format "%s/.themes/" octopress-root))))
 
-
-;; From the elisp cookbook
-(defun string/ends-with (s ending)
-  "return non-nil if string S ends with ENDING."
-  (let ((elength (length ending)))
-    (string= (substring s (- 0 elength)) ending)))
-
-(defun string/starts-with (s arg)
-  "returns non-nil if string S starts with ARG.  Else nil."
-  (cond ((>= (length s) (length arg))
-	 (string-equal (substring s 0 (length arg)) arg))
-	(t nil)))
-
+(require 'fd-coobook)
 
 (require 'git-emacs)
 (require 'ox-publish)
