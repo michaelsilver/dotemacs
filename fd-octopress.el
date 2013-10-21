@@ -41,7 +41,7 @@
   (expand-file-name
    (or octopress-themes-dir (format "%s/.themes/" octopress-root))))
 
-(require 'fd-coobook)
+(require 'fd-cookbook)
 
 (require 'git-emacs)
 (require 'ox-publish)

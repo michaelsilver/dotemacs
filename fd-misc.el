@@ -3,7 +3,7 @@
 ;; Do not include anything that requires anything that isnt packaged
 ;; with emacs here.
 
-(require 'cookbook)
+(require 'fd-cookbook)
 
 (let ((personal-el  "~/Ubuntu One/elisp/personal.el"))
   (if (file-readable-p personal-el)
