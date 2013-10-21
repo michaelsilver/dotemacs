@@ -158,4 +158,9 @@ parent."
 (global-set-key (kbd "C-M-p") 'move-text-up)
 (global-set-key (kbd "C-M-n") 'move-text-down)
 
+(global-set-key (kbd "C-c f d") 'find-dired)
+
+(defalias 'yes-or-no-p 'y-or-n-p
+  "Faster yes or no's")
+
 (provide 'fd-misc)
