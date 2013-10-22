@@ -1,4 +1,8 @@
-;; fd-projects.el
+;;; fd-projects.el
+;; XXX: vreate a struct that is a project file. It will be aware of
+;; it's buffer if open, it will be able to open, it will know a short
+;; version of it's name and it will be extensible.
+
 
 ;; Files should return absolute paths
 (defstruct project name root files)
