@@ -60,16 +60,21 @@
   (mapcar (lambda (x) x)
 	  files))
 
+(defun filename-in-project (fname pr)
+  (file-truename
+   (format "%s/%s" (project-root pr) fname)))
+
 (defun projects-file-open (p)
   "Interactively find a project and open it."
   (interactive (let ((completions (projects-completion-alist projects-list)))
 		 (list (cdr (assoc
-			     (completing-read "Open project: "
+			     (ido-completing-read "Open project: "
 					      completions
 					      nil t) completions)))))
   (message (format "Project %s" (project-name p)))
-  (find-file (completing-read "Open file of a project: "
-			      (project-files-completion-alist (project-file-list p)))))
+  (find-file (filename-in-project (ido-completing-read "Open file of a project: "
+						   (project-files-completion-alist (project-file-list p)))
+				  p)))
 
 (provide 'fd-projects)
 (defun test-project ()
