@@ -55,18 +55,34 @@ regenerate gtags for local symbols."
 						 "/usr/share/emacs/site-lisp/global/gtags.el")))
 (when gtags-elisp-file
   (load-file gtags-elisp-file)
-  (add-hook 'c-mode-common-hook
-	    '(lambda ()
-	       ;; If gtags are not setup, set them up before finding tag
-	       (define-key c-mode-base-map "\M-." 'gtags-wrap-find-tag)
-	       (define-key c-mode-base-map "\M-*" 'gtags-pop-stack)
-	       (define-key c-mode-base-map "\C-ct" 'gtags-generate-or-update))))
+  ;; (add-hook 'c-mode-common-hook
+  ;; 	    '(lambda ()
+  ;; 	       ;; If gtags are not setup, set them up before finding tag
+  ;; 	       (define-key c-mode-base-map "\M-." 'gtags-wrap-find-tag)
+  ;; 	       (define-key c-mode-base-map "\M-*" 'gtags-pop-stack)
+  ;; 	       (define-key c-mode-base-map "\C-ct" 'gtags-generate-or-update)))
+  )
 
 
 ;; This is just because of an update
+
 (setq ido-ubiquitous-command-exceptions nil)
 (add-to-list 'ido-ubiquitous-command-exceptions 'gtags-find-tag)
 (add-to-list 'ido-ubiquitous-command-exceptions 'gtags-wrap-find-tag)
 (add-to-list 'ido-ubiquitous-command-exceptions 'find-tag)
+
+;; Cscope: will replace gtags
+(require 'cscope)
+
+(setq cscope-master-info-table
+      '(("linux"
+	 ("cscope" "-p10" "-l" "-d" "-f" "/home/fakedrake/Projects/ThinkSilicon/xilinx-zynq-bootstrap/sources/linux-git/cscope.out")
+	 nil "/home/fakedrake/Projects/ThinkSilicon/xilinx-zynq-bootstrap/sources/linux-git/")))
+
+(defun fd-c-tagging-hook ()
+  (define-key c-mode-base-map "\M-." 'cscope-find-global-definition))
+
+(add-hook 'c-mode-common-hook 'fd-c-tagging-hook)
+
 
 (provide 'fd-tags)
