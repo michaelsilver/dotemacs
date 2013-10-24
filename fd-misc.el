@@ -60,9 +60,13 @@ With negative N, comment out original line and use the absolute value."
   (if dir
       (let* ((path-len (or path-len 2))
 	     (dirs (reverse (split-string dir "/" t)))
-	     (top-dirs-raw (reverse (remove nil (subseq dirs 0 path-len))))
-	     (top-dirs (if (and (< (length top-dirs-raw) path-len) (not (equal "~" (car top-dirs-raw))))
-			   (cons "" top-dirs-raw))))
+	     (top-dirs-raw (remove nil (subseq dirs 0 path-len)))
+	     ;; If we do not have enough dirs append "" at the end so
+	     ;; we get something that resembles an abs path.
+	     (top-dirs (if (and (< (length top-dirs-raw) path-len)
+				(not (equal "~" (car top-dirs-raw))))
+			   (reverse (cons "" (reverse top-dirs-raw)))
+			 top-dirs-raw)))
 	(mapconcat (lambda (s) (format "%s/" s)) (reverse top-dirs) nil))
     default))
 
@@ -123,37 +127,37 @@ parent."
 
 
 (defun move-text-internal (arg)
-   (cond
-    ((and mark-active transient-mark-mode)
-     (if (> (point) (mark))
-            (exchange-point-and-mark))
-     (let ((column (current-column))
-              (text (delete-and-extract-region (point) (mark))))
-       (forward-line arg)
-       (move-to-column column t)
-       (set-mark (point))
-       (insert text)
-       (exchange-point-and-mark)
-       (setq deactivate-mark nil)))
-    (t
-     (beginning-of-line)
-     (when (or (> arg 0) (not (bobp)))
-       (forward-line)
-       (when (or (< arg 0) (not (eobp)))
-            (transpose-lines arg))
-       (forward-line -1)))))
+  (cond
+   ((and mark-active transient-mark-mode)
+    (if (> (point) (mark))
+	(exchange-point-and-mark))
+    (let ((column (current-column))
+	  (text (delete-and-extract-region (point) (mark))))
+      (forward-line arg)
+      (move-to-column column t)
+      (set-mark (point))
+      (insert text)
+      (exchange-point-and-mark)
+      (setq deactivate-mark nil)))
+   (t
+    (beginning-of-line)
+    (when (or (> arg 0) (not (bobp)))
+      (forward-line)
+      (when (or (< arg 0) (not (eobp)))
+	(transpose-lines arg))
+      (forward-line -1)))))
 
 (defun move-text-down (arg)
-   "Move region (transient-mark-mode active) or current line
+  "Move region (transient-mark-mode active) or current line
   arg lines down."
-   (interactive "*p")
-   (move-text-internal arg))
+  (interactive "*p")
+  (move-text-internal arg))
 
 (defun move-text-up (arg)
-   "Move region (transient-mark-mode active) or current line
+  "Move region (transient-mark-mode active) or current line
   arg lines up."
-   (interactive "*p")
-   (move-text-internal (- arg)))
+  (interactive "*p")
+  (move-text-internal (- arg)))
 
 (global-set-key (kbd "C-M-p") 'move-text-up)
 (global-set-key (kbd "C-M-n") 'move-text-down)
