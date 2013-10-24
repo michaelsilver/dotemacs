@@ -38,6 +38,7 @@
 
 	;; Misc
 	;;	slime
+	cmake-mode
 	multi-term
 	yaml-mode
 	autopair

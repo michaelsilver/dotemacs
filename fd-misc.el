@@ -102,9 +102,48 @@ With negative N, comment out original line and use the absolute value."
 (defadvice save-buffer (around save-buffer-as-root-around activate)
   "Use sudo to save the current buffer."
   (interactive "p")
-  (if (and (buffer-file-name) (not (file-writable-p (buffer-file-name))))
+  (if (and (buffer-file-name)
+	   (file-accessible-directory-p (directory-file-name (buffer-file-name)))
+	   (not (file-writable-p (buffer-file-name))))
       (let ((buffer-file-name (format "/sudo::%s" buffer-file-name)))
 	ad-do-it)
     ad-do-it))
+
+
+(defun move-text-internal (arg)
+   (cond
+    ((and mark-active transient-mark-mode)
+     (if (> (point) (mark))
+            (exchange-point-and-mark))
+     (let ((column (current-column))
+              (text (delete-and-extract-region (point) (mark))))
+       (forward-line arg)
+       (move-to-column column t)
+       (set-mark (point))
+       (insert text)
+       (exchange-point-and-mark)
+       (setq deactivate-mark nil)))
+    (t
+     (beginning-of-line)
+     (when (or (> arg 0) (not (bobp)))
+       (forward-line)
+       (when (or (< arg 0) (not (eobp)))
+            (transpose-lines arg))
+       (forward-line -1)))))
+
+(defun move-text-down (arg)
+   "Move region (transient-mark-mode active) or current line
+  arg lines down."
+   (interactive "*p")
+   (move-text-internal arg))
+
+(defun move-text-up (arg)
+   "Move region (transient-mark-mode active) or current line
+  arg lines up."
+   (interactive "*p")
+   (move-text-internal (- arg)))
+
+(global-set-key (kbd "C-M-p") 'move-text-up)
+(global-set-key (kbd "C-M-n") 'move-text-down)
 
 (provide 'fd-misc)
