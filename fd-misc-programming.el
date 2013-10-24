@@ -14,11 +14,6 @@
                (autopair-mode -1))             ;; for emacsen >= 24
 )
 
-;; Extra automodes
-(add-to-list 'auto-mode-alist '("[.]zcml" . nxml-mode))
-(add-to-list 'auto-mode-alist '("[.]pt" . html-mode))
-(add-to-list 'auto-mode-alist '("[.]sim" . asm-mode))
-
 ;; Indent buffer
 (defun indent-buffer ()
   "Indents an entire buffer using the default intenting scheme."
@@ -42,5 +37,14 @@
 
 (global-set-key (kbd "C-c r") 'recompile)
 (define-key git-global-map "p" (lambda () (interactive) (git-cmd "push")))
+
+(require 'notifications)
+(defun compilation-end-defun (compilation-buffer result)
+  (with-current-buffer compilation-buffer
+    (notifications-notify
+     :title (format "Compilation: %s" result)
+     :body (format "Cmd: %s" compile-command))))
+
+(setq compilation-finish-function 'compilation-end-defun)
 
 (provide 'fd-misc-programming)

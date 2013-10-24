@@ -3,6 +3,8 @@
 ;; Do not include anything that requires anything that isnt packaged
 ;; with emacs here.
 
+(require 'fd-cookbook)
+
 (let ((personal-el  "~/Ubuntu One/elisp/personal.el"))
   (if (file-readable-p personal-el)
       (load-file personal-el)
@@ -99,12 +101,22 @@ With negative N, comment out original line and use the absolute value."
 
 (setq require-final-newline t)
 
+(defun file-directory-name (fname)
+  "Get the parent dir of the fname. If fname is a dir get the
+parent."
+  (replace-regexp-in-string "[^/]+$" ""
+			    (directory-file-name fname)))
+
+(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
+
 (defadvice save-buffer (around save-buffer-as-root-around activate)
   "Use sudo to save the current buffer."
   (interactive "p")
   (if (and (buffer-file-name)
-	   (file-accessible-directory-p (directory-file-name (buffer-file-name)))
-	   (not (file-writable-p (buffer-file-name))))
+	   (file-accessible-directory-p
+	    (file-directory-name (buffer-file-name)))
+	   (not (file-writable-p (buffer-file-name)))
+	   (not (string/starts-with buffer-file-name "/sudo")))
       (let ((buffer-file-name (format "/sudo::%s" buffer-file-name)))
 	ad-do-it)
     ad-do-it))
@@ -145,5 +157,10 @@ With negative N, comment out original line and use the absolute value."
 
 (global-set-key (kbd "C-M-p") 'move-text-up)
 (global-set-key (kbd "C-M-n") 'move-text-down)
+
+(global-set-key (kbd "C-c f d") 'find-dired)
+
+(defalias 'yes-or-no-p 'y-or-n-p
+  "Faster yes or no's")
 
 (provide 'fd-misc)

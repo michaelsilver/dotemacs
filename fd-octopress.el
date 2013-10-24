@@ -44,11 +44,45 @@
   (let ((elength (length ending)))
     (string= (substring s (- 0 elength)) ending)))
 
-(defun string/starts-with (s arg)
-  "returns non-nil if string S starts with ARG.  Else nil."
-  (cond ((>= (length s) (length arg))
-	 (string-equal (substring s 0 (length arg)) arg))
-	(t nil)))
+(defvar octopress-git-commit-on-export nil
+  "Git commit on exporting of the posts.")
+
+(defvar octopress-publishing-dir nil
+  "Use this as the directory where things are published instead
+  of the default.")
+
+(defvar octopress-org-posts-dir nil
+  "Use this as the dir where org posts are kept instead of the
+  default.")
+
+(defvar octopress-posts-dir nil
+  "Use this as the posts directory instead of the default.")
+
+(defvar octopress-themes-dir nil
+  "Use this as the themes dir instead of the default.")
+
+;; XXX: change all these into overridable defuns
+(defun octopress-publishing-dir ()
+  "This is the subdir where the published html of octopress is."
+  (expand-file-name
+   (or octopress-publishing-dir (format "%s/source/" octopress-root))))
+
+(defun octopress-org-posts-dir ()
+  "Octopress org posts dir"
+  (expand-file-name
+   (or octopress-org-posts-dir (format "%s/org_posts/" (octopress-publishing-dir)))))
+
+(defun octopress-posts-dir ()
+  "Get the octopress markdown posts dir"
+  (expand-file-name
+   (or octopress-posts-dir (format "%s/_posts/" (octopress-publishing-dir)))))
+
+(defun octopress-themes-dir ()
+  "Get octopress themes dir"
+  (expand-file-name
+   (or octopress-themes-dir (format "%s/.themes/" octopress-root))))
+
+(require 'fd-cookbook)
 
 
 (require 'git-emacs)
@@ -59,10 +93,13 @@
   "Transcode CODE_BLOCK element into Markdown format.
 CONTENTS is nil.  INFO is a plist used as a communication
 channel."
-  (format "``` %s %s\n%s\n```"
-	  (org-element-property :language src-block)
-	  (or (org-element-property :name src-block) "Code")
-	  (org-element-property :value src-block)))
+  (let* ((lang (org-element-property :language src-block))
+	 (name (if lang
+		   (or (org-element-property :name src-block)
+		       (format "%s code" (capitalize lang)))
+		 ""))
+	 (code (replace-regexp-in-string "^```" " ```" (org-element-property :value src-block))))
+    (format "``` %s %s\n%s\n```" (or lang "") name code)))
 
 (defun octopress-publish-to-octopress (plist filename pub-dir)
   "Publish an org file to Markdown.
@@ -118,23 +155,23 @@ not match the metadata, update the filename. Commit with
 git-emacs and publish all changes you can find. Then generate the
 octopress page."
   (interactive)
-  (unless (and (string/starts-with (buffer-file-name)
-				   (expand-file-name (octopress-org-posts-dir)))
-	       (eq 'org-mode major-mode))
-    (error "Not an octopress post."))
+  (save-excursion
+    (unless (and (string/starts-with (expand-file-name (buffer-file-name))
+				     (octopress-org-posts-dir))
+		 (eq 'org-mode major-mode))
+      (error "Not an octopress post."))
 
-  (save-buffer)
-  (octopress-filename-date-update)
+    (save-buffer)
+    (octopress-filename-date-update)
 
-  ;; XXX: move this to uploading
-  (unless  (or (not org-commit-on-export)
-	       (eq 'uptodate (git--status-file (buffer-file-name))))
-    (git-commit-file))
+    ;; XXX: move this to uploading
+    (unless  (or (not octopress-git-commit-on-export)
+		 (eq 'uptodate (git--status-file (buffer-file-name))))
+      (git-commit-file))
 
-  (org-save-all-org-buffers)
-  (org-publish-current-project)
-  (octopress-generate)
-  (message "Published."))
+    (org-publish-current-project)
+    (octopress-generate)
+    (message "Published.")))
 
 (defun octopress-upload ()
   "Deploy the octopress site site."
@@ -194,36 +231,35 @@ commands."
   done. This runs asyncronous interactive commands."
   (interactive "sInsert git repo url: ")
   (let ((theme-name (replace-regexp-in-string "\\.git$" "" (file-name-nondirectory git-url))))
-      (octopress-interactive-command (format "git clone %s .themes/%s"))))
+
+    (octopress-interactive-command (format "git clone %s .themes/%s"))))
 
 (defun octopress-setup ()
   "Define te derived backend and setup org-mode publishing."
-
+  (interactive)
   (org-export-define-derived-backend 'octopress 'md
-    :options-alist '((:with-toc nil "toc" t))
-    :translate-alist '((src-block . octopress-code-block))
+    :options-alist '((:with-toc nil "toc" nil))
+    :translate-alist '((src-block . octopress-code-block)))
 
-    (setq org-publish-project-alist
-	  (list (cons "blog-org"  (list :base-directory (octopress-org-posts-dir)
-					:base-extension "org"
-					:publishing-directory (octopress-posts-dir)
-					:sub-superscript ""
-					:recursive t
-					:publishing-function 'octopress-publish-to-octopress
-					:headline-levels 4
-					:with-toc nil
-					:test-val 20
-					:headline-offset 2
-					:markdown-extension "markdown"
-					:octopress-extension "markdown"
-					:body-only t))
-		(cons "blog-extra" (list :base-directory (octopress-org-posts-dir)
-					 :publishing-directory (octopress-publishing-dir)
-					 :base-extension "css\\|pdf\\|png\\|jpg\\|gif\\|svg"
-					 :publishing-function 'org-ox-publish-attachment
-					 :recursive t
-					 :author nil
-					 ))
-		(cons "blog" (list :components (list "blog-org" "blog-extra")))))))
+  (setq org-publish-project-alist
+	(list (cons "blog-org"  (list :base-directory (octopress-org-posts-dir)
+				      :base-extension "org"
+				      :publishing-directory (octopress-posts-dir)
+				      :sub-superscript ""
+				      :recursive t
+				      :publishing-function 'octopress-publish-to-octopress
+				      :with-toc nil
+				      :headline-levels 4
+				      :markdown-extension "markdown"
+				      :octopress-extension "markdown"
+				      :body-only t))
+	      (cons "blog-extra" (list :base-directory (octopress-org-posts-dir)
+				       :publishing-directory (octopress-publishing-dir)
+				       :base-extension "css\\|pdf\\|png\\|jpg\\|gif\\|svg"
+				       :publishing-function 'org-ox-publish-attachment
+				       :recursive t
+				       :author nil
+				       ))
+	      (cons "blog" (list :components (list "blog-org" "blog-extra"))))))
 
 (provide 'fd-octopress)
