@@ -9,10 +9,10 @@
 
 
 (add-hook 'term-mode-hook
-           #'(lambda ()
-               (setq autopair-dont-activate t) ;; for emacsen < 24
-               (autopair-mode -1))             ;; for emacsen >= 24
-)
+	  #'(lambda ()
+	      (setq autopair-dont-activate t) ;; for emacsen < 24
+	      (autopair-mode -1))             ;; for emacsen >= 24
+	  )
 
 ;; Indent buffer
 (defun indent-buffer ()
@@ -42,9 +42,12 @@
 (require 'notifications)
 (defun compilation-end-defun (compilation-buffer result)
   (with-current-buffer compilation-buffer
-    (notifications-notify
-     :title (format "Compilation: %s" result)
-     :body (format "Cmd: %s" compile-command))))
+    (if (string= (buffer-name) "*compilation*")
+	(notifications-notify
+	 :title (format "Compilation: %s" result)
+	 :body (format "Cmd: %s" compile-command))
+      (notifications-notify
+	 :title (format "Finished: %s" (buffer-name))))))
 
 (setq compilation-finish-function 'compilation-end-defun)
 
