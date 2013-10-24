@@ -41,6 +41,7 @@
 
 	;; Misc
 	;;	slime
+	cscope
 	cmake-mode
 	multi-term
 	yaml-mode
