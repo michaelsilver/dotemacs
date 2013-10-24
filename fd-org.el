@@ -142,7 +142,7 @@ means the first element is definitely not a root node."
 ;; Usage: on top of the .org doc put these.
 ;; #+LaTeX_CLASS: fakedrake-org-article
 ;; #+LaTeX_HEADER: <some extra headings>
-(add-to-list 'org-export-latex-classes
+(setq org-latex-classes
 	     '("fakedrake-org-article"
 	       "\\documentclass[11pt,a4paper]{article}
 \\usepackage[T1]{fontenc}
@@ -160,6 +160,7 @@ means the first element is definitely not a root node."
 \\hypersetup{linkcolor=black, citecolor=blue,filecolor=black,urlcolor=MidnightBlue}
 \\pagestyle{empty}
 \\usepackage{amsmath}
+\\usepackage[parfill]{parskip}
       [NO-DEFAULT-PACKAGES]
       [NO-PACKAGES]"
 	       ("\\section{%s}" . "\\section*{%s}")
@@ -173,7 +174,7 @@ means the first element is definitely not a root node."
 ;; for arch that would be:
 ;; pacman -S texlive-most texlive-lang
 ;; XXX: Ensure xetexlatex is available
-(setq org-latex-to-pdf-process
+(setq org-latex-pdf-process
       '("xelatex -interaction nonstopmode %f"
 	"xelatex -interaction nonstopmode %f")) ;; for multiple passes
 

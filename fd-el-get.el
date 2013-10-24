@@ -22,6 +22,7 @@
 	;; Python
 	python
 	django-mode
+	jedi
 
 	;; Auto Complete packages
 	yasnippet

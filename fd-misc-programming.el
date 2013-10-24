@@ -38,7 +38,6 @@
 (global-set-key (kbd "C-c r") 'recompile)
 (define-key git-global-map "p" (lambda () (interactive) (git-cmd "push")))
 
-
 (require 'notifications)
 (defun compilation-end-defun (compilation-buffer result)
   (with-current-buffer compilation-buffer

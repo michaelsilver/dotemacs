@@ -1,0 +1,17 @@
+# name: while [[ $]]
+# key: opt
+# author: Chris Perivolaropoulos
+# --
+
+HELP_MESSAGE="$1"
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+	"--$2") $3;;
+	"--help")
+	    echo "$HELP_MESSAGE"
+	    exit 0;;
+
+    esac
+    shift
+done

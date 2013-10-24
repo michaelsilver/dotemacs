@@ -23,6 +23,47 @@
 ;; XXX: change all these into overridable defuns
 (defun octopress-publishing-dir ()
   "This is the subdir where the published html of octopress is."
+  (or octopress-publishing-dir (format "%s/source/" octopress-root)))
+
+(defun octopress-org-posts-dir ()
+  "Octopress org posts dir"
+  (or octopress-org-posts-dir (format "%s/org_posts/" octopress-publishing-dir)))
+
+(defun octopress-posts-dir ()
+  "Get the octopress markdown posts dir"
+  (or octopress-posts-dir (format "%s/_posts/" octopress-publishing-dir)))
+
+(defun octopress-themes-dir ()
+  "Get octopress themes dir"
+  (or octopress-themes-dir (format "%s/.themes/" octopress-root)))
+
+
+;; From the elisp cookbook
+(defun string/ends-with (s ending)
+  "return non-nil if string S ends with ENDING."
+  (let ((elength (length ending)))
+    (string= (substring s (- 0 elength)) ending)))
+
+(defvar octopress-git-commit-on-export nil
+  "Git commit on exporting of the posts.")
+
+(defvar octopress-publishing-dir nil
+  "Use this as the directory where things are published instead
+  of the default.")
+
+(defvar octopress-org-posts-dir nil
+  "Use this as the dir where org posts are kept instead of the
+  default.")
+
+(defvar octopress-posts-dir nil
+  "Use this as the posts directory instead of the default.")
+
+(defvar octopress-themes-dir nil
+  "Use this as the themes dir instead of the default.")
+
+;; XXX: change all these into overridable defuns
+(defun octopress-publishing-dir ()
+  "This is the subdir where the published html of octopress is."
   (expand-file-name
    (or octopress-publishing-dir (format "%s/source/" octopress-root))))
 
@@ -42,6 +83,7 @@
    (or octopress-themes-dir (format "%s/.themes/" octopress-root))))
 
 (require 'fd-cookbook)
+
 
 (require 'git-emacs)
 (require 'ox-publish)
@@ -189,6 +231,7 @@ commands."
   done. This runs asyncronous interactive commands."
   (interactive "sInsert git repo url: ")
   (let ((theme-name (replace-regexp-in-string "\\.git$" "" (file-name-nondirectory git-url))))
+
     (octopress-interactive-command (format "git clone %s .themes/%s"))))
 
 (defun octopress-setup ()
