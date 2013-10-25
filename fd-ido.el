@@ -16,10 +16,6 @@
 ;; (setq ido-file-extensions-order '(".c" ".cpp" ".h" ".py" ".txt" ".emacs" ".xml" ".el" ".ini" ".cfg" ".cnf"))
 (setq org-completion-use-ido t)
 
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
-
-
 ;; TODO: if you actually are at the buffer at point, rotate.
 (defun ido-for-mode(prompt the-mode)
   "Switch to buffer of the-mode using prompt"

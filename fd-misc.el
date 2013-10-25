@@ -77,6 +77,11 @@ With negative N, comment out original line and use the absolute value."
 		 '(:eval (fd-new-buf-extension default-directory "unlinked: ")))))
 (add-hook 'find-file-hook 'add-mode-line-dirtrack)
 
+;; If wou dont have the above path, i feel 'forward is best.
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward)
+
+
 (defun chmod+x-this ()
   "Add executable permissions to the current file."
   (interactive)
