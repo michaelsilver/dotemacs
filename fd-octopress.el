@@ -20,23 +20,30 @@
 (defvar octopress-themes-dir nil
   "Use this as the themes dir instead of the default.")
 
+(defmacro proper-dir-name (dir)
+  "A proper dirname without double '/' and without trailing '/'"
+  (replace-regexp-in-string "/+" "/" (directory-file-name dir)))
+
 ;; XXX: change all these into overridable defuns
 (defun octopress-publishing-dir ()
   "This is the subdir where the published html of octopress is."
-  (or octopress-publishing-dir (format "%s/source/" octopress-root)))
+  (proper-dir-name
+   (or octopress-publishing-dir (format "%s/source/" octopress-root))))
 
 (defun octopress-org-posts-dir ()
   "Octopress org posts dir"
-  (or octopress-org-posts-dir (format "%s/org_posts/" octopress-publishing-dir)))
+  (proper-dir-name
+   (or octopress-org-posts-dir (format "%s/org_posts/" octopress-publishing-dir))))
 
 (defun octopress-posts-dir ()
   "Get the octopress markdown posts dir"
-  (or octopress-posts-dir (format "%s/_posts/" octopress-publishing-dir)))
+  (proper-dir-name
+   (or octopress-posts-dir (format "%s/_posts/" octopress-publishing-dir))))
 
 (defun octopress-themes-dir ()
   "Get octopress themes dir"
-  (or octopress-themes-dir (format "%s/.themes/" octopress-root)))
-
+  (proper-dir-name
+   (or octopress-themes-dir (format "%s/.themes/" octopress-root))))
 
 ;; From the elisp cookbook
 (defun string/ends-with (s ending)
@@ -65,29 +72,39 @@
 (defun octopress-publishing-dir ()
   "This is the subdir where the published html of octopress is."
   (expand-file-name
-   (or octopress-publishing-dir (format "%s/source/" octopress-root))))
+   (proper-dir-name
+    (or octopress-publishing-dir (format "%s/source/" octopress-root)))))
 
 (defun octopress-org-posts-dir ()
   "Octopress org posts dir"
   (expand-file-name
-   (or octopress-org-posts-dir (format "%s/org_posts/" (octopress-publishing-dir)))))
+   (proper-dir-name
+    (or octopress-org-posts-dir (format "%s/org_posts/" (octopress-publishing-dir))))))
 
 (defun octopress-posts-dir ()
   "Get the octopress markdown posts dir"
   (expand-file-name
-   (or octopress-posts-dir (format "%s/_posts/" (octopress-publishing-dir)))))
+   (proper-dir-name
+    (or octopress-posts-dir (format "%s/_posts/" (octopress-publishing-dir))))))
 
 (defun octopress-themes-dir ()
   "Get octopress themes dir"
   (expand-file-name
-   (or octopress-themes-dir (format "%s/.themes/" octopress-root))))
-
-(require 'fd-cookbook)
-
+   (proper-dir-name
+    (or octopress-themes-dir (format "%s/.themes/" octopress-root)))))
 
 (require 'git-emacs)
 (require 'ox-publish)
 (require 'ox-md)
+
+(defmacro octopress-cmd (name cmd &rest body)
+  "Open CMD shell command in compilation buffer NAME. When that
+is finished execute body."
+  `(let ((compilation-buffer-name-function (lambda (x) (format ,name))))
+     (compile ,cmd t)
+     (with-current-buffer ,name
+       (setq-local compilation-finish-functions
+		   (list (lambda (r1 r2) ,@body))))))
 
 (defun octopress-code-block (src-block contents info)
   "Transcode CODE_BLOCK element into Markdown format.
@@ -121,7 +138,8 @@ as async-shell. Use single quotes only in command."
 				   (mapconcat (lambda (x) (format "bundle exec %s" x)) cmds " && ")))))
     (if no-compile
 	(async-shell-command cmd)
-      (compile cmd t))))
+      (let ((compilation-buffer-name-function (lambda () (format "*%s*" cmd))))
+	(compile cmd t)))))
 
 (defun octopress-preview ()
   "Run the octopress server to serve the current site locally."
@@ -179,32 +197,43 @@ octopress page."
   (octopress-interactive-command "rake deploy"))
 
 ;; Just change octopress-root to point to the right place
+(defun file-modification-date (fpath)
+  (let ((mt (nth 5 (file-attributes fpath))))
+    (+ (* (car mt) 65536) (cadr mt))))
 
-(defun octopress-open-created-post ()
+(defun octopress-org-modtime (org-file)
+  "Get an integer of modification time of file."
+  (file-modification-date (format "%s/%s"
+				  (octopress-org-posts-dir) org-file)))
+
+(defun octopress-org-posts ()
+  "Get a list of octopress post basenames. If the dir isn't there
+create it."
+  (sort (directory-files (octopress-org-posts-dir) nil ".\.org$")
+	(lambda (p1 p2) (< (octopress-org-modtime p1)
+			   (octopress-org-modtime p2)))))
+
+(defun octopress-open-created-post (&optional org-filename)
   "This is a helper run after rake has created out post to tidy
-things up."
-  (interactive)
-  (unless (file-accessible-directory-p (octopress-org-posts-dir))
-    (make-directory (octopress-org-posts-dir)))
+things up. POST-FILE-NAME returns, nil means
+most recent."
+  (interactive (list
+		(completing-read "Which post should I open: "
+				 (octopress-org-posts)))))
 
-  (let*
-      ((files (directory-files (octopress-posts-dir) nil ".*\.org$"))
-       (org-filename (if (> (length files) 1)
-			 (completing-read "Many candidates. Which is correct: " files)
-		       (car files)))
-       (correct-file (concat (octopress-org-posts-dir) "/" org-filename))
+(let* ((correct-file (concat (octopress-org-posts-dir) "/" org-filename))
        (generated-file (concat (octopress-posts-dir) "/" org-filename)))
 
-    (unless (file-exists-p generated-file)
-      (error "No generated file was found. Generate a new post and try again."))
+  (unless (file-exists-p generated-file)
+    (error "No generated file was found. Generate a new post and try again."))
 
-    (if (file-exists-p correct-file)
-	(message "You already have the generated file.")
-      (rename-file generated-file correct-file))
+  (if (file-exists-p correct-file)
+      (message "You already have the generated file.")
+    (rename-file generated-file correct-file))
 
-    (shell-command (format "cd %s && git add %s" (octopress-org-posts-dir) org-filename))
-    (find-file  correct-file)
-    (message "Publish with M-x save-then-publish.")))
+  (shell-command (format "cd %s && git add %s" (octopress-org-posts-dir) org-filename))
+  (find-file  correct-file)
+  (message "Publish with M-x save-then-publish.")))
 
 (defun octopress-new-post (title)
   "Create a new octopress post. This runs asyncronous interactive
@@ -212,8 +241,8 @@ commands."
   (interactive "MPost tite: ")
 
   ;; Create the org files
-  (octopress-interactive-command (format "rake new_post['%s']" title))
-  (message "Once compilation finishes do M-x open-created-post. To tidy up and open the post."))
+  (octopress-cmd "create post" (format "rake new_post['%s']" title)
+		 (octopress-open-created-post)))
 
 (defun octopress-activate-theme (theme)
   "Activate a theme. Themes are considered any files in

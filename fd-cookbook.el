@@ -87,4 +87,13 @@ with 'pdftotext -layout'."
 	(cons (buffer-substring start end)
 	      (lesson-codes code-regex (point)))))))
 
+(defmacro with-cmd-finished (name cmd &rest body)
+  "Open CMD shell command in compilation buffer NAME. When that
+is finished execute body."
+  `(let ((compilation-buffer-name-function (lambda (x) (format ,name))))
+    (compile ,cmd t)
+    (with-current-buffer ,name
+      (setq-local compilation-finish-functions
+		  (list (lambda (ret ret1) ,@body))))))
+
 (provide 'fd-cookbook)
