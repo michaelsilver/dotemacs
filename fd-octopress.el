@@ -214,26 +214,24 @@ create it."
 			   (octopress-org-modtime p2)))))
 
 (defun octopress-open-created-post (&optional org-filename)
-  "This is a helper run after rake has created out post to tidy
-things up. POST-FILE-NAME returns, nil means
-most recent."
+  "Open one of your posts."
   (interactive (list
 		(completing-read "Which post should I open: "
-				 (octopress-org-posts)))))
+				 (octopress-org-posts))))
 
-(let* ((correct-file (concat (octopress-org-posts-dir) "/" org-filename))
-       (generated-file (concat (octopress-posts-dir) "/" org-filename)))
+  (let* ((correct-file (concat (octopress-org-posts-dir) "/" org-filename))
+	 (generated-file (concat (octopress-posts-dir) "/" org-filename)))
 
-  (unless (file-exists-p generated-file)
-    (error "No generated file was found. Generate a new post and try again."))
+    (unless (file-exists-p generated-file)
+      (error "No generated file was found. Generate a new post and try again."))
 
-  (if (file-exists-p correct-file)
-      (message "You already have the generated file.")
-    (rename-file generated-file correct-file))
+    (if (file-exists-p correct-file)
+	(message "You already have the generated file.")
+      (rename-file generated-file correct-file))
 
-  (shell-command (format "cd %s && git add %s" (octopress-org-posts-dir) org-filename))
-  (find-file  correct-file)
-  (message "Publish with M-x save-then-publish.")))
+    (shell-command (format "cd %s && git add %s" (octopress-org-posts-dir) org-filename))
+    (find-file  correct-file)
+    (message "Publish with M-x save-then-publish.")))
 
 (defun octopress-new-post (title)
   "Create a new octopress post. This runs asyncronous interactive
@@ -253,7 +251,9 @@ commands."
 				 (delete-if
 				  (lambda (s) (string/starts-with s "."))
 				  (directory-files (octopress-themes-dir))))))
-  (octopress-interactive-command (list (format "rake install['%s']" theme) "rake generate")))
+  (with-cmd-finished "theme install" (format "rake install['%s']" theme)
+		     (with-cmd-finished "generating" "rake generate"
+					(message "%s theme is now your blog theme!"))))
 
 (defun octopress-install-theme (git-url)
   "Given the git url, install octopress theme. No checking is
@@ -267,8 +267,8 @@ commands."
   "Define te derived backend and setup org-mode publishing."
   (interactive)
   (org-export-define-derived-backend 'octopress 'md
-    :options-alist '((:with-toc nil "toc" nil))
-    :translate-alist '((src-block . octopress-code-block)))
+				     :options-alist '((:with-toc nil "toc" nil))
+				     :translate-alist '((src-block . octopress-code-block)))
 
   (setq org-publish-project-alist
 	(list (cons "blog-org"  (list :base-directory (octopress-org-posts-dir)

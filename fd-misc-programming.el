@@ -30,8 +30,6 @@
     (setenv "PATH" path-from-shell)
     (setq exec-path (split-string path-from-shell path-separator))))
 
-(if window-system (set-exec-path-from-shell-PATH))
-
 ;; Ediff
 (setq ediff-split-window-function 'split-window-horizontally)
 

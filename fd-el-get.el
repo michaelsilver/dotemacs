@@ -41,12 +41,14 @@
 
 	;; Misc
 	;;	slime
+	cider
+	ac-nrepl
+	clojure-mode
 	cscope
 	cmake-mode
 	multi-term
 	yaml-mode
 	autopair
-	nrepl
 	vimperator-mode
 	c-eldoc
 	dired-sort
