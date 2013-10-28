@@ -72,7 +72,7 @@ non-nil do not ask the user."
   "The string representation of the term buffer"
   (format "%s:%s"
 	  (term-last-command buffer)
-	  (term-directory buffer))))
+	  (term-directory buffer)))
 
 (defun ido-term-buffer()
   (interactive)
