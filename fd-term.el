@@ -38,7 +38,7 @@
 
 (defun term-send-clipboard (&optional arg)
   (interactive)
-  (term-send-string-raw (current-kill arg)))
+  (term-send-raw-string (current-kill (or arg 0))))
 
 (defun kill-all-terminals (&optional dont-ask)
   "Kill all terminal buffers asking just once. If dont-ask is
