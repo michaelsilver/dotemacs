@@ -35,7 +35,7 @@
   (fd-term-map-key "<C-right>" "M-f")
   (fd-term-map-key "C-k" "C-k")
   (define-key term-raw-map (kbd "C-y") 'term-send-clipboard)
-  (define-key term-raw-map (kbd "S-insert") 'term-send-clipboard))
+  (define-key term-raw-map (kbd "<S-insert>") 'term-send-clipboard))
 
 (defun term-send-clipboard (&optional arg)
   (interactive)
