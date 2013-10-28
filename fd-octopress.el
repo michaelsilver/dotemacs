@@ -1,4 +1,5 @@
 ;; OCTOPRESS
+(require 'cl)
 
 (defvar octopress-root "~/Projects/fakedrake.github.com/"
   "The root of your octopress blog.")
@@ -20,7 +21,7 @@
 (defvar octopress-themes-dir nil
   "Use this as the themes dir instead of the default.")
 
-(defmacro proper-dir-name (dir)
+(defun proper-dir-name (dir)
   "A proper dirname without double '/' and without trailing '/'"
   (replace-regexp-in-string "/+" "/" (directory-file-name dir)))
 
@@ -68,43 +69,84 @@
 (defvar octopress-themes-dir nil
   "Use this as the themes dir instead of the default.")
 
-;; XXX: change all these into overridable defuns
-(defun octopress-publishing-dir ()
-  "This is the subdir where the published html of octopress is."
-  (expand-file-name
-   (proper-dir-name
-    (or octopress-publishing-dir (format "%s/source/" octopress-root)))))
+;; ;; XXX: change all these into overridable defuns
+;; (defun octopress-publishing-dir ()
+;;   "This is the subdir where the published html of octopress is."
+;;   (expand-file-name
+;;    (proper-dir-name
+;;     (or octopress-publishing-dir (format "%s/source/" octopress-root)))))
 
-(defun octopress-org-posts-dir ()
-  "Octopress org posts dir"
-  (expand-file-name
-   (proper-dir-name
-    (or octopress-org-posts-dir (format "%s/org_posts/" (octopress-publishing-dir))))))
+;; (defun octopress-org-posts-dir ()
+;;   "Octopress org posts dir"
+;;   (expand-file-name
+;;    (proper-dir-name
+;;     (or octopress-org-posts-dir (format "%s/org_posts/" (octopress-publishing-dir))))))
 
-(defun octopress-posts-dir ()
-  "Get the octopress markdown posts dir"
-  (expand-file-name
-   (proper-dir-name
-    (or octopress-posts-dir (format "%s/_posts/" (octopress-publishing-dir))))))
+;; (defun octopress-posts-dir ()
+;;   "Get the octopress markdown posts dir"
+;;   (expand-file-name
+;;    (proper-dir-name
+;;     (or octopress-posts-dir (format "%s/_posts/" (octopress-publishing-dir))))))
 
-(defun octopress-themes-dir ()
-  "Get octopress themes dir"
-  (expand-file-name
-   (proper-dir-name
-    (or octopress-themes-dir (format "%s/.themes/" octopress-root)))))
+;; (defun octopress-themes-dir ()
+;;   "Get octopress themes dir"
+;;   (expand-file-name
+;;    (proper-dir-name
+;;     (or octopress-themes-dir (format "%s/.themes/" octopress-root)))))
 
 (require 'git-emacs)
 (require 'ox-publish)
 (require 'ox-md)
 
-(defmacro octopress-cmd (name cmd &rest body)
-  "Open CMD shell command in compilation buffer NAME. When that
-is finished execute body."
+(defmacro octopress-generic-cmd (name cmd &rest body)
   `(let ((compilation-buffer-name-function (lambda (x) (format ,name))))
      (compile ,cmd t)
      (with-current-buffer ,name
        (setq-local compilation-finish-functions
 		   (list (lambda (r1 r2) ,@body))))))
+
+
+(defun octopress--remove-keys (body)
+  "Remove all keys from body."
+  (if (null body) nil
+    (let ((head (car body))
+	  (rest (cdr body)))
+	  (if (keywordp head) (octopress--remove-keys (cdr rest))
+	    (cons head (octopress--remove-keys rest))))))
+
+(defmacro* octopress-cmd (name command &rest body &key (use-bundler t) &allow-other-keys)
+  "Open CMD shell command in compilation buffer NAME. When that
+is finished execute body. Use :use-bundler nil to prepend bundler to all
+commands."
+  (let* ((clean-body (octopress--remove-keys body))
+	 (cmds (if (stringp command) (list command) command))
+	 (cmd (format "bash -c \"cd %s && %s\"" octopress-root
+		      (mapconcat (lambda (x) (if use-bundler (format "bundle exec %s" x) x))
+				 cmds " && "))))
+    (macroexpand `(octopress-generic-cmd ,name ,cmd ,@body))))
+
+;; Setup the blog
+
+(defun octopress-clone-blog (git-repo)
+  (interactive "MGit repo of your octopress: ")
+  (octopress-generic-cmd "pull blog" (format "git clone %s %s" git-repo octopress-root)
+			 (message "Pulled successfully")
+			 (octopress-cmd :use-bundler nil "checkout source branch" "git checkout ")))
+
+(defun octopress-github-blog (username)
+  "Setup a github blog that is already in your github. Use .com
+for extension. XXX: .io is also valid. Check that too."
+  (interactive "MClone blog from your github repo. Your github username: ")
+  (octopress-clone-blog (format "git@github.com:%s/octopress" username username)))
+
+(defun octopress-purge-blog ()
+  "Purge the local copy of the blog."
+  (interactive)
+  (when (yes-or-no-p "Remove local copy of the blog? ")
+    (octopress-generic-cmd "purge" (format "mv %s %s.bak" octopress-root
+					   (directory-file-name octopress-root))
+			   (message "Remove %s by hand, I am not responsible for this shit."
+				    (directory-file-name octopress-root)))))
 
 (defun octopress-code-block (src-block contents info)
   "Transcode CODE_BLOCK element into Markdown format.
@@ -128,7 +170,7 @@ publishing directory.
 Return output file name."
   (org-publish-org-to 'octopress filename ".markdown" plist pub-dir))
 
-;; Personal config
+;; Deprecated n favor of `octopress-cmd'
 (defun octopress-interactive-command (commands &optional no-compile)
   "Run command or list of commands. Non-nil no-compile means run
 as async-shell. Use single quotes only in command."
@@ -144,7 +186,7 @@ as async-shell. Use single quotes only in command."
 (defun octopress-preview ()
   "Run the octopress server to serve the current site locally."
   (interactive)
-  (octopress-interactive-command "rake preview" t))
+  (octopress-rake "preview" t))
 
 (defun octopress-generate ()
   "Generate the octopress site."
@@ -267,8 +309,8 @@ commands."
   "Define te derived backend and setup org-mode publishing."
   (interactive)
   (org-export-define-derived-backend 'octopress 'md
-				     :options-alist '((:with-toc nil "toc" nil))
-				     :translate-alist '((src-block . octopress-code-block)))
+    :options-alist '((:with-toc nil "toc" nil))
+    :translate-alist '((src-block . octopress-code-block)))
 
   (setq org-publish-project-alist
 	(list (cons "blog-org"  (list :base-directory (octopress-org-posts-dir)
