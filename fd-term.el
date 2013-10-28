@@ -1,6 +1,5 @@
-;; Terminals
-;;
-;; TODO: Have an org mode style buffer switcher.
+;;; Terminals
+
 (autoload 'multi-term "multi-term" nil t)
 (autoload 'multi-term-next "multi-term" nil t)
 
@@ -52,9 +51,36 @@ non-nil do not ask the user."
 ;; only needed if you use autopair
 (add-hook 'term-mode-hook 'fd-term-mode-hook)
 
+(defun term-directory (&optional term-buf)
+  "Get the current terminal directory."
+  (with-current-buffer (or term-buf (current-buffer))
+    (let ((buf-proc (get-buffer-process (current-buffer))))
+      (if (processp buf-proc)
+	  (file-truename
+	   (format "/proc/%d/cwd"
+		   (process-id  buf-proc)))
+	"[no-proc-found]"))))
+
+(defun term-last-command (&optional term-buf)
+  (with-current-buffer (or term-buf (current-buffer))
+    (save-excursion
+      (if (re-search-backward "[\$#] \\(.+\\)$" nil t)
+	  (match-string 1)
+	"[new]"))))
+
+(defun term-buffer-repr (buffer)
+  "The string representation of the term buffer"
+  (format "%s:%s"
+	  (term-last-command buffer)
+	  (term-directory buffer))))
+
 (defun ido-term-buffer()
   (interactive)
-  (ido-for-mode "Term buffer: " 'term-mode))
+  (ido-for-mode "Term buffer: " 'term-mode
+		(lambda (s l)
+		  (message "Creating a new term...")
+		  (multi-term))
+		'term-buffer-repr))
 
 (global-set-key (kbd "C-c t") 'ido-term-buffer)
 (global-set-key (kbd "C-c T") 'multi-term) ;; create a new one
@@ -63,19 +89,6 @@ non-nil do not ask the user."
 	     (format "\*%s<[0-9]*>\*" multi-term-buffer-name))
 
 (defadvice term-send-raw (after update-current-directory activate)
-  (let* ((pid (process-id (get-buffer-process (current-buffer))))
-         (cwd (file-truename (format "/proc/%d/cwd" pid))))
-    (cd cwd)))
-
-
-;; XXX: this was supposed to not allow me to switch when killing buffers
-;;
-;; (defadvice switch-to-buffer (around bury-terminal activate)
-;;   (if (eq major-mode 'term-mode)
-;;       (let ((term (current-buffer)))
-;; 	ad-do-it
-;; 	(message (format "Burying term buffer %s" (buffer-name term)))
-;; 	(bury-buffer term))
-;;     ad-do-it))
+  (cd (term-directory)))
 
 (provide 'fd-term)
