@@ -111,19 +111,26 @@
   (if (null body) nil
     (let ((head (car body))
 	  (rest (cdr body)))
-	  (if (keywordp head) (octopress--remove-keys (cdr rest))
-	    (cons head (octopress--remove-keys rest))))))
+      (if (keywordp head) (octopress--remove-keys (cdr rest))
+	(cons head (octopress--remove-keys rest))))))
+
+(defun oc--bash-cmd (cmd)
+  "String that will certainly run in bash correctly."
+  (format "/bin/bash -c '. ~/.bashrc && %s'" cmd))
 
 (defmacro* octopress-cmd (name command &rest body &key (use-bundler t) &allow-other-keys)
   "Open CMD shell command in compilation buffer NAME. When that
 is finished execute body. Use :use-bundler nil to prepend bundler to all
 commands."
   (let* ((clean-body (octopress--remove-keys body))
+	 (rvm-ok (= 0 (shell-command (oc--bash-cmd "command -v bundle > /dev/null"))))
 	 (cmds (if (stringp command) (list command) command))
-	 (cmd (format "bash -c \"cd %s && %s\"" octopress-root
+	 (cmd (format (oc--bash-cmd "cd %s && %s") octopress-root
 		      (mapconcat (lambda (x) (if use-bundler (format "bundle exec %s" x) x))
 				 cmds " && "))))
-    (macroexpand `(octopress-generic-cmd ,name ,cmd ,@body))))
+    (if rvm-ok
+	(macroexpand `(octopress-generic-cmd ,name ,cmd ,@body))
+      `(error "There was a problem with rvm. Please install correctly."))))
 
 ;; Setup the blog
 
