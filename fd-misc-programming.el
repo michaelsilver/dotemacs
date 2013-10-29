@@ -35,4 +35,7 @@
 
 (define-key git-global-map "p" (lambda () (interactive) (git-cmd "push")))
 
+(defalias '>> 'rsh)
+(defalias '<< 'lsh)
+
 (provide 'fd-misc-programming)
