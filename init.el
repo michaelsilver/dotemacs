@@ -17,7 +17,6 @@
 (require 'fd-bookmarks)
 (require 'fd-tags)
 (require 'fd-expand-region)
-(require 'fd-ffip)
 (require 'fd-lisp)
 (require 'fd-desktop)
 (require 'fd-cc-mode)

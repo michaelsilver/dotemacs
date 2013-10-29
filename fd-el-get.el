@@ -61,7 +61,7 @@
 	zencoding-mode
 	git-emacs
 	bm
-	compilion-setup
+	compilation-setup
 	undo-tree))
 
 (setq
