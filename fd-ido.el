@@ -13,7 +13,7 @@
 ;; This is mainly for just swapped letters. It sometimes doesnt catch
 ;; entire words
 (ido-better-flex/enable)
-;; (setq ido-file-extensions-order '(".c" ".cpp" ".h" ".py" ".txt" ".emacs" ".xml" ".el" ".ini" ".cfg" ".cnf"))
+(setq ido-file-extensions-order '(".c" ".cpp" ".h" ".py" ".org" ".el" ".clj"))
 (setq org-completion-use-ido t)
 
 ;; TODO: if you actually are at the buffer at point, rotate.
