@@ -61,7 +61,7 @@
 	zencoding-mode
 	git-emacs
 	bm
-	find-file-in-project
+	compilion-setup
 	undo-tree))
 
 (setq
@@ -109,10 +109,10 @@
 	  :pkgname "fakedrake/etags-table")
 
    ;; This is temporary until the pull request is dealt with in upstream
-   (:name find-file-in-project
-	  :description "Find a file in the current project"
+   (:name compilation-setup
+	  :description "Compilation that makes sense"
 	  :type github
-	  :pkgname "fakedrake/find-file-in-project")
+	  :pkgname "fakedrake/compilation-setup.el")
 
    (:name ido-better-flex
 	  :description "Better flex matching for ido"

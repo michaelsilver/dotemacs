@@ -54,12 +54,13 @@ non-nil do not ask the user."
 (defun term-directory (&optional term-buf)
   "Get the current terminal directory."
   (with-current-buffer (or term-buf (current-buffer))
-    (let ((buf-proc (get-buffer-process (current-buffer))))
-      (if (processp buf-proc)
+    (let* ((buf-proc (get-buffer-process (current-buffer)))
+	   (proc-id (when (processp buf-proc) (process-id buf-proc))))
+      (if proc-id
 	  (file-truename
 	   (format "/proc/%d/cwd"
 		   (process-id  buf-proc)))
-	"[no-proc-found]"))))
+	(buffer-name)))))
 
 (defun term-last-command (&optional term-buf)
   (with-current-buffer (or term-buf (current-buffer))
@@ -82,6 +83,12 @@ non-nil do not ask the user."
 		  (multi-term))
 		'term-buffer-repr))
 
+(defun term-usb-serial ()
+  (interactive)
+  (if (file-writable-p "/dev/ttyUSB0")
+      (serial-term "/dev/ttyUSB0" 115200)
+    (error "/dev/ttyUSB0 not writeable.")))
+
 (global-set-key (kbd "C-c t") 'ido-term-buffer)
 (global-set-key (kbd "C-c T") 'multi-term) ;; create a new one
 
@@ -89,6 +96,9 @@ non-nil do not ask the user."
 	     (format "\*%s<[0-9]*>\*" multi-term-buffer-name))
 
 (defadvice term-send-raw (after update-current-directory activate)
-  (cd (term-directory)))
+  (let ((dir (term-directory)))
+    ;; Serial terms do not play very well with local dirs.
+    (when (file-directory-p dir)
+      (cd dir))))
 
 (provide 'fd-term)
