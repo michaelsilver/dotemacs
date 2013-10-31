@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: PRINT_D
+# author: Chris Perivolaropoulos
+# key: pd
+# --
+PRINT_D ("${1:%s}"${1:$(if (string-match "%" yas-text) "," "\);")
+}$2${1:$(if (string-match "%" yas-text) "\);" "")}
