@@ -132,19 +132,22 @@ means the first element is definitely not a root node."
 (setq ispell-program-name "aspell")
 
 
-(require 'org-latex)
-(setq org-latex-default-figure-position "H")
+(require 'ox-latex)
+(require 'ox-beamer)
 
-;; XXX: ensure the fonts are all there.
-;; For arch that would be:
-;; pacman -S ttf-dejavu ttf-freefont.
-;;
-;; Usage: on top of the .org doc put these.
-;; #+LaTeX_CLASS: fakedrake-org-article
-;; #+LaTeX_HEADER: <some extra headings>
-(setq org-latex-classes
-	     '("fakedrake-org-article"
-	       "\\documentclass[11pt,a4paper]{article}
+(defun fd/org-latex-hook ()
+  (setq org-latex-default-figure-position "H")
+
+  ;; XXX: ensure the fonts are all there.
+  ;; For arch that would be:
+  ;; pacman -S ttf-dejavu ttf-freefont.
+  ;;
+  ;; Usage: on top of the .org doc put these.
+  ;; #+LaTeX_CLASS: fakedrake-org-article
+  ;; #+LaTeX_HEADER: <some extra headings>
+  (add-to-list 'org-latex-classes
+	'("fakedrake-org-article"
+	  "\\documentclass[11pt,a4paper]{article}
 \\usepackage[T1]{fontenc}
 \\usepackage{fontspec}
 \\usepackage{float}
@@ -163,19 +166,24 @@ means the first element is definitely not a root node."
 \\usepackage[parfill]{parskip}
       [NO-DEFAULT-PACKAGES]
       [NO-PACKAGES]"
-	       ("\\section{%s}" . "\\section*{%s}")
-	       ("\\subsection{%s}" . "\\subsection*{%s}")
-	       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-	       ("\\paragraph{%s}" . "\\paragraph*{%s}")
-	       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+	  ("\\section{%s}" . "\\section*{%s}")
+	  ("\\subsection{%s}" . "\\subsection*{%s}")
+	  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+	  ("\\paragraph{%s}" . "\\paragraph*{%s}")
+	  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
 
-;; XXX: Ensure pdflatex is available
-;; for arch that would be:
-;; pacman -S texlive-most texlive-lang
-;; XXX: Ensure xetexlatex is available
-(setq org-latex-pdf-process
-      '("xelatex -interaction nonstopmode %f"
-	"xelatex -interaction nonstopmode %f")) ;; for multiple passes
+  ;; XXX: Ensure pdflatex is available
+  ;; for arch that would be:
+  ;; pacman -S texlive-most texlive-lang
+  ;; XXX: Ensure xetexlatex is available
+  (setq org-latex-pdf-process
+	'("xelatex -interaction nonstopmode %f"
+	  "xelatex -interaction nonstopmode %f")) ;; for multiple passes
+
+  (setq org-file-apps '((auto-mode . emacs)
+			("\\.pdf\\'" . "evince %s"))))
+
+(add-hook 'org-mode-hook 'fd/org-latex-hook)
 
 (provide 'fd-org)
