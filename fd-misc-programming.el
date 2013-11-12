@@ -38,4 +38,8 @@
 (defalias '>> 'rsh)
 (defalias '<< 'lsh)
 
+(defun github-clone (repo)
+  (interactive "MProvide the repository line <username>/<repo>: ")
+  (async-shell-command (format "git clone git@github.com:%s" repo)))
+
 (provide 'fd-misc-programming)
