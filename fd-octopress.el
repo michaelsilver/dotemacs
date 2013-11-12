@@ -116,7 +116,14 @@
 
 (defun oc--bash-cmd (cmd)
   "String that will certainly run in bash correctly."
-  (format "/bin/bash -c '. ~/.bashrc && %s'" cmd))
+  (format "/bin/bash -l -c \"%s\"" cmd))
+
+(defun oc--bash-cmd-list (command)
+  "Create one bash call from a list of shell commands."
+  (let ((cmds (if (stringp command) (list command) command)))
+    (oc--bash-cmd (format  "cd %s && %s" octopress-root
+			   (mapconcat (lambda (x) (if use-bundler (format "bundle exec %s" x) x))
+				      cmds " && ")))))
 
 (defmacro* octopress-cmd (name command &rest body &key (use-bundler t) &allow-other-keys)
   "Open CMD shell command in compilation buffer NAME. When that
@@ -124,10 +131,10 @@ is finished execute body. Use :use-bundler nil to prepend bundler to all
 commands."
   (let* ((clean-body (octopress--remove-keys body))
 	 (rvm-ok (= 0 (shell-command (oc--bash-cmd "command -v bundle > /dev/null"))))
-	 (cmds (if (stringp command) (list command) command))
-	 (cmd (format (oc--bash-cmd "cd %s && %s") octopress-root
-		      (mapconcat (lambda (x) (if use-bundler (format "bundle exec %s" x) x))
-				 cmds " && "))))
+	 (cmd (oc--bash-cmd-list (or (and (listp command)
+					  (not (functionp (car command)))
+					  command)
+				     (eval command)))))
     (if rvm-ok
 	(macroexpand `(octopress-generic-cmd ,name ,cmd ,@body))
       `(error "There was a problem with rvm. Please install correctly."))))
@@ -288,8 +295,9 @@ commands."
   (interactive "MPost tite: ")
 
   ;; Create the org files
-  (octopress-cmd "create post" (format "rake new_post['%s']" title)
-		 (octopress-open-created-post)))
+  (let ((post-cmd (format "rake new_post['%s']" title)))
+    (octopress-cmd "create post" post-cmd
+		   (call-interactively 'octopress-open-created-post))))
 
 (defun octopress-activate-theme (theme)
   "Activate a theme. Themes are considered any files in
