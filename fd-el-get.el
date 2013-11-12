@@ -41,6 +41,8 @@
 
 	;; Misc
 	;;	slime
+	;; helm
+	nxhtml
 	cider
 	ac-nrepl
 	clojure-mode
@@ -79,13 +81,6 @@
 	  :post-init (add-to-list 'yas/root-directory
 				    (concat el-get-dir
 					    (file-name-as-directory "yasnippet-snippets"))))
-
-   (:name org2blog
-       :description "Blog from Org mode to wordpress"
-       :type github
-       :pkgname "punchagan/org2blog"
-       :depends (metaweblog.el xml-rpc-el)
-       :features org2blog)
 
    (:name python
 	  :description "Python's flying circus support for Emacs"
