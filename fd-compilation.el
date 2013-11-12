@@ -16,5 +16,7 @@
 (require 'compilation-setup)
 (global-set-key (kbd "C-c r") 'cs-recompile-wrapper)
 (global-set-key (kbd "C-c c s") 'cs-save)
+(global-set-key (kbd "C-c c d") 'cs-delete-setup)
+(global-set-key (kbd "C-c c c") 'cs-compile-wrapper)
 
 (provide 'fd-compilation)
