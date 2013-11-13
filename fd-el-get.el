@@ -42,7 +42,7 @@
 	;; Misc
 	;;	slime
 	;; helm
-	nxhtml
+	;; nxhtml ; this is obsolete crap, stay away.
 	cider
 	ac-nrepl
 	clojure-mode
