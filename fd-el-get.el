@@ -43,6 +43,7 @@
 	;;	slime
 	;; helm
 	;; nxhtml ; this is obsolete crap, stay away.
+	graphviz-dot-mode
 	cider
 	ac-nrepl
 	clojure-mode
