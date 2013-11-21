@@ -116,9 +116,9 @@ this. If remember is non-nil change the cscope-id"
 
   ;; XXX: scope id is not the onlu criterion that cscope can work out
   ;; where to look for cscope.el. We may actually be in the correct
-  ;; project.
+  ;; project.p
   (interactive (if cscope-id '(nil nil)
-		 (list (ido-read-directory-name "Project root: ")
+		 (list (ido-read-directory-name "Cscope project root: ")
 		       (y-or-n-p "Remember this? "))))
 
   (let ((cscope-id (or cscope-id
