@@ -79,8 +79,68 @@ regenerate gtags for local symbols."
 	 ("cscope" "-p10" "-l" "-d" "-f" "/home/fakedrake/Projects/ThinkSilicon/xilinx-zynq-bootstrap/sources/linux-git/cscope.out")
 	 nil "/home/fakedrake/Projects/ThinkSilicon/xilinx-zynq-bootstrap/sources/linux-git/")))
 
+(defun fd/cscope-info (id dir)
+  (list id
+	(list "cscope" "-p10" "-l" "-d" "-f" (format "%s/cscope.out" dir))
+	nil dir))
+
+(defvar fd/point-stack nil
+  "Push points here fore cscope. (buffer . point)")
+
+(defun push-point-stack ()
+  "Push the current position in the point stack."
+  (interactive)
+  (push (cons (current-buffer) (point)) fd/point-stack))
+
+(defun pop-point-stack (&optional dont-jump)
+  "Pop the point stack until you find a point you can actually go
+to and go there."
+  (interactive)
+  (if fd/point-stack
+      (let* ((ret (pop fd/point-stack))
+	     (valid-ret (if (and ret (bufferp (car ret)))
+			    ret (pop-point-stack t))))
+
+	(if (or (not valid-ret) dont-jump)
+	    (when (called-interactively-p 'interactive)
+	      (message "Nowhere to jump (no valid jump).") nil)
+	  (switch-to-buffer (car valid-ret))
+	  (goto-char (cdr valid-ret))))
+    (when (called-interactively-p 'interactive)
+      (message "Nowhere to jump (empty stack).") nil)))
+
+(defun fd/cscope-find-global-definition (directory remember)
+  "Be sure to find the correct project root for cscope. Also
+remember it for next time. If `cscope-id' is defined skip all
+this. If remember is non-nil change the cscope-id"
+
+  ;; XXX: scope id is not the onlu criterion that cscope can work out
+  ;; where to look for cscope.el. We may actually be in the correct
+  ;; project.p
+  (interactive (if cscope-id '(nil nil)
+		 (list (ido-read-directory-name "Cscope project root: ")
+		       (y-or-n-p "Remember this? "))))
+
+  (let ((cscope-id (or cscope-id
+		       default-directory
+		       buffer-file-name
+		       buffer-name))
+	(default-directory directory))
+
+    (if (not (assoc cscope-id cscope-master-info-table))
+	(add-to-list 'cscope-master-info-table (fd/cscope-info cscope-id directory)))
+
+    (when remember
+      (with-current-buffer (current-buffer)
+	(setq-local cscope-id cscope-id)))
+
+    (push-point-stack)
+    (call-interactively 'cscope-find-global-definition)))
+
 (defun fd-c-tagging-hook ()
-  (define-key c-mode-base-map "\M-." 'cscope-find-global-definition))
+  (define-key c-mode-base-map (kbd "M-.") 'fd/cscope-find-global-definition)
+  (define-key c-mode-base-map (kbd "M-*") 'pop-point-stack))
+
 
 (add-hook 'c-mode-common-hook 'fd-c-tagging-hook)
 
