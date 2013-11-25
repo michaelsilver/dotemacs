@@ -1,6 +1,8 @@
 (require 'cl)
 
 (load-file "~/.emacs.d/fd-essential.el")
+
+(require 'fd-perliminaries)
 (require 'fd-el-get)
 (require 'fd-misc)
 (require 'fd-misc-programming)
@@ -18,7 +20,6 @@
 (require 'fd-tags)
 (require 'fd-expand-region)
 (require 'fd-lisp)
-(require 'fd-desktop)
 (require 'fd-cc-mode)
 (require 'fd-prolog)
 (require 'fd-vimperator)
@@ -27,6 +28,10 @@
 (require 'fd-dired)
 (require 'fd-term)
 (require 'fd-compilation)
+
+(if fd-secretary-enabled
+    (require 'fd-mail)
+  (require 'fd-desktop))
 
 ;; Customs
 (custom-set-variables
