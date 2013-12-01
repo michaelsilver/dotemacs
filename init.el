@@ -1,37 +1,93 @@
 (require 'cl)
+(defvar dotemacs-dir "~/.emacs.d/"
+  "The dotemacs dir.")
 
-(load-file "~/.emacs.d/fd-essential.el")
+(defvar fd-secretary-enabled nil
+  "Secretary mode loads configurations for gnus and automatically
+  opens erc and other stuff. You may also have a slightly
+  different face so you can tell them apart. Enable this with the
+  `-secreatry' cli option.")
 
-(require 'fd-perliminaries)
-(require 'fd-el-get)
-(require 'fd-misc)
-(require 'fd-misc-programming)
-(require 'fd-automode)
-(require 'fd-visual)
-(require 'fd-clipboard)
-(require 'fd-ido)
-(require 'fd-yasnippet)
-(require 'fd-autocomplete)
-(require 'fd-python)
-(require 'fd-undotree)
-(require 'fd-recentfiles)
-(require 'fd-erc)
-(require 'fd-bookmarks)
-(require 'fd-tags)
-(require 'fd-expand-region)
-(require 'fd-lisp)
-(require 'fd-cc-mode)
-(require 'fd-prolog)
-(require 'fd-vimperator)
-(require 'fd-org)
-(require 'fd-midnight)
-(require 'fd-dired)
-(require 'fd-term)
-(require 'fd-compilation)
+(defun my-expand-path (f)
+  "Expand path to my load-path"
+  (concat dotemacs-dir f))
 
-(if fd-secretary-enabled
-    (require 'fd-mail)
-  (require 'fd-desktop))
+(defun fd-enable-secreatry (switch)
+  "Enable the secretary stuff"
+  (setq fd-secretary-enabled t)
+  (message "Secretary mode!!"))
+
+(defvar fd-require-deps
+  '(('fd-el-get t el-get)
+    ('fd-misc t git-emacs bm autopair gist)
+    ('fd-misc-programming t)
+    ('fd-automode t yaml-mode cmake-mode markdown-mode)
+    ('fd-visual t naquadah-theme)
+    ('fd-clipboard t)
+    ('fd-ido t ido-mode-el ido-speed-hack ido-better-flex ido-ubiquitous smex)
+    ('fd-yasnippet t yasnippet yasnippet-snippets)
+    ('fd-autocomplete t auto-complete)
+    ('fd-python t python django-mode jedi)
+    ('fd-undotree t undo-tree)
+    ('fd-recentfiles t)
+    ('fd-erc t)
+    ('fd-bookmarks t)
+    ('fd-tags t)
+    ('fd-expand-region t hide-region)
+    ('fd-lisp t clojure-mode cider ac-nrepl)
+    ('fd-cc-mode t c-eldoc)
+    ('fd-prolog t)
+    ('fd-vimperator t vimperator-mode)
+    ('fd-org t)
+    ('fd-midnight t)
+    ('fd-dired t)
+    ('fd-term t multi-term)
+    ('fd-compilation t compilation-setup)
+    ('fd-mail t)
+    ('fd-desktop t)
+    (fd-chat t emacs-jabber))
+  "Here is what should be loaded and when in an alist. (MODULE
+  LOAD? EL_GET_PACKAGES ...). LOAD? is nil, t or some function
+  with the module as arg that returns non-nil if we should load
+  this. ")
+
+
+(setq fd-valid-modules nil)
+(setq fd-el-get-packaes nil)
+
+(defun fd-pre-require (module-cons)
+  "Given a `fd-require-deps' element setup the module. Populates
+`fd-valid-modules' and `fd-el-get-packages'"
+  (let ((module (car module-cons))
+	(req (cadr module-cons))
+	(el-packages (cddr module-cons)))
+    (when (or (and (functionp req) (funcall req module))
+	      req)
+      ;; Do the work
+      (add-to-list 'fd-valid-modules module)
+      (dolist (ep el-packages)
+	(add-to-list 'fd-el-get-packaes ep)))))
+
+(defun fd-should-require (module)
+  "Non-nil if module is to be required."
+  (let ((mod (car d))
+	(req (cadr d)))
+    (if (functionp req) (funcall req) req)))
+
+(defun fd-setup ()
+  "Setup everything"
+  (setq load-path '(dotemacs-dir))
+  (setq command-switch-alist '(("secretary" . fd-enable-secreatry)))
+  (add-to-list 'load-path (my-expand-path "el-get/el-get")) ; Change this to not be added forever
+
+  (put 'upcase-region 'disabled nil)
+  (put 'downcase-region 'disabled nil)
+
+  ;; Require what needs to be required
+  (dolist  (d fd-require-deps)
+    (fd-pre-require d))
+
+  (dolist (m fd-valid-modules) (require m)))
 
 ;; Customs
 (custom-set-variables
@@ -47,7 +103,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
 
 (message "Welcome to emacs!")
