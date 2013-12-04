@@ -110,7 +110,8 @@ means the first element is definitely not a root node."
 	  '(lambda ()
 	     (define-key org-mode-map "\M-j" 'org-meta-return)
 	     (define-key org-mode-map "\M-n" 'org-forward-element)
-	     (define-key org-mode-map "\M-p" 'org-backward-element)))
+	     (define-key org-mode-map "\M-p" 'org-backward-element)
+	     (setq org-return-follows-link t)))
 
 ;; FlySpell
 ;; For this you would need word lists. For arch install:
