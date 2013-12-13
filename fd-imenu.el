@@ -34,4 +34,4 @@
 
 (global-set-key (kbd "C-x i") 'imenu-make-selection-buffer)
 
-(provide fd-imenu)
+(provide 'fd-imenu)
