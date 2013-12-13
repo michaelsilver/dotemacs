@@ -7,6 +7,14 @@
   (define-key imenu-selection-mode-map "\C-m" 'imenu-selection-select)
   (define-key imenu-selection-mode-map "h" 'kill-this-buffer)
   )
+
+
+(defun imenu--position-entry (point buffer)
+  "Get a string that tells compilation mode where the point in
+  this buffer is."
+  (with-current-buffer buffer
+    (format "%s:%d: " (buffer-file-name) (line-number-at-pos point))))
+
 (defvar imenu--selection-buffer " *imenu-select*")
 (defvar imenu--target-buffer nil)
 (defun imenu-make-selection-buffer (&optional index-alist)
@@ -17,13 +25,17 @@
     (when (listp cur)
       (setq cur (car cur)))
     (setq imenu--target-buffer (current-buffer))
-    (switch-to-buffer imenu--selection-buffer)
-    (buffer-disable-undo)
-    (erase-buffer)
-    (dolist (x index-alist)
-      (insert (car x) "\n"))
-    (if cur (search-backward (concat cur "\n") nil t))
-    (imenu-selection-mode)))
+    (with-temp-buffer-window imenu--selection-buffer nil nil
+			     (buffer-disable-undo)
+			     (insert (format "Functions in '%s':\n" cur))
+			     (dolist (x index-alist)
+			       (when (and (markerp (cdr x)) (< 0 (cdr x)))
+				(let ((p1 (point))
+				      (p2 (progn (insert (imenu--position-entry (cdr x) imenu--target-buffer)) (point))))
+				  (overlay-put (make-overlay p1 p2) 'invisible t)
+				  (insert "\t" (car x) "\n"))))
+			     (compilation-minor-mode t))))
+
 
 (defun imenu-selection-select ()
   (interactive)
