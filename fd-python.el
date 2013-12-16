@@ -26,10 +26,43 @@
 (setq jedi:setup-keys t)
 (setq jedi:complete-on-dot t)
 
+(defun fd-venv-path (path)
+  (interactive (list (ido-read-directory-name "Virtualenv root: ")))
+  (add-dir-local-variable 'python-mode 'python-shell-virtualenv-path path))
 
-;; (defun previous-error (before ad-wrap-around (arg reset) activate)
-;;   "If next-error never called go to last error."
-;;   (interactive "p")
-;;   (next-error (- (or n 1)))
+(defun fd-python-project-root ()
+  (locate-dominating-file (buffer-file-name) "setup.py"))
+
+(defun fd-python-jump-to-test ()
+  "Assume that we are in the same filename only with the test_
+prefix."
+  (find-file (format "%stests/test_%s.py"
+		     (file-name-as-directory
+		      (fd-python-project-root))
+		     (file-name-base))))
+
+(defun fd-python-jump-to-implementation ()
+  (find-file (format "%s/%s/%s.py"
+		     (fd-python-project-root)
+		     (file-name-nondirectory
+		      (directory-file-name
+		       (fd-python-project-root)))
+		     (replace-regexp-in-string "^test_" "" (file-base-name)))))
+
+(defun fd-python-in-test-p ()
+  "If the file is called 'test_<name>.py' we are in."
+  (string-match-p "/test_[^/]*\\.py$" (buffer-file-name)))
+
+(defun fd-python-jump-between-test-and-implementation ()
+  (interactive)
+  (if (fd-python-in-test-p)
+      (fd-python-jump-to-implementation)
+    (fd-python-jump-to-test)))
+
+(defun fd-python-hook ()
+  (define-key python-mode-map (kbd "C-c C-t")
+    'fd-python-jump-between-test-and-implementation))
+
+(add-hook 'python-mode-hook 'fd-python-hook)
 
 (provide 'fd-python)
