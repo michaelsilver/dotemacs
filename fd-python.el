@@ -44,10 +44,11 @@ prefix."
 (defun fd-python-jump-to-implementation ()
   (find-file (format "%s/%s/%s.py"
 		     (fd-python-project-root)
-		     (file-name-nondirectory
-		      (directory-file-name
-		       (fd-python-project-root)))
-		     (replace-regexp-in-string "^test_" "" (file-base-name)))))
+		     (downcase
+		      (file-name-nondirectory
+		       (directory-file-name
+			(fd-python-project-root))))
+		     (replace-regexp-in-string "^test_" "" (file-name-base)))))
 
 (defun fd-python-in-test-p ()
   "If the file is called 'test_<name>.py' we are in."
@@ -59,9 +60,24 @@ prefix."
       (fd-python-jump-to-implementation)
     (fd-python-jump-to-test)))
 
+(defun fd-python-command ()
+  "Calculate the string used to execute the inferior Python process."
+  (let ((process-environment (python-shell-calculate-process-environment))
+        (exec-path (python-shell-calculate-exec-path)))
+    (executable-find python-shell-interpreter)))
+
+(defun fd-python-run-tests ()
+  (interactive)
+  (let (compilation-directory
+	compile-command
+	(default-directory (fd-python-project-root)))
+    (compile (format "%s setup.py test" (fd-python-command)) t)))
+
+
 (defun fd-python-hook ()
   (define-key python-mode-map (kbd "C-c C-t")
-    'fd-python-jump-between-test-and-implementation))
+    'fd-python-jump-between-test-and-implementation)
+  (define-key python-mode-map (kbd "C-c M-t") 'fd-python-run-tests))
 
 (add-hook 'python-mode-hook 'fd-python-hook)
 
