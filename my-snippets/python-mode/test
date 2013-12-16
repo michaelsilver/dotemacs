@@ -1,0 +1,33 @@
+# -*- coding: utf-8 -*-
+# name: New test
+# contributor: Chris Perivolaropoulos
+# expand-env: ((yas-indent-line 'fixed))
+# key: test
+# --
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+test_${1:`(replace-regexp-in-string "^test_\\(.*\\)" "\\1" (file-name-base))`}
+----------------------------------
+
+Tests for \`$1\` module.
+"""
+
+import unittest
+
+from `(file-name-nondirectory (directory-file-name (locate-dominating-file (buffer-file-name) "setup.py")))` import $1
+
+class Test${2:${1:$(capitalize yas-text)}}(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_something(self):
+        $0
+
+    def tearDown(self):
+        pass
+
+if __name__ == '__main__':
+    unittest.main()
