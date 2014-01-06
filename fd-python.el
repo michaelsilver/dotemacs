@@ -114,9 +114,13 @@ is nil check if path in any project."
 	       (lambda (f1 f2) (time-less-p (modtime f1) (modtime f2)))))
     (find-file f)))
 
+(defvar fd-python-projects-directory "~/Projects/CSAIL/Python/"
+  "The directory where you have most of your python projects.")
+
 (defun fd-python-open-project (dir)
   (interactive (list (ido-read-directory-name
-		      "Python project root to open: ")))
+		      "Python project root to open: "
+		      fd-python-projects-directory)))
   (when (not (fd-python-in-project-p dir))
     (error "Not a python project"))
 
