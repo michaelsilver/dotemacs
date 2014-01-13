@@ -33,7 +33,7 @@
 (defun fd-python-project-root (&optional path)
   (locate-dominating-file (or path (buffer-file-name)) "setup.py"))
 
-(defun fd-python-project-tests-dir (root-dir)
+(defun fd-python-project-tests-dir (&optional root-dir)
   (concat (file-name-as-directory (or root-dir (fd-python-project-root)))
 	  "tests"))
 
