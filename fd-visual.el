@@ -55,7 +55,7 @@
 		       (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
 (global-set-key [f11] 'fullscreen)
 
-(set-face-attribute 'default nil :height 100)
+(set-face-attribute 'default nil :height 93)
 
 ;; Zoom
 (defun djcb-zoom (n)
