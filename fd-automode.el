@@ -8,5 +8,8 @@
 (add-to-list 'auto-mode-alist '("[.]mk$" . makefile-mode))
 (add-to-list 'auto-mode-alist '("[.]zsh.*$" . sh-mode))
 (add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("[.]?muttrc" . muttrc-mode))
+(add-to-list 'auto-mode-alist '("[.]mutt" . muttrc-mode))
+(add-to-list 'auto-mode-alist '("[.]?offlineimaprc" . conf-unix-mode))
 
 (provide 'fd-automode)
