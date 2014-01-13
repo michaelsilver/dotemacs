@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: super
+# key: super
+# --
+super(${1:`(fd-prev-match "^class \\([^:(]*\\)" "Class")`}, self).${2:`(fd-prev-match "def \\(.*\\)(self" "method")`}(${3:args})
