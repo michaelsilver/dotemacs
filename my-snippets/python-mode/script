@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: script
 # key: script
+# contributor: Chris Perivolaroulos
 # --
 #!/usr/bin/env python
 
