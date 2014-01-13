@@ -1,0 +1,15 @@
+# -*- coding: utf-8 -*-
+# name: New test
+# contributor: Chris Perivolaropoulos
+# key: test
+# --
+class TestWikipediabase(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_something(self):
+        pass
+
+    def tearDown(self):
+        pass

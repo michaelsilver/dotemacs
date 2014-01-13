@@ -1,0 +1,6 @@
+# -*- coding: utf-8 -*-
+# name: Test In
+# contributor: Chris Perivolaropoulos
+# key: tin
+# --
+self.assertIn($1,$0)

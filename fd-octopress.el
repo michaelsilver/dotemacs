@@ -23,7 +23,7 @@
 
 (defun proper-dir-name (dir)
   "A proper dirname without double '/' and without trailing '/'"
-  (replace-regexp-in-string "/+" "/" (directory-file-name dir)))
+  (expand-file-name (replace-regexp-in-string "/+" "/" (directory-file-name dir))))
 
 ;; XXX: change all these into overridable defuns
 (defun octopress-publishing-dir ()
@@ -34,12 +34,12 @@
 (defun octopress-org-posts-dir ()
   "Octopress org posts dir"
   (proper-dir-name
-   (or octopress-org-posts-dir (format "%s/org_posts/" octopress-publishing-dir))))
+   (or octopress-org-posts-dir (format "%s/org_posts/" (octopress-publishing-dir)))))
 
 (defun octopress-posts-dir ()
   "Get the octopress markdown posts dir"
   (proper-dir-name
-   (or octopress-posts-dir (format "%s/_posts/" octopress-publishing-dir))))
+   (or octopress-posts-dir (format "%s/_posts/" (octopress-publishing-dir)))))
 
 (defun octopress-themes-dir ()
   "Get octopress themes dir"
@@ -190,11 +190,11 @@ Return output file name."
 as async-shell. Use single quotes only in command."
   (let* ((cmds (if (stringp commands) (list commands) commands))
 	 (cmd (read-string "Run command like so: "
-			   (format "bash -c \"cd %s && %s\"" octopress-root
+			   (format "bash -cl \"cd %s && %s\"" octopress-root
 				   (mapconcat (lambda (x) (format "bundle exec %s" x)) cmds " && ")))))
     (if no-compile
 	(async-shell-command cmd)
-      (let ((compilation-buffer-name-function (lambda () (format "*%s*" cmd))))
+      (let ((compilation-buffer-name-function (lambda (x) (format "*%s*" cmd))))
 	(compile cmd t)))))
 
 (defun octopress-preview ()
