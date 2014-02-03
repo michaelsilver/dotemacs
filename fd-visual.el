@@ -18,12 +18,13 @@
       (load-theme 'naquadah t)
       (custom-theme-set-faces
        'naquadah
-       `(default ((t (:family "DeJavu Sans Mono"))))
+       `(default ((t (:family "UbuntuMono"))))
        `(mode-line ((t (:height 1.1 :background "gray30"))))
        `(minibuffer-prompt ((t (:foreground "orange1"))))
        `(region ((t (:background "gray35"))))
        `(hl-line ((t (:background "gray25"))))
        `(ido-only-match ((t (:foreground "dark green" :bold nil))))
+       `(linum ((t (:background "#0c191C" :foreground "gray50"))))
 
        ;; Development
        `(font-lock-comment-face ((t (:foreground ,comment))))
@@ -55,7 +56,7 @@
 		       (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
 (global-set-key [f11] 'fullscreen)
 
-(set-face-attribute 'default nil :height 93)
+(set-face-attribute 'default nil :height 110)
 
 ;; Zoom
 (defun djcb-zoom (n)

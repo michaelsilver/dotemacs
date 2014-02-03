@@ -1,0 +1,6 @@
+# -*- coding: utf-8 -*-
+# name: docstring method
+# key: dsm
+# expand-env: ((yas-indent-line 'fixed))
+# --
+`(yas-sphinx-docstring (fd-yas-python-methodargs))`
