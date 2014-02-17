@@ -24,7 +24,7 @@
        `(region ((t (:background "gray35"))))
        `(hl-line ((t (:background "gray25"))))
        `(ido-only-match ((t (:foreground "dark green" :bold nil))))
-       `(linum ((t (:background "#0c191C" :foreground "gray50"))))
+       `(linum ((t (:inherit default :background "#0c191C" :foreground "gray50"))))
 
        ;; Development
        `(font-lock-comment-face ((t (:foreground ,comment))))
