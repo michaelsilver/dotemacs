@@ -48,18 +48,20 @@ looks like argument list delim but is context sensitive."
 	     (kwargs (mapcar* 'cons
 			      (re-find-all kwargs-rx sargs 1)
 			      (re-find-all kwargs-rx sargs 2))))
-	(list :args args :kwargs kwargs)))))
+	(list :args (remove-if (lambda (x) (string= x "self")) args) :kwargs kwargs)))))
 
 (defun  yas-sphinx-docstring (fnargs-plist &optional offset)
   "Gets a plust like the one fd-yas-python-methodargs and maybe
 an offset for pspaces and returns a sphinx readable template for
 sphinx describing the arguments."
   (let* ((spaces (make-string (or offset 0) (string-to-char " ")))
-	 (args (mapconcat (lambda (p) (format "%s    %s:" spaces p))
+	 (args (mapconcat (lambda (p) (format "%s:param %s: " spaces p))
 			  (plist-get fnargs-plist :args) "\n"))
-	 (kwargs (mapconcat (lambda (p) (format "%s    %s (def: %s):"
-						spaces (car p) (cdr p)))
+	 (kwargs (mapconcat (lambda (p) (format "%s:param %s: "
+						spaces (car p)))
 			    (plist-get fnargs-plist :kwargs) "\n")))
-    (format "%sArgs:\n%s\n\n%sKwargs:\n%s" spaces args spaces kwargs)))
+    (format "%s%s:returns: "
+	    (if (string= args "") "" (concat args "\n"))
+	    (if (string= kwargs "") "" (concat kwargs "\n")))))
 
 (provide 'fd-yasnippet)
