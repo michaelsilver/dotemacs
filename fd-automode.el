@@ -11,5 +11,7 @@
 (add-to-list 'auto-mode-alist '("[.]?muttrc" . muttrc-mode))
 (add-to-list 'auto-mode-alist '("[.]mutt" . muttrc-mode))
 (add-to-list 'auto-mode-alist '("[.]?offlineimaprc" . conf-unix-mode))
+(add-to-list 'auto-mode-alist '("[.]js" . js2-mode))
+(add-to-list 'auto-mode-alist '("[.]jsm" . js2-mode))
 
 (provide 'fd-automode)
