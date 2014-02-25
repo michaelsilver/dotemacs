@@ -28,6 +28,7 @@
 (require 'fd-dired)
 (require 'fd-term)
 (require 'fd-compilation)
+(require 'fd-imenu)
 
 (if fd-secretary-enabled
     (require 'fd-mail)

@@ -13,5 +13,6 @@
 (add-to-list 'auto-mode-alist '("[.]?offlineimaprc" . conf-unix-mode))
 (add-to-list 'auto-mode-alist '("[.]js" . js2-mode))
 (add-to-list 'auto-mode-alist '("[.]jsm" . js2-mode))
+(add-to-list 'auto-mode-alist '("[.]java" . java-mode))
 
 (provide 'fd-automode)
