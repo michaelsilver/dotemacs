@@ -144,5 +144,4 @@ this. If remember is non-nil change the cscope-id"
 
 (add-hook 'c-mode-common-hook 'fd-c-tagging-hook)
 
-
 (provide 'fd-tags)

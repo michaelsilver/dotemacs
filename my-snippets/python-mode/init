@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: init method
+# key: ini
+# contributor: Chris Perivolaropoulos
+# --
+def __init__(self$1):
+${1:$(mapconcat (lambda (x) (format "self.%s = %s" x x)) (fd-snippet-python-arguments yas/text) "\n")}
+    $0

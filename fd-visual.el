@@ -11,30 +11,6 @@
 
 (font-lock-add-keywords 'emacs-lisp-mode (list (cons (regexp-opt my:elisp-extra-keywords 'symbols) font-lock-keyword-face)))
 
-(if window-system
-    (let ((comment "IndianRed2"))
-      (global-hl-line-mode t)
-      (require 'naquadah-theme)
-      (load-theme 'naquadah t)
-      (custom-theme-set-faces
-       'naquadah
-       `(default ((t (:family "DeJavu Sans Mono"))))
-       `(mode-line ((t (:height 1.1 :background "gray30"))))
-       `(minibuffer-prompt ((t (:foreground "orange1"))))
-       `(region ((t (:background "gray35"))))
-       `(hl-line ((t (:background "gray25"))))
-       `(ido-only-match ((t (:foreground "dark green" :bold nil))))
-
-       ;; Development
-       `(font-lock-comment-face ((t (:foreground ,comment))))
-       `(font-lock-function-name-face ((t (:foreground "orange1" :bold t))))
-       `(font-lock-doc-face ((t (:foreground ,comment))))
-       `(font-lock-doc-string-face ((t (:foreground ,comment))))
-       `(link ((t (:foreground  "#729fcf" :underline t))))
-
-       ;; ERC
-       `(erc-prompt-face ((t (:background "#f57900" :bold t :foreground "gray10")))))))
-
 (line-number-mode 1)	; have line numbers and
 (column-number-mode 1)	; column numbers in the mode line
 (mouse-avoidance-mode 'banish)
@@ -55,7 +31,7 @@
 		       (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
 (global-set-key [f11] 'fullscreen)
 
-(set-face-attribute 'default nil :height 100)
+(set-face-attribute 'default nil :height 110)
 
 ;; Zoom
 (defun djcb-zoom (n)
@@ -67,5 +43,31 @@
 (global-set-key (kbd "M-+")      #'(lambda nil (interactive) (djcb-zoom 1)))
 (global-set-key (kbd "M--")      #'(lambda nil (interactive) (djcb-zoom -1)))
 
+;; XXX: Have this be the last thing you do. Apparently things get
+;; overriden if it is at the beginning of the file.
+(if window-system
+    (let ((comment "IndianRed2"))
+      (global-hl-line-mode t)
+      (require 'naquadah-theme)
+      (load-theme 'naquadah t)
+      (custom-theme-set-faces
+       'naquadah
+       `(default ((t (:family "UbuntuMono"))))
+       `(mode-line ((t (:height 1.1 :background "gray30"))))
+       `(minibuffer-prompt ((t (:foreground "orange1"))))
+       `(region ((t (:background "gray35"))))
+       `(hl-line ((t (:background "gray25"))))
+       `(ido-only-match ((t (:foreground "dark green" :bold nil))))
+       `(linum ((t (:inherit default :background "#0c191C" :foreground "gray50"))))
+
+       ;; Development
+       `(font-lock-comment-face ((t (:foreground ,comment))))
+       `(font-lock-function-name-face ((t (:foreground "orange1" :bold t))))
+       `(font-lock-doc-face ((t (:foreground ,comment))))
+       `(font-lock-doc-string-face ((t (:foreground ,comment))))
+       `(link ((t (:foreground  "#729fcf" :underline t))))
+
+       ;; ERC
+       `(erc-prompt-face ((t (:background "#f57900" :bold t :foreground "gray10")))))))
 
 (provide 'fd-visual)

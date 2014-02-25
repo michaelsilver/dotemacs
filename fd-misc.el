@@ -172,4 +172,6 @@ parent."
 (defalias 'yes-or-no-p 'y-or-n-p
   "Faster yes or no's")
 
+(global-unset-key (kbd "C-x TAB"))
+
 (provide 'fd-misc)

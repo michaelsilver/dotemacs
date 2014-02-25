@@ -8,6 +8,11 @@
 (add-to-list 'auto-mode-alist '("[.]mk$" . makefile-mode))
 (add-to-list 'auto-mode-alist '("[.]zsh.*$" . sh-mode))
 (add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("[.]?muttrc" . muttrc-mode))
+(add-to-list 'auto-mode-alist '("[.]mutt" . muttrc-mode))
+(add-to-list 'auto-mode-alist '("[.]?offlineimaprc" . conf-unix-mode))
+(add-to-list 'auto-mode-alist '("[.]js" . js2-mode))
+(add-to-list 'auto-mode-alist '("[.]jsm" . js2-mode))
 (add-to-list 'auto-mode-alist '("[.]java" . java-mode))
 
 (provide 'fd-automode)

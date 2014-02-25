@@ -1,0 +1,6 @@
+# -*- coding: utf-8 -*-
+# name: Test Is
+# contributor: Chris Perivolaropoulos
+# key: tis
+# --
+self.assertIs($1,$0)

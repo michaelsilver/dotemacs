@@ -33,8 +33,6 @@
 ;; Ediff
 (setq ediff-split-window-function 'split-window-horizontally)
 
-(define-key git-global-map "p" (lambda () (interactive) (git-cmd "push")))
-
 (defalias '>> 'rsh)
 (defalias '<< 'lsh)
 
@@ -43,5 +41,6 @@
   (async-shell-command (format "git clone git@github.com:%s" repo)))
 
 (global-set-key (kbd "C-j") 'default-indent-new-line)
+(global-set-key (kbd "C-M-l") 'add-dir-local-variable)
 
 (provide 'fd-misc-programming)
