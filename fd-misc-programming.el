@@ -42,4 +42,6 @@
   (interactive "MProvide the repository line <username>/<repo>: ")
   (async-shell-command (format "git clone git@github.com:%s" repo)))
 
+(global-set-key (kbd "C-j") 'default-indent-new-line)
+
 (provide 'fd-misc-programming)
