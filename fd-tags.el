@@ -73,6 +73,7 @@ regenerate gtags for local symbols."
 
 ;; Cscope: will replace gtags
 (require 'cscope)
+(require 'gtags)
 
 (setq cscope-master-info-table
       '(("linux"
@@ -138,7 +139,8 @@ this. If remember is non-nil change the cscope-id"
     (call-interactively 'cscope-find-global-definition)))
 
 (defun fd-c-tagging-hook ()
-  (define-key c-mode-base-map (kbd "M-.") 'fd/cscope-find-global-definition)
+  (define-key c-mode-base-map "\M-." 'gtags-wrap-find-tag)
+  ;; (define-key c-mode-base-map (kbd "M-.") 'fd/cscope-find-global-definition)
   (define-key c-mode-base-map (kbd "M-*") 'pop-point-stack))
 
 
