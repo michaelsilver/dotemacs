@@ -19,22 +19,32 @@
 (defvar imenu--target-buffer nil)
 (defun imenu-make-selection-buffer (&optional index-alist)
   (interactive)
-  (require 'which-func)
-  (setq index-alist (if index-alist index-alist (imenu--make-index-alist)))
-  (let ((cur (which-function)))
-    (when (listp cur)
-      (setq cur (car cur)))
-    (setq imenu--target-buffer (current-buffer))
-    (with-temp-buffer-window imenu--selection-buffer nil nil
-			     (buffer-disable-undo)
-			     (insert (format "Functions in '%s':\n" cur))
-			     (dolist (x index-alist)
-			       (when (and (markerp (cdr x)) (< 0 (cdr x)))
-				(let ((p1 (point))
-				      (p2 (progn (insert (imenu--position-entry (cdr x) imenu--target-buffer)) (point))))
-				  (overlay-put (make-overlay p1 p2) 'invisible t)
-				  (insert "\t" (car x) "\n"))))
-			     (compilation-minor-mode t))))
+  (save-excursion
+    (require 'which-func)
+    (setq index-alist (if index-alist index-alist (imenu--make-index-alist)))
+    (let ((cur (which-function)))
+      (when (listp cur)
+	(setq cur (car cur)))
+      (setq imenu--target-buffer (current-buffer))
+      (with-temp-buffer-window imenu--selection-buffer nil nil
+			       (buffer-disable-undo)
+			       (insert (format "Functions in '%s':\n" (buffer-name imenu--target-buffer)))
+			       (dolist (x index-alist)
+				 (when (and (markerp (cdr x)) (< 0 (cdr x)))
+				   (let ((p1 (point))
+					 (p2 (progn (insert (imenu--position-entry (cdr x) imenu--target-buffer)) (point)))
+					 (definition (fd--marker-line (cdr x))))
+				     (overlay-put (make-overlay p1 p2) 'invisible t)
+				     (insert "\t")
+				     (insert definition)
+				     (insert "\n"))))))))
+
+(defun fd--marker-line (m)
+  (save-excursion
+    (with-current-buffer (marker-buffer m)
+      (let ((p1 (progn (goto-char m) (point)))
+	    (p2 (line-end-position)))
+	(buffer-substring p1 p2)))))
 
 
 (defun imenu-selection-select ()
@@ -44,6 +54,14 @@
     (switch-to-buffer imenu--target-buffer)
     (imenu sel)))
 
-(global-set-key (kbd "C-x i") 'imenu-make-selection-buffer)
+(defun imenu--set-compilation-mode ()
+  (with-current-buffer imenu--selection-buffer
+    (call-interactively 'compilation-minor-mode)))
+
+(defun fd-selection-buffer () (interactive)
+       (imenu-make-selection-buffer)
+       (imenu--set-compilation-mode))
+
+(global-set-key (kbd "C-x i") 'fd-selection-buffer)
 
 (provide 'fd-imenu)
