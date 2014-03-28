@@ -2,10 +2,12 @@
 # key: pelican
 # author: Chris Perivolaropoulos
 # --
-title: `(capitalize (mapconcat 'identity (split-string (file-name-base) "-") " "))`
+title: `(let ((title (split-string (file-name-base) "-"))) (mapconcat 'identity (cons (capitalize (car title)) (cdr title)) " "))`
 date: `(format-time-string "%Y-%m-%d %R")`
 tags:
 category:
 slug: `(file-name-base)`
 author: Chris Perivolaropoulos
 summary:
+
+$0
