@@ -187,4 +187,9 @@ means the first element is definitely not a root node."
 
 (add-hook 'org-mode-hook 'fd/org-latex-hook)
 
+
+;; Markdown
+(add-hook 'markdown-mode-hook (lambda ()
+				(define-key markdown-mode-map (kbd "<backtab>") 'yas-expand)))
+
 (provide 'fd-org)
