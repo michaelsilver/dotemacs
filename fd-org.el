@@ -190,6 +190,11 @@ means the first element is definitely not a root node."
 
 ;; Markdown
 (add-hook 'markdown-mode-hook (lambda ()
+				;; Minor modes
+				(flyspell-mode 1)
+				(refill-mode 1)
+
+				;; Keys
 				(define-key markdown-mode-map (kbd "<backtab>") 'yas-expand)))
 
 (provide 'fd-org)
