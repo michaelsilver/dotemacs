@@ -52,7 +52,7 @@
       (load-theme 'naquadah t)
       (custom-theme-set-faces
        'naquadah
-       `(default ((t (:family "UbuntuMono"))))
+       `(default ((t (:family "Ubuntu Mono"))))
        `(mode-line ((t (:height 1.1 :background "gray30"))))
        `(minibuffer-prompt ((t (:foreground "orange1"))))
        `(region ((t (:background "gray35"))))
