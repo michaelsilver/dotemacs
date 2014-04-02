@@ -172,6 +172,25 @@ parent."
 (defalias 'yes-or-no-p 'y-or-n-p
   "Faster yes or no's")
 
+(defun swap-buffers-in-windows ()
+  "Put the buffer from the selected window in next window, and vice versa"
+  (interactive)
+  (let* ((this (selected-window))
+	 (other (next-window))
+	 (this-buffer (window-buffer this))
+	 (other-buffer (window-buffer other)))
+    (set-window-buffer other this-buffer)
+    (set-window-buffer this other-buffer)))
+
 (global-unset-key (kbd "C-x TAB"))
+
+(add-hook 'dired-mode-hook
+	  (lambda ()
+	    (define-key dired-mode-map (kbd "/")
+	      'dired-isearch-filenames)))
+
+(add-hook 'text-mode
+	  (lambda ()
+	    (define-key text-mode-map (kbd "M-n") 'forward-paragraph)))
 
 (provide 'fd-misc)
