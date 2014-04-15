@@ -60,7 +60,8 @@
 
 (defun fd-selection-buffer () (interactive)
        (imenu-make-selection-buffer)
-       (imenu--set-compilation-mode))
+       ;; (imenu--set-compilation-mode)
+)
 
 (global-set-key (kbd "C-x i") 'fd-selection-buffer)
 

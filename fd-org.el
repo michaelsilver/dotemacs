@@ -187,14 +187,16 @@ means the first element is definitely not a root node."
 
 (add-hook 'org-mode-hook 'fd/org-latex-hook)
 
-
 ;; Markdown
+(defun markdown-shifttab ()
+  (interactive)
+  (call-interactively 'yas-expand))
+
 (add-hook 'markdown-mode-hook (lambda ()
 				;; Minor modes
 				(flyspell-mode 1)
-				(refill-mode 1)
 
 				;; Keys
-				(define-key markdown-mode-map (kbd "<backtab>") 'yas-expand)))
+				(define-key markdown-mode-map (kbd "C-c q") 'refill-mode)))
 
 (provide 'fd-org)

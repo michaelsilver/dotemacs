@@ -64,4 +64,11 @@ sphinx describing the arguments."
 	    (if (string= args "") "" (concat args "\n"))
 	    (if (string= kwargs "") "" (concat kwargs "\n")))))
 
+(defvar fd-debug-message-title "DRNINJABATAN"
+  "This is set as the toplevel tag in the snippet of debug
+  messages (printk)")
+
+(defvar fd-debug-message-function "printk"
+  "The default debug message emmiter.")
+
 (provide 'fd-yasnippet)

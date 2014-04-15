@@ -28,6 +28,7 @@
   (fd-term-map-key "M-f" "M-f")
   (fd-term-map-key "M-DEL" "M-DEL")
   (fd-term-map-key "M-d" "M-d")
+  (fd-term-map-key "C-/" "C-/")
   (fd-term-map-key "<C-backspace>" "M-DEL")
   (fd-term-map-key "M-m" "C-a")
   (fd-term-map-key "<M-left>" "M-b")

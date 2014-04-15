@@ -1,0 +1,4 @@
+# name: printk
+# key: pk
+# --
+`fd-debug-message-function`("`fd-debug-message-title`: `(which-function)`: $0\n");

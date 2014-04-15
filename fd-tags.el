@@ -141,7 +141,7 @@ this. If remember is non-nil change the cscope-id"
 (defun fd-c-tagging-hook ()
   (define-key c-mode-base-map "\M-." 'gtags-wrap-find-tag)
   ;; (define-key c-mode-base-map (kbd "M-.") 'fd/cscope-find-global-definition)
-  (define-key c-mode-base-map (kbd "M-*") 'pop-point-stack))
+  (define-key c-mode-base-map (kbd "M-*") 'gtags-pop-stack))
 
 
 (add-hook 'c-mode-common-hook 'fd-c-tagging-hook)

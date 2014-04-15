@@ -193,4 +193,23 @@ parent."
 	  (lambda ()
 	    (define-key text-mode-map (kbd "M-n") 'forward-paragraph)))
 
+(defun fd-read-var (var)
+  (interactive "xVariable: ")
+  var)
+
+(defun fd-read-dir (dir)
+  (interactive (list (ido-read-directory-name "Directory: ")))
+  dir)
+
+(defun fd-read-val (str)
+  (interactive "sValue: ")
+  str)
+
+(defun fd-dir-local ()
+  (interactive)
+  (let* ((default-directory (call-interactively 'fd-read-dir))
+	 (var (call-interactively 'fd-read-var))
+	 (val (call-interactively 'fd-read-val)))
+   (add-dir-local-variable major-mode var val)))
+
 (provide 'fd-misc)
