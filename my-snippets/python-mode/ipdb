@@ -4,4 +4,4 @@
 # key: pdb
 # binding: C-c p
 # --
-import ipdb; ipdb.set_trace()
+import pdb; pdb.set_trace()

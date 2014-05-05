@@ -1,0 +1,6 @@
+# -*- coding: utf-8 -*-
+# name: notimplementederror
+# contributor: Chris Perivolaropoulos
+# key: nipl
+# --
+raise NotImplementedError("Please implement `(which-function)`")
