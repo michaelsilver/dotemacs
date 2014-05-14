@@ -210,6 +210,16 @@ parent."
   (let* ((default-directory (call-interactively 'fd-read-dir))
 	 (var (call-interactively 'fd-read-var))
 	 (val (call-interactively 'fd-read-val)))
-   (add-dir-local-variable major-mode var val)))
+    (add-dir-local-variable major-mode var val)))
+
+
+(defun shell-command-on-buffer ()
+  "Asks for a command and executes it in inferior shell with current buffer
+as input replacing the buffer with the output."
+  (interactive)
+  (shell-command-on-region
+   (point-min) (point-max)
+   (read-shell-command "Shell command on buffer: ")
+   nil t))
 
 (provide 'fd-misc)
