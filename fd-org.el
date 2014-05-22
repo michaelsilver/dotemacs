@@ -202,7 +202,7 @@ means the first element is definitely not a root node."
 (defun fd--m2t-cmd ()
  (let ((pholder "placeholderkillmerightnowplease"))
    (concat
-    "sed 's/^    .*/    " pholder "\\n    \\n&/' | pandoc -f markdown -t textile | awk '/" pholder "/{c=3} {c>0?c--:c=0} (c==0)\'")))
+    "sed 's/^\\(\t\\|    \\).*/    " pholder "\\n    \\n&/' | pandoc -f markdown -t textile | awk '/" pholder "/{c=3} {c>0?c--:c=0} (c==0)\'")))
 
 
 
@@ -213,6 +213,6 @@ means the first element is definitely not a root node."
 
 (defun textile-to-markdown ()
   (interactive)
-  (shell-command-on-buffer "pandoc -f textile -t markdown")))
+  (shell-command-on-buffer "pandoc -f textile -t markdown"))
 
 (provide 'fd-org)

@@ -67,7 +67,6 @@ static int dummy;	/* dev_id for request_irq() */
 static unsigned int irq = 0;	/* interrupt number IRQ       */
 static unsigned long mem = 0;	/* physical segment of board  */
 static struct class *`devname`_class;
-static int `devname`_major;
 static DEFINE_MUTEX(`devname`_mutex);
 
 static ssize_t `devname`_read (struct file *, char __user *, size_t, loff_t *);
@@ -142,13 +141,16 @@ static int `devname`_create_devs(void)
 	    goto out_err;
 	}
 
-	cur->`devname`_irq = irq; /* XXX Fix this */
-	if (request_irq(cur->`devname`_irq, &`devname`_interrupt, IRQF_SHARED, cur->`devname`_name, &dummy)) {
-	    printk(KERN_INFO "Could not allocate IRQ %d for %s.\n", cur->`devname`_irq, cur->`devname`_name);
-	    device_del(cur->`devname`_device);
-	    cdev_del(&cur->`devname`_cdev);
-	    kfree(cur);
-	    goto out_err;
+	/* XXX: Privide correct irq */
+	if (irq > 0) {
+	    cur->`devname`_irq = irq; /* XXX Fix this */
+	    if (request_irq(cur->`devname`_irq, &`devname`_interrupt, IRQF_SHARED, cur->`devname`_name, &dummy)) {
+		printk(KERN_INFO "Could not allocate IRQ %d for %s.\n", cur->`devname`_irq, cur->`devname`_name);
+		device_del(cur->`devname`_device);
+		cdev_del(&cur->`devname`_cdev);
+		kfree(cur);
+		goto out_err;
+	    }
 	}
 
 	list_add_tail(&cur->`devname`_list, &`devname`_devs);
@@ -177,6 +179,7 @@ static int __init `devname`_init(void)
 
     ret = alloc_chrdev_region(&`devname`_dev, 0, `(upcase devname)`_MAX_DEVS, "`devname`");
     `devname`_major = MAJOR(`devname`_dev);
+
     if (ret < 0) {
 	printk(KERN_ERR "alloc_chrdev_region() failed for `devname`\n");
 	goto out_err_2;

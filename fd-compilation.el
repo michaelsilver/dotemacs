@@ -3,7 +3,7 @@
 
 (require 'notifications)
 (defun compilation-end-defun (compilation-buffer result)
-  (with-current-buffer compilation-buffernex
+  (with-current-buffer compilation-buffer
     (if (string= (buffer-name) "*compilation*")
 	(notifications-notify
 	 :title (format "Compilation: %s" result)
