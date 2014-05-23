@@ -147,8 +147,8 @@ means the first element is definitely not a root node."
   ;; #+LaTeX_CLASS: fakedrake-org-article
   ;; #+LaTeX_HEADER: <some extra headings>
   (add-to-list 'org-latex-classes
-	'("fakedrake-org-article"
-	  "\\documentclass[11pt,a4paper]{article}
+	       '("fakedrake-org-article"
+		 "\\documentclass[11pt,a4paper]{article}
 \\usepackage[T1]{fontenc}
 \\usepackage{fontspec}
 \\usepackage{float}
@@ -167,11 +167,11 @@ means the first element is definitely not a root node."
 \\usepackage[parfill]{parskip}
       [NO-DEFAULT-PACKAGES]
       [NO-PACKAGES]"
-	  ("\\section{%s}" . "\\section*{%s}")
-	  ("\\subsection{%s}" . "\\subsection*{%s}")
-	  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-	  ("\\paragraph{%s}" . "\\paragraph*{%s}")
-	  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+		 ("\\section{%s}" . "\\section*{%s}")
+		 ("\\subsection{%s}" . "\\subsection*{%s}")
+		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
 
   ;; XXX: Ensure pdflatex is available
@@ -200,19 +200,32 @@ means the first element is definitely not a root node."
 				(define-key markdown-mode-map (kbd "C-c q") 'refill-mode)))
 
 (defun fd--m2t-cmd ()
- (let ((pholder "placeholderkillmerightnowplease"))
-   (concat
-    "sed 's/^\\(\t\\|    \\).*/    " pholder "\\n    \\n&/' | pandoc -f markdown -t textile | awk '/" pholder "/{c=3} {c>0?c--:c=0} (c==0)\'")))
+  (let ((pholder "placeholderkillmerightnowplease"))
+    (concat
+     "sed 's/^\\(\t\\|    \\).*/    " pholder "\\n    \\n&/' | pandoc -f markdown -t textile | awk '/" pholder "/{c=3} {c>0?c--:c=0} (c==0)\'")))
 
 
 
 (defun markdown-to-textile ()
   "Convert markodwn buffer to textile for redmine."
   (interactive)
-  (shell-command-on-buffer (fd--m2t-cmd)))
+  (redmine-switch-modes 'markdown-mode 'textile-mode (fd--m2t-cmd)))
 
 (defun textile-to-markdown ()
   (interactive)
-  (shell-command-on-buffer "pandoc -f textile -t markdown"))
+  (redmine-switch-modes 'textile-mode 'markdown-mode "pandoc -f textile -t markdown"))
+
+(defun redmine-switch-modes (mode-from mode-to cmd)
+  (if (derived-mode-p mode-from)
+      (progn
+	(shell-command-on-buffer cmd)
+	(funcall mode-to) t)
+    (message "Not in %s. Skipping." mode-from) nil))
+
+(defun redmine-publish ()
+  (interactive)
+  (when (and (markdown-to-textile) (y-or-n-p "Does this look like valid textile?"))
+    (save-buffer)
+    (server-edit)))
 
 (provide 'fd-org)
