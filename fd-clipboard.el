@@ -3,8 +3,8 @@
 (setq interprogram-paste-function 'x-cut-buffer-or-selection-value
       x-select-enable-primary t)
 
-(defun clipboard-contents-normal (line-info)
-  (if line-info
+(defun clipboard-contents-normal (filename is-directory line-info)
+  (if (and (not is-directory) line-info)
       (format "%s:%d" filename (current-line))
     filename))
 
@@ -14,12 +14,13 @@
 (defun my-put-file-name-on-clipboard (&optional arg)
   "Put the current file name on the clipboard. With prefix copy
 have <fname>:<linum>"
-  (interactive "*P")
-  (let* ((filename (file-truename
-		    (if (equal major-mode 'dired-mode)
+  (interactive "P")
+  (let* ((directory (equal major-mode 'dired-mode))
+	 (filename (file-truename
+		    (if directory
 			default-directory
 		      (buffer-file-name))))
-	 (clip (funcall clipboard-contents-fn arg)))
+	 (clip (funcall clipboard-contents-fn filename directory arg)))
     (when filename
       (save-excursion
 	(with-temp-buffer
