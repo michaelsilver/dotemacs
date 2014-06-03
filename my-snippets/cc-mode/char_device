@@ -1,0 +1,251 @@
+# name: character device driver
+# key: char_dev_init
+# --
+
+/*
+ * Copyright 2014 Think-Silicon Ltd.
+ * Author: Chris Perivolaropoulos
+ *
+ * This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.  You should
+ * have received a copy of the GNU General Public License along with
+ * this program.
+ *
+ * If not, see <http://www.gnu.org/licenses/>.
+ `(setq devname (mapconcat 'identity (split-string (file-name-base) "-") "_"))`
+*/
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/cdev.h>
+#include <linux/list.h>
+#include <linux/fs.h>
+#include <linux/irq.h>
+#include <linux/device.h>
+#include <linux/slab.h>
+
+#include "`(file-name-base)`.h"
+
+#define `(upcase devname)`_MAJOR ($1) /* XXX: provide a major. */
+#define `(upcase devname)`_MAX_DEVS (1)
+
+static const struct file_operations `devname`_fops = {
+    .owner = THIS_MODULE,
+    .llseek = no_llseek,
+    .read = `devname`_read,
+    .write = `devname`_write,
+    .unlocked_ioctl = `devname`_ioctl,
+};
+
+struct `devname`_dev {
+    /* XXX: extras here. */
+
+    struct list_head `devname`_list;
+
+    dev_t `devname`_dev;
+    int `devname`_minor;
+    char `devname`_name[32];
+    struct cdev `devname`_cdev;
+    struct device *`devname`_device;
+    int `devname`_irq;
+};
+
+static unsigned total_`devname`_devs;
+static struct list_head `devname`_devs = LIST_HEAD_INIT(`devname`_devs);
+static struct class *`devname`_class;
+static int `devname`_major;
+static int dummy;	/* dev_id for request_irq() */
+
+static unsigned int irq = 0;	/* interrupt number IRQ       */
+static unsigned long mem = 0;	/* physical segment of board  */
+static struct class *`devname`_class;
+static DEFINE_MUTEX(`devname`_mutex);
+
+static ssize_t `devname`_read (struct file *, char __user *, size_t, loff_t *);
+static ssize_t `devname`_write (struct file *, const char __user *, size_t, loff_t *);
+static long `devname`_ioctl(struct file *, unsigned int, unsigned long);
+static irqreturn_t `devname`_interrupt(int, void *);
+
+static void `devname`_cleanup_devs(void)
+{
+    struct `devname`_dev *cur, *n;
+
+    list_for_each_entry_safe(cur, n, &`devname`_devs, `devname`_list) {
+	if (cur->`devname`_irq)
+	    free_irq(cur->`devname`_irq, &dummy);
+
+	if (cur->`devname`_device) {
+	    cdev_del(&cur->`devname`_cdev);
+	    device_del(cur->`devname`_device);
+	}
+	list_del(&cur->`devname`_list);
+	kfree(cur);
+    }
+}
+
+
+static void __exit `devname`_exit(void)
+{
+    `devname`_cleanup_devs();
+
+    if (`devname`_class)
+	class_destroy(`devname`_class);
+
+    if (`devname`_major)
+	unregister_chrdev_region(MKDEV(`devname`_major, 0), `(upcase devname)`_MAX_DEVS);
+}
+
+
+static int `devname`_create_devs(void)
+{
+    int ret, i;
+
+    for (i = 0 ; i < `(upcase devname)`_MAX_DEVS; i++) {
+	struct `devname`_dev *cur = kzalloc(sizeof(struct `devname`_dev),
+					    GFP_KERNEL);
+	int result;
+
+	if (!cur) {
+	    printk(KERN_ERR "Unable to alloc `devname` dev\n");
+	    ret = -ENOMEM;
+	    goto out_err;
+	}
+
+	cur->`devname`_minor  = i + total_`devname`_devs;
+	cur->`devname`_dev    = MKDEV(`devname`_major, i + total_`devname`_devs);
+
+	snprintf(cur->`devname`_name, 32, "`devname`_%d", cur->`devname`_minor);
+
+	cdev_init(&cur->`devname`_cdev, &`devname`_fops);
+	result = cdev_add(&cur->`devname`_cdev, cur->`devname`_dev, 1);
+	if (result) {
+	    kfree(cur);
+	    goto out_err;
+	}
+
+	cur->`devname`_device = device_create(`devname`_class, NULL, cur->`devname`_dev,
+					      cur, cur->`devname`_name);
+	if (IS_ERR(cur->`devname`_device)) {
+	    printk(KERN_ERR "device_create failed for %s\n",
+		   cur->`devname`_name);
+	    cdev_del(&cur->`devname`_cdev);
+	    kfree(cur);
+	    goto out_err;
+	}
+
+	/* XXX: Privide correct irq */
+	if (irq > 0) {
+	    cur->`devname`_irq = irq; /* XXX Fix this */
+	    if (request_irq(cur->`devname`_irq, &`devname`_interrupt, IRQF_SHARED, cur->`devname`_name, &dummy)) {
+		printk(KERN_INFO "Could not allocate IRQ %d for %s.\n", cur->`devname`_irq, cur->`devname`_name);
+		device_del(cur->`devname`_device);
+		cdev_del(&cur->`devname`_cdev);
+		kfree(cur);
+		goto out_err;
+	    }
+	}
+
+	list_add_tail(&cur->`devname`_list, &`devname`_devs);
+	total_`devname`_devs++;
+    }
+
+    return 0;
+
+ out_err:
+    `devname`_cleanup_devs();
+    return ret;
+}
+
+
+static int __init `devname`_init(void)
+{
+    dev_t `devname`_dev;
+    int ret = -ENODEV;
+
+    `devname`_class = class_create(THIS_MODULE, "`devname`");
+    if (IS_ERR(`devname`_class)) {
+	printk(KERN_ERR "class_create() failed for `devname`_class\n");
+	ret = PTR_ERR(`devname`_class);
+	goto out_err_1;
+    }
+
+    ret = alloc_chrdev_region(&`devname`_dev, 0, `(upcase devname)`_MAX_DEVS, "`devname`");
+    `devname`_major = MAJOR(`devname`_dev);
+
+    if (ret < 0) {
+	printk(KERN_ERR "alloc_chrdev_region() failed for `devname`\n");
+	goto out_err_2;
+    }
+
+    if ((ret = `devname`_create_devs()) < 0) {
+	goto out_err_3;
+    }
+
+    return 0;
+ out_err_3:
+    unregister_chrdev_region(`devname`_dev, `(upcase devname)`_MAX_DEVS);
+
+ out_err_2:
+    class_destroy(`devname`_class);
+
+ out_err_1:
+
+    return ret;
+
+}
+
+module_init(`devname`_init);
+module_exit(`devname`_exit);
+
+
+static ssize_t `devname`_write(struct file *file, const char __user *buf, size_t count, loff_t * ppos)
+{
+    return 0;
+}
+
+static ssize_t `devname`_read(struct file *filp, char __user *buf, size_t count, loff_t *ptr)
+{
+}
+
+static irqreturn_t `devname`_interrupt(int vec, void *dev_instance)
+{
+    int handled = 0;
+
+    return IRQ_RETVAL(handled);
+}
+
+static long `devname`_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+{
+    long ret = 0;
+
+    mutex_lock(&`devname`_mutex);
+
+    switch (cmd) {
+	/* XXX cases for ioctls */
+    default:
+	mutex_unlock(&`devname`_mutex);
+	ret = -ENOTTY;
+	break;
+    }
+    mutex_unlock(&`devname`_mutex);
+    return ret;
+}
+
+
+module_param(irq, uint, 0);
+MODULE_PARM_DESC(irq, "IRQ of of device");
+module_param(mem, ulong, 0);
+MODULE_PARM_DESC(mem, "Shared Memory Address of device");
+
+MODULE_AUTHOR("Chris Perivolaropoulos <cperivol@csail.mit.edu>");
+MODULE_DESCRIPTION("");
+MODULE_LICENSE("GPL");
+MODULE_SUPPORTED_DEVICE("`devname`");

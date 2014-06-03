@@ -70,12 +70,12 @@ prefix."
       (fd-python-jump-to-implementation)
     (fd-python-jump-to-test)))
 
-(defun fd-python-command ()
+(defun fd-python-command (&optional venv)
   "Calculate the string used to execute the inferior Python process."
-  (let ((process-environment (python-shell-calculate-process-environment))
-        (exec-path (python-shell-calculate-exec-path)))
-    (executable-find python-shell-interpreter)))
-
+  (if venv (format "%s/bin/python" venv)
+    (let ((process-environment (python-shell-calculate-process-environment))
+	  (exec-path (python-shell-calculate-exec-path)))
+      (executable-find python-shell-interpreter))))
 
 (defun fd-python-current-class-path ()
   (save-excursion
@@ -145,24 +145,29 @@ is nil check if path in any project."
 (defvar fd-setup-test-cmd "test"
   "This might even 'nosetests'.")
 
+(defvar fd-test-venv nil
+  "If non-nil use this for tests.")
+
+(defvar fd-python-pre-test-fn nil
+  "Run this before you run a test, useful if you need to commit
+  or sth.")
+
 (defun* fd-test-cmd (&rest module)
   (format "%s %s setup.py %s %s"
-	  (fd-python-command)
+	  (fd-python-command fd-test-venv)
 	  (or module "")
 	  fd-setup-test-cmd
 	  (if (fd-python-in-test-p)
 	      (format "-s %s" (fd-python-current-class-path))
 	    "")))
 
-
 (defun fd-python-run-tests (arg)
   "Run tests of current project, if prefix jump to test buffer or
 file before running (thus you might run the current test only)."
   (interactive "P")
+  ;;   (and fd-python-pre-test-fn (funcall fd-python-pre-test-fn))
+
   (save-excursion
-    (when (and (fd-python-in-test-p)
-	       (not (fd-python-in-test-p)))
-      (fd-python-jump-to-test))
     (let (compilation-directory
 	  compile-command
 	  (default-directory (fd-python-project-root)))
@@ -183,7 +188,6 @@ file before running (thus you might run the current test only)."
   (define-key python-mode-map (kbd "C-c C-t")
     'fd-python-jump-between-test-and-implementation)
   (define-key python-mode-map (kbd "C-c M-t") 'fd-python-run-tests)
-  (define-key python-mode-map (kbd "C-c C-e") 'python-shell-send-buffer)
   (local-unset-key (kbd "<backtab>")))
 
 (add-hook 'python-mode-hook 'fd-python-hook)

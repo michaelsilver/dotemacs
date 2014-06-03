@@ -210,6 +210,32 @@ parent."
   (let* ((default-directory (call-interactively 'fd-read-dir))
 	 (var (call-interactively 'fd-read-var))
 	 (val (call-interactively 'fd-read-val)))
-   (add-dir-local-variable major-mode var val)))
+    (add-dir-local-variable major-mode var val)))
+
+
+(defun shell-command-on-buffer (&optional cmd)
+  "Asks for a command and executes it in inferior shell with current buffer
+as input replacing the buffer with the output."
+  (interactive (list (read-shell-command "Shell command on buffer: ")))
+  (shell-command-on-region
+   (point-min) (point-max) cmd nil t))
+
+(defun region-or-line ()
+  (if point ))
+(defun region-or-line-as-shell ()
+  (interactive))
+
+(defun kill-buffers-regex (rx)
+  "kill buffers that match the rx."
+  (interactive "sRegex for buffers: ")
+  (dolist (b (buffer-list))
+    (when (string-match rx (buffer-name b))
+      (kill-buffer b))))
+
+(defun kill-file-buffers ()
+  (interactive)
+  (dolist (b (buffer-list))
+    (when (buffer-file-name b)
+      (kill-buffer b))))
 
 (provide 'fd-misc)

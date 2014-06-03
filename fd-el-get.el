@@ -43,6 +43,8 @@
 	;;	slime
 	;; helm
 	;; nxhtml ; this is obsolete crap, stay away.
+	textile-mode
+	haskell-mode
 	js2-mode
 	graphviz-dot-mode
 	cider

@@ -36,8 +36,8 @@
     (beginning-of-buffer)
     (replace-regexp "^filesize:[0-9]+| " "")))
 
-(defun current-line ()
-  (count-lines (point-min) (point)))
+(defun current-line (&optional pt)
+  (count-lines (point-min) (or pt (point))))
 
 
 (defun point-at-coordinates (col line)

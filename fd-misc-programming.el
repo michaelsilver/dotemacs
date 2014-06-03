@@ -42,5 +42,8 @@
 
 (global-set-key (kbd "C-j") 'default-indent-new-line)
 (global-set-key (kbd "C-M-l") 'add-dir-local-variable)
+(global-set-key (kbd "M-p") 'backward-paragraph)
+(global-set-key (kbd "M-n") 'forward-paragraph)
+
 
 (provide 'fd-misc-programming)

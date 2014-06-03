@@ -19,6 +19,7 @@
   (define-key c-mode-base-map (kbd "M-n") 'c-end-of-statement)
   (define-key c-mode-base-map (kbd "M-p") 'c-beginning-of-statement)
   (define-key c-mode-base-map (kbd "C-j") 'my-cc-newline-and-indent)
+  (define-key c-mode-base-map (kbd "C-x <SPC>") 'gud-break)
   (setq c-default-style "linux" c-basic-offset 4))
 
 (setq compilation-scroll-output t)
