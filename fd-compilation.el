@@ -16,7 +16,8 @@
 (defun fd-recompile ()
   (interactive)
   (hack-local-variables)
-  (let ((default-directory (concat compilationg-directory "/")))
+  (let ((default-directory (file-name-as-directory
+			    (or compilation-directory default-directory "/tmp"))))
     (message "Compiling with %s in %s" compile-command compilation-directory)
     (compilation-start compile-command t)))
 
