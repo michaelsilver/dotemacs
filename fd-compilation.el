@@ -13,10 +13,41 @@
 
 (setq compilation-finish-function 'compilation-end-defun)
 
-(require 'compilation-setup)
-(global-set-key (kbd "C-c r") 'cs-recompile-wrapper)
-(global-set-key (kbd "C-c c c") 'cs-compile-wrapper)
-(global-set-key (kbd "M-g l") 'cs-last-error)
+(defun fd-recompile ()
+  (interactive)
+  (hack-local-variables)
+  (let ((default-directory (concat compilationg-directory "/")))
+    (message "Compiling with %s in %s" compile-command compilation-directory)
+    (compilation-start compile-command t)))
+
+(defun fd-last-error ()
+  "Jump to last error."
+  (interactive)
+  (while (not
+	  (eq (condition-case err
+		  (next-error)
+		(error 'cs-last-error-here))
+	      'cs-last-error-here))))
+
+(defalias 'read-directory-name 'ido-read-directory-name)
+
+(defun fd-compile (command directory &optional arg)
+  (interactive (list
+		(read-shell-command "Compile command: " compile-command)
+		(read-directory-name "Root directory: " (or compilation-directory default-directory))
+		current-prefix-arg))
+  (let ((compilation-directory (concat directory "/"))
+	(compile-command command))
+    (if arg (fd-recompile)
+      (add-dir-local-variable nil 'compile-command compile-command)
+      (add-dir-local-variable nil 'compilation-directory compilation-directory)
+      (save-buffer)
+      (bury-buffer)
+      (fd-recompile))))
+
+(global-set-key (kbd "C-c r") 'fd-recompile)
+(global-set-key (kbd "C-c c c") 'fd-compile)
+(global-set-key (kbd "M-g l") 'fd-last-error)
 (global-set-key (kbd "M-g t") 'error-last-of-trace)
 
 (defcustom error-trace-max-distance 2
