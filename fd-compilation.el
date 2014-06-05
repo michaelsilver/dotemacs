@@ -53,35 +53,37 @@
 (defcustom error-trace-max-distance 2
   "Maximum distance between errors of a trace.")
 
-(defun next-error-point (&optional pt)
+(defun next-error-point (&optional pt reverse)
   "The point of the next error from point. Nil if no error after
 this."
   (save-excursion
     (condition-case e
 	(progn
-	  (compilation-next-error 1 nil (or pt (point)))
+	  (compilation-next-error (if reverse 1 -1) nil (or pt (point)))
 	  (point))
       ('error nil))))
 
-(defun error-last-of-trace ()
-  "Jump to the last error of the next trace."
+(defun error-end-of-trace (&optional reverse)
+  "Jump to the last error of the next trace. If reverse jump to
+the top."
   (interactive)
-  (with-current-buffer (next-error-find-buffer)
-    ;; Enter the next trace. Should raise error if we are at the end
-    (compilation-next-error 1 nil (or compilation-current-error (point-min)))
+  (pop-to-buffer (next-error-find-buffer))
+  ;; Enter the next trace. Should raise error if we are at the end
+  (compilation-next-error 1 nil (or compilation-current-error (point-min)))
 
-    ;; Move to it's end
-    (let ((le (internal-last-of-trace (point))))
-      (goto-char le)
-      (compile-goto-error))))
+  ;; Move to it's end
+  (let ((le (internal-last-of-trace (point) reverse)))
+    (goto-char le)
+    (recenter)
+    (compile-goto-error)))
 
-(defun internal-last-of-trace (pt)
+(defun internal-end-of-trace (pt reverse)
   "Find the last error o a trace that we are in."
-  (let ((nep (next-error-point pt)))
+  (let ((nep (next-error-point pt reverse)))
     ;; There is an error and it is close.
     (if (and nep (<= (count-lines pt nep)
 		     error-trace-max-distance))
-	(internal-last-of-trace nep)
+	(internal-last-of-trace nep reverse)
       pt)))
 
 (provide 'fd-compilation)
