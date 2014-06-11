@@ -27,10 +27,6 @@
 (put 'set-goal-column 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-(setq display-time-day-and-date t
-      display-time-24hr-format t)
-(display-time)
-
 (defun duplicate-line-or-region (&optional n)
   "Duplicate current line, or region if active.
 With argument N, make N copies.
@@ -54,28 +50,6 @@ With negative N, comment out original line and use the absolute value."
         (forward-char pos)))))
 
 (global-set-key (kbd"C-c d") 'duplicate-line-or-region)
-
-(defun fd-new-buf-extension (dir &optional default path-len)
-  "Return either the last two directories, or default"
-  (if dir
-      (let* ((path-len (or path-len 2))
-	     (dirs (reverse (split-string dir "/" t)))
-	     (top-dirs-raw (remove nil (subseq dirs 0 path-len)))
-	     ;; If we do not have enough dirs append "" at the end so
-	     ;; we get something that resembles an abs path.
-	     (top-dirs (if (and (< (length top-dirs-raw) path-len)
-				(not (equal "~" (car top-dirs-raw))))
-			   (reverse (cons "" (reverse top-dirs-raw)))
-			 top-dirs-raw)))
-	(mapconcat (lambda (s) (format "%s/" s)) (reverse top-dirs) nil))
-    default))
-
-(defun add-mode-line-dirtrack ()
-  "When editing a file, show the last 2 directories of the current path in the mode line."
-  (when buffer-file-name
-    (add-to-list 'mode-line-buffer-identification
-		 '(:eval (fd-new-buf-extension default-directory "unlinked: ")))))
-(add-hook 'find-file-hook 'add-mode-line-dirtrack)
 
 ;; If wou dont have the above path, i feel 'forward is best.
 (require 'uniquify)
@@ -220,16 +194,18 @@ as input replacing the buffer with the output."
   (shell-command-on-region
    (point-min) (point-max) cmd nil t))
 
-(defun region-or-line ()
-  (if point ))
-(defun region-or-line-as-shell ()
-  (interactive))
-
 (defun kill-buffers-regex (rx)
   "kill buffers that match the rx."
   (interactive "sRegex for buffers: ")
   (dolist (b (buffer-list))
     (when (string-match rx (buffer-name b))
+      (kill-buffer b))))
+
+(defun kill-dired-buffers ()
+  (interactive)
+  (dolist (b (buffer-list))
+    (when
+	(with-current-buffer b (eq major-mode 'dired-mode))
       (kill-buffer b))))
 
 (defun kill-file-buffers ()

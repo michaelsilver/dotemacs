@@ -70,4 +70,32 @@
        ;; ERC
        `(erc-prompt-face ((t (:background "#f57900" :bold t :foreground "gray10")))))))
 
+
+(defun fd-new-buf-extension (dir &optional default path-len)
+  "Return either the last two directories, or default"
+  (if dir
+      (let* ((path-len (or path-len 2))
+	     (dirs (reverse (split-string dir "/" t)))
+	     (top-dirs-raw (remove nil (subseq dirs 0 path-len)))
+	     ;; If we do not have enough dirs append "" at the end so
+	     ;; we get something that resembles an abs path.
+	     (top-dirs (if (and (< (length top-dirs-raw) path-len)
+				(not (equal "~" (car top-dirs-raw))))
+			   (reverse (cons "" (reverse top-dirs-raw)))
+			 top-dirs-raw)))
+	(mapconcat (lambda (s) (format "%s/" s)) (reverse top-dirs) nil))
+    default))
+
+(defun add-mode-line-dirtrack ()
+  "When editing a file, show the last 2 directories of the current path in the mode line."
+  (when buffer-file-name
+    (add-to-list 'mode-line-buffer-identification
+		 '(:eval (fd-new-buf-extension default-directory "unlinked: ")))))
+(add-hook 'find-file-hook 'add-mode-line-dirtrack)
+
+
+(setq display-time-day-and-date t
+      display-time-24hr-format t)
+(display-time)
+
 (provide 'fd-visual)
