@@ -1,0 +1,6 @@
+# name: Include std libs
+# key: incstd
+# --
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
