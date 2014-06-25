@@ -1,0 +1,9 @@
+# name: Kernel style docstring
+# key: ds
+# --
+/**
+ * `(last-sym-before "(")` - $0
+ *
+`(mapconcat (lambda (arg) (format " * @%s:" arg)) (last-syms-before "[,)]" ")") "\n")`
+ *
+ */
