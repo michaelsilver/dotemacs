@@ -4,9 +4,26 @@
       x-select-enable-primary t)
 
 (defun clipboard-contents-normal (filename is-directory line-info)
-  (if (and (not is-directory) line-info)
-      (format "%s:%d" filename (current-line))
-    filename))
+  (let ((linum-sep (if github-prefix "#L" ":"))
+	(uri (if github-prefix
+		 (concat github-prefix (git-relative-filename filename))
+	       filename)))
+    (if (and (not is-directory) line-info)
+	(concat uri linum-sep (int-to-string (current-line)))
+      uri)))
+
+(defun git-root-directory (fname)
+  "FNAME is an absolute path of a file. Get the furthest back"
+  (if (or (not fname) (file-exists-p (concat fname "/.git"))) fname
+    (git-root-directory (mapconcat
+			 'identity
+			 (reverse (cdr (reverse (split-string fname "/")))) "/"))))
+
+(defun git-relative-filename (filename)
+  (car (split-string filename (concat (git-root filename) "/") t)))
+
+(defvar-local github-prefix nil
+  "If defined it is the prefix to be added to git")
 
 (defvar clipboard-contents-fn 'clipboard-contents-normal
   "Given LINE-INFO non-nil return a string to be copied to clipboard")
