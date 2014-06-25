@@ -19,6 +19,9 @@
 	pkg-info
 	request
 
+	;; Elisp hepers
+	f
+
 	;; Python
 	python
 	django-mode
