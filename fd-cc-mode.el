@@ -29,4 +29,10 @@
 (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
 (add-to-list 'ido-ignore-buffers ".*-preprocessed\*")
 
+;; ;; Sometimes I dont want emacs to indent comments at all.
+;; (setq fd-c-disable-comments-lineup nil)
+;; (defadvice c-lineup-C-comments (around c-lineup-C-comments-handle-doxygen activate)
+;;   (let ((looking-at (if fd-c-disable-comments-lineup (lambda (s) nil) (symbol-function 'looking-at))))
+;;     ad-do-it))
+
 (provide 'fd-cc-mode)

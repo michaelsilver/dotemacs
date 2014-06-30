@@ -71,4 +71,18 @@ sphinx describing the arguments."
 (defvar fd-debug-message-function "printk"
   "The default debug message emmiter.")
 
-(provide 'fd-yasnippet)
+(defun last-syms-before (regex &optional until-rx)
+  (save-excursion
+    (let ((until-rx (or until-rx regex)))
+      (re-find-all
+       (format "\\([a-zA-Z0-9_]+\\)[[:space:]]*%s" regex)
+       (buffer-substring-no-properties
+	(point)
+	(if (and until-rx (re-search-forward until-rx))
+	    (match-end 0) point-max))
+       1))))
+
+(defun last-sym-before (regex)
+  (car (last-syms-before regex)))
+
+  (provide 'fd-yasnippet)

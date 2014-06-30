@@ -149,14 +149,15 @@ parent."
 (defun swap-buffers-in-windows ()
   "Put the buffer from the selected window in next window, and vice versa"
   (interactive)
-  (let* ((this (selected-window))
-	 (other (next-window))
-	 (this-buffer (window-buffer this))
-	 (other-buffer (window-buffer other)))
-    (set-window-buffer other this-buffer)
-    (set-window-buffer this other-buffer)))
+  (let* ((this-window (selected-window))
+	 (other-window (next-window))
+	 (this-buffer (window-buffer this-window))
+	 (other-buffer (window-buffer other-window)))
+    (set-window-buffer other-window this-buffer)
+    (set-window-buffer this-window other-buffer)
+    (select-window other-window)))
 
-(global-unset-key (kbd "C-x TAB"))
+(global-set-key (kbd "C-x TAB") 'swap-buffers-in-windows)
 
 (add-hook 'dired-mode-hook
 	  (lambda ()
@@ -213,5 +214,23 @@ as input replacing the buffer with the output."
   (dolist (b (buffer-list))
     (when (buffer-file-name b)
       (kill-buffer b))))
+
+(defvar jump-alist '(("dotemacs" . "~/.emacs.d/")
+		     ("kernel" . "/homes/cperivol/Projects/zynq-android/zc702-android/4.2.2/zynq/")
+		     ("qemu" . "/homes/cperivol/Projects/zynq-android/zc702-android/Qemu/")))
+
+(defun modtime (fpath)
+  (let ((mt (nth 5 (file-attributes fpath))))
+    (+ (* (car mt) 65536) (cadr mt))))
+
+(defun project-jump (dir-or-key)
+  (interactive (list
+		(completing-read
+		 "Jump to project: "
+		 (mapcar
+		  (lambda (kv) (format "%s:%s" (car kv) (cdr kv)))
+		  (sort jump-alist
+			(lambda (x y) (> (modtime (cdr x)) (modtime (cdr y)))))))))
+  (find-file (cadr (split-string dir-or-key ":"))))
 
 (provide 'fd-misc)
