@@ -22,7 +22,7 @@
 
 (defvar fd-clojure-etags-gen-command "find . \! -name '.*' -name '*.clj' \
     | xargs etags \
-    --regex='/[ \t\(]*def[a-zA-Z!$%&*+\-.\/:<=>?@^_~]*[ \n\t]+\(\^{[^}]*}[ \n\t]+\|\)\([a-zA-Z!$%&*+\-.\/:<=>?@^_~]+\)/\2/s' \
+    --regex='/[ \t\(]*def[a-zA-Z!$%&*+\-.\/:<=>?@^_~]*[ \n\t]+\(^{[^}]*}[ \n\t]+\|\)\([a-zA-Z!$%&*+\-.\/:<=>?@^_~]+\)/\2/s' \
     --regex='/[ \t\(]*ns \([a-z.]+\)/\1/'"
   "Found see here http://stackoverflow.com/questions/1481842/clojure-emacs-etags#6726061")
 
