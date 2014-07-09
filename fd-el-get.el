@@ -46,6 +46,8 @@
 	;;	slime
 	;; helm
 	;; nxhtml ; this is obsolete crap, stay away.
+	lua-mode
+	php-mode-improved
 	textile-mode
 	haskell-mode
 	js2-mode
