@@ -1,0 +1,10 @@
+fd-el-get.el
+============
+Use fd-el-get.el to get packages. Note that I should only get the packages that I absolutely need. If I get the whole list, it will take forever. 
+=> should look into naquadah-theme to get cool colors
+=> should also get a package for LaTeX
+
+fd-visual.el
+===========
+This file contains everything needed to make emacs look cool. Note that you can change font and that the color of comments are pink, but I should probably change that. 
+
