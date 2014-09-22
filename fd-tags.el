@@ -5,6 +5,7 @@
 (setq etags-table-search-up-depth 10
       etags-table-generate-tags t)
 
+(defvar gtags-generate-cmd-format nil)
 ;; CC-MODE
 (defun gtags-generate-gtags ()
   "Generate a gtags file in the querried directory"
@@ -12,7 +13,7 @@
 	 (cmd (format "cd %s ; gtags" (expand-file-name proj-root))))
     (when (not (string= "" proj-root))
       (message (format "Generating gtags files: %s" cmd))
-      (shell-command cmd))))
+      (shell-command (format (or gtags-generate-cmd-format "%s") cmd)))))
 
 (defun gtags-update-gtags ()
   "Update the gtags files"

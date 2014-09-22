@@ -19,6 +19,9 @@
 	pkg-info
 	request
 
+	;; Elisp hepers
+	f
+
 	;; Python
 	python
 	django-mode
@@ -44,6 +47,7 @@
 	;; helm
 	;; nxhtml ; this is obsolete crap, stay away.
 	twiki-mode
+	lua-mode
 	php-mode-improved
 	textile-mode
 	haskell-mode

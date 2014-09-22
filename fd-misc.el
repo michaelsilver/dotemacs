@@ -150,14 +150,15 @@ parent."
 (defun swap-buffers-in-windows ()
   "Put the buffer from the selected window in next window, and vice versa"
   (interactive)
-  (let* ((this (selected-window))
-	 (other (next-window))
-	 (this-buffer (window-buffer this))
-	 (other-buffer (window-buffer other)))
-    (set-window-buffer other this-buffer)
-    (set-window-buffer this other-buffer)))
+  (let* ((this-window (selected-window))
+	 (other-window (next-window))
+	 (this-buffer (window-buffer this-window))
+	 (other-buffer (window-buffer other-window)))
+    (set-window-buffer other-window this-buffer)
+    (set-window-buffer this-window other-buffer)
+    (select-window other-window)))
 
-(global-unset-key (kbd "C-x TAB"))
+(global-set-key (kbd "C-x TAB") 'swap-buffers-in-windows)
 
 (add-hook 'dired-mode-hook
 	  (lambda ()
