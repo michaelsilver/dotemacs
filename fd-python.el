@@ -1,4 +1,4 @@
-;; Python
+; Python
 
 ;; Fix docstring paragraph filling
 (add-hook 'python-mode-hook (lambda ()
@@ -152,26 +152,49 @@ is nil check if path in any project."
   "Run this before you run a test, useful if you need to commit
   or sth.")
 
-(defun* fd-test-cmd (&rest module)
+(defun fd-flake8-cmd ()
+  (format "%s %s setup.py %s %s"
+	  (fd-python-command fd-test-venv "flake8")
+	  fd-setup-test-cmd
+	  (if (fd-python-in-test-p)
+	      (save-excursion
+		(end-of-buffer)
+		(format "-s %s" (fd-python-current-class-path)))
+	    "")))
+
+(defun fd-test-cmd (&optional module)
   (format "%s %s setup.py %s %s"
 	  (fd-python-command fd-test-venv)
 	  (or module "")
 	  fd-setup-test-cmd
 	  (if (fd-python-in-test-p)
-	      (format "-s %s" (fd-python-current-class-path))
+	      (save-excursion
+		(end-of-buffer)
+		(format "-s %s" (fd-python-current-class-path)))
 	    "")))
 
-(defun fd-python-run-tests (arg)
-  "Run tests of current project, if prefix jump to test buffer or
-file before running (thus you might run the current test only)."
-  (interactive "P")
+(defun fd-python-run-tests (&optional module pre-cmd post-cmd)
+  "Run tests of current project."
+  (interactive)
   ;;   (and fd-python-pre-test-fn (funcall fd-python-pre-test-fn))
 
   (save-excursion
     (let (compilation-directory
 	  compile-command
 	  (default-directory (fd-python-project-root)))
-      (compile (fd-test-cmd) t))))
+      (compile (format "%s %s %s"
+		       (or pre-cmd "")
+		       (fd-test-cmd module)
+		       (or post-cmd "")) t))))
+
+(defun fd-python-profile-tests ()
+  "Run tests of current project."
+  (interactive)
+  ;;   (and fd-python-pre-test-fn (funcall fd-python-pre-test-fn))
+  (fd-python-run-tests
+   "-m cProfile -o ./tests.prof"
+   nil
+   "&& echo 'Find your profile at ./tests.prof'; pyprof2calltree -k -i ./tests.prof"))
 
 (defun fd-gud-pdb-test (&optional cmd)
   (interactive
@@ -191,5 +214,52 @@ file before running (thus you might run the current test only)."
   (local-unset-key (kbd "<backtab>")))
 
 (add-hook 'python-mode-hook 'fd-python-hook)
+
+
+(defun pep8-diff ()
+  "Starts an ediff session between the FILE and its specified revision.
+REVISION should not include the filename, e.g. \"HEAD:\". If
+BEFORE-EDIFF-HOOK is specified, it is executed as an ediff setup
+hook. If AFTER-EDIFF-HOOK is specified, it is executed as an
+ediff quit hook. Both hooks run in the ediff context, i.e. with
+valid ediff-buffer-A and B variables, among others. If the
+versions are identical, error out without executing either type
+of hook."
+  (interactive)
+  (let* ((buf1 (current-buffer))
+	 (fname (buffer-file-name))
+	 (buf2 (switch-to-buffer "*pep8*"))
+	 (config (current-window-configuration))
+	 (autopep8-path (concat python-shell-virtualenv-path "/bin/autopep8"))
+	 (autopep8-args (concat "-a " fname)))
+
+    ;; build buf2
+    (shell-command
+     (concat autopep8-path " " autopep8-args)
+     "*pep8*")
+    (python-mode)
+
+    (when (eq 0 (compare-buffer-substrings buf1 nil nil buf2 nil nil))
+      (kill-buffer buf2)
+      (error "Pep8 conformant"))
+
+    (set-buffer
+     (ediff-buffers buf1 buf2))
+
+    (lexical-let ((config config)
+		  (buf2 buf2))
+      (add-hook 'ediff-quit-hook
+		(lambda ()
+		  (ediff-cleanup-mess)
+		  (kill-buffer buf2)
+		  (set-window-configuration config))
+      nil t))))
+
+
+(defun my-python-send-buffer ()
+  (interactive)
+  (python-shell-send-string
+   "__package__ = '%s';import '%s'; from ppring import pprint as pp")
+  (call-interactively (python-shell-send-buffer)))
 
 (provide 'fd-python)

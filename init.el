@@ -21,6 +21,7 @@
 (require 'fd-expand-region)
 (require 'fd-lisp)
 (require 'fd-cc-mode)
+(require 'fd-javascript)
 (require 'fd-prolog)
 (require 'fd-vimperator)
 (require 'fd-org)

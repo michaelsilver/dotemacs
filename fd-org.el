@@ -1,6 +1,10 @@
 ;; ORG mode
-(require 'org)
 (load-library "org-compat") 		;XXX this is bad but i see no better way.
+
+(load-library "org-list")
+(require 'org-element)
+(require 'org)
+
 
 ;; Set up org-mode capture system
 (if (and (file-exists-p my-orgmode-dir)
@@ -186,6 +190,8 @@ means the first element is definitely not a root node."
 			("\\.pdf\\'" . "evince %s"))))
 
 (add-hook 'org-mode-hook 'fd/org-latex-hook)
+
+(global-set-key (kbd "C-c l") 'org-store-link)
 
 ;; Markdown
 (defun markdown-shifttab ()

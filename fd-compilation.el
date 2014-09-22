@@ -49,7 +49,7 @@
 (global-set-key (kbd "C-c r") 'fd-recompile)
 (global-set-key (kbd "C-c c c") 'fd-compile)
 (global-set-key (kbd "M-g l") 'fd-last-error)
-(global-set-key (kbd "M-g t") 'error-last-of-trace)
+(global-set-key (kbd "M-g t") 'error-end-of-trace)
 
 (defcustom error-trace-max-distance 2
   "Maximum distance between errors of a trace.")
@@ -60,7 +60,7 @@ this."
   (save-excursion
     (condition-case e
 	(progn
-	  (compilation-next-error (if reverse 1 -1) nil (or pt (point)))
+	  (compilation-next-error (if reverse -1 1) nil (or pt (point)))
 	  (point))
       ('error nil))))
 
@@ -73,7 +73,7 @@ the top."
   (compilation-next-error 1 nil (or compilation-current-error (point-min)))
 
   ;; Move to it's end
-  (let ((le (internal-last-of-trace (point) reverse)))
+  (let ((le (internal-end-of-trace (point) reverse)))
     (goto-char le)
     (recenter)
     (compile-goto-error)))
@@ -84,7 +84,7 @@ the top."
     ;; There is an error and it is close.
     (if (and nep (<= (count-lines pt nep)
 		     error-trace-max-distance))
-	(internal-last-of-trace nep reverse)
+	(internal-end-of-trace nep reverse)
       pt)))
 
 (provide 'fd-compilation)

@@ -43,9 +43,13 @@
 	;;	slime
 	;; helm
 	;; nxhtml ; this is obsolete crap, stay away.
+	twiki-mode
+	php-mode-improved
 	textile-mode
 	haskell-mode
 	js2-mode
+	slime
+	swank-js
 	graphviz-dot-mode
 	cider
 	ac-nrepl
@@ -83,8 +87,8 @@
 	  :pkgname "AndreaCrotti/yasnippet-snippets"
 	  :depends yasnippet
 	  :post-init (add-to-list 'yas/root-directory
-				    (concat el-get-dir
-					    (file-name-as-directory "yasnippet-snippets"))))
+				  (concat el-get-dir
+					  (file-name-as-directory "yasnippet-snippets"))))
 
    (:name python
 	  :description "Python's flying circus support for Emacs"
@@ -136,11 +140,32 @@
 	  :type github
 	  :pkgname "joodland/bm")
 
+   (:name twiki-mode
+	  :description "Major mode for editing Twiki wiki files
+	  for emacs, plus 'twikish' command line tool to retrieve
+	  and save twiki pages from text files."
+	  :type github
+	  :pkgname "christopherjwhite/emacs-twiki-mode")
+
    (:name smex				; a better (ido like) M-x
 	  :after (progn
 		   (setq smex-save-file (my-expand-path ".smex-items"))
 		   (global-set-key (kbd "M-x") 'smex)
-		   (global-set-key (kbd "M-X") 'smex-major-mode-commands)))))
+		   (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
+
+   (:name swank-js
+	  :description "SLIME REPL and other development tools for in-browser JavaScript and Node.JS"
+	  :type github
+	  :pkgname "swank-js/swank-js"
+	  :depends (js2-mode slime)
+	  :after (let* ((slime-dir (el-get-package swank-js))
+			(swank-js-dir (el-get-package swank-js))
+			(slime-link (concat slime-dir "/contrib/slime-js.el"))
+			(swank-el (concat swank-js-dir "/slime-js.el")))
+		   ;; Make sur the file is there.
+		   (unless (file-exists-p slime-link)
+		     (make-symbolic-link swank-el slime-link)))
+	  :features nil)))
 
 ;;
 ;; Some recipes require extra tools to be installed

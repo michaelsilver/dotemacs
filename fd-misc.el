@@ -49,6 +49,7 @@ With negative N, comment out original line and use the absolute value."
         (forward-line 1)
         (forward-char pos)))))
 
+(global-set-key (kbd"C-c C-d") 'duplicate-line-or-region)
 (global-set-key (kbd"C-c d") 'duplicate-line-or-region)
 
 ;; If wou dont have the above path, i feel 'forward is best.
@@ -213,5 +214,17 @@ as input replacing the buffer with the output."
   (dolist (b (buffer-list))
     (when (buffer-file-name b)
       (kill-buffer b))))
+
+(setq auto-save-timeout 0
+      auto-save-interval 0)
+
+(global-set-key (kbd "M-S-<up>")
+		(lambda () (interactive) (enlarge-window 10)))
+(global-set-key (kbd "M-S-<down>")
+		(lambda () (interactive) (enlarge-window -10)))
+(global-set-key (kbd "M-S-<left>")
+		(lambda () (interactive) (enlarge-window -10 t)))
+(global-set-key (kbd "M-S-<right>")
+		(lambda () (interactive) (enlarge-window 10 t)))
 
 (provide 'fd-misc)
