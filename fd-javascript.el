@@ -7,7 +7,12 @@
 (defvar fd-js-etags-gen-command "find . \! -name '.*' -regex '.*\.jsm?' |
 xargs etags --language=none
 --regex='/.*\\([a-zA-Z0-9_]+\\)[ \\n\\t]*[:=][ \\t]*function[ \\n\\t]*(/\\1/'
---regex '/[ \\t,;]*function[ \\t\\n]\\([a-zA-Z0-9_]+\\)[ \\t\\n](/\\1/'")
+--regex='/[ \\t,;]*\\([a-zA-Z0-9_]+\\)[ \\n\\t]*:/\\1/'
+--regex='/[ \\t,;]*function[ \\t\\n]*\\([a-zA-Z0-9_]+\\)[ \\t\\n]*(/\\1/'
+--regex='/^var[ \\t\\n]*\\([a-zA-Z0-9_]+\\)/\\1/'
+"
+  "Find assigned functions, defined functions, object/dictionary
+  properties and top level variables")
 
 
 (defun fd-js-mode-hook ()
