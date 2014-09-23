@@ -72,6 +72,7 @@
 	markdown-mode
 	expand-region
 	etags-table
+	etags-select
 	zencoding-mode
 	git-emacs
 	bm
@@ -162,14 +163,20 @@
 	  :type github
 	  :pkgname "swank-js/swank-js"
 	  :depends (js2-mode slime)
-	  :after (let* ((slime-dir (el-get-package swank-js))
-			(swank-js-dir (el-get-package swank-js))
+	  :after (let* ((slime-dir (el-get-package-directory "slime"))
+			(swank-js-dir (el-get-package-directory "swank-js"))
 			(slime-link (concat slime-dir "/contrib/slime-js.el"))
 			(swank-el (concat swank-js-dir "/slime-js.el")))
 		   ;; Make sur the file is there.
 		   (unless (file-exists-p slime-link)
 		     (make-symbolic-link swank-el slime-link)))
-	  :features nil)))
+	  :features nil)
+
+
+   (:name ido-ubiquitous
+	  :description "Ido everywhere."
+	  :type github
+	  :pkgname "DarwinAwardWinner/ido-ubiquitous")))
 
 ;;
 ;; Some recipes require extra tools to be installed

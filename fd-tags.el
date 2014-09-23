@@ -2,8 +2,12 @@
 ;; Requires: etags-table, gtags
 (require 'etags)
 (require 'etags-table)
+(require 'etags-select)
 (setq etags-table-search-up-depth 10
-      etags-table-generate-tags t)
+      etags-table-generate-tags t
+      etags-select-use-short-name-completion t)
+
+(defalias 'find-tag 'etags-select-find-tag)
 
 (defvar gtags-generate-cmd-format nil)
 ;; CC-MODE
