@@ -166,12 +166,18 @@
 	  :after (let* ((slime-dir (el-get-package-directory "slime"))
 			(swank-js-dir (el-get-package-directory "swank-js"))
 			(slime-link (concat slime-dir "/contrib/slime-js.el"))
-			(swank-el (concat swank-js-dir "/slime-js.el")))
+			(swank-el (concat swank-js-dir "/slime-js.el"))
+			(npm-installed? (equal 0 (call-process-shell-command
+						  "npm list -g swank-js")))
+			(npm-install-cmd (format "npm install -g %s" swank-js-dir)))
 		   ;; Make sur the file is there.
 		   (unless (file-exists-p slime-link)
-		     (make-symbolic-link swank-el slime-link)))
+		     (make-symbolic-link swank-el slime-link))
+		   (message "Installing swank-js: %s" npm-install-cmd)
+		   (unless (or npm-installed?
+			       (equal (call-process-shell-command npm-install-cmd) 0))
+		     (error "Error during swank-js install to npm. (is prefix = .... in your ~/.npmrc?)")))
 	  :features nil)
-
 
    (:name ido-ubiquitous
 	  :description "Ido everywhere."
