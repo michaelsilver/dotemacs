@@ -16,7 +16,8 @@
 (erc-autojoin-mode t)
 (setq erc-autojoin-channels-alist
       '((".*\\.freenode.net" "#emacs")
-	(".*\\.freenode.net" "#thinksilicon")))
+	(".*\\.freenode.net" "#codebender.cc")
+	(".*\\.freenode.net" "#p-space")))
 
 (defun fakedrake-erc-start-or-switch ()
   "Connect to ERC, or switch to last active buffer"
@@ -30,16 +31,31 @@
 (defun my-destroy-erc ()
   "Kill all erc buffers!!"
   (interactive)
+  (message "Killing all ERC buffers!")
   (save-excursion
     (dolist (i (buffer-list))
       (with-current-buffer i
 	(cond
 	 ((eq major-mode 'erc-mode) (kill-buffer (current-buffer))))))))
 
+(defun fd-bury-erc ()
+  "Kill all erc buffers!!"
+  (interactive)
+  (message "Burying ERC buffers...")
+  (switch-to-buffer (other-buffer))
+  (save-excursion
+    (dolist (i (buffer-list))
+      (with-current-buffer i
+	(cond
+	 ((eq major-mode 'erc-mode) (bury-buffer (current-buffer))))))))
+
 ;; switch to ERC with Ctrl+c e
 (global-set-key (kbd "C-c e s") 'fakedrake-erc-start-or-switch) ;; ERC
+(global-set-key (kbd "C-c e b") 'fd-bury-erc)
 (global-set-key (kbd "C-c e k") 'my-destroy-erc)
 
 (add-hook 'erc-mode-hook '(lambda() (set (make-local-variable 'global-hl-line-mode) nil)))
+
+(erc-notifications-mode t)
 
 (provide 'fd-erc)
