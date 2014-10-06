@@ -42,12 +42,10 @@
   "Kill all erc buffers!!"
   (interactive)
   (message "Burying ERC buffers...")
-  (switch-to-buffer (other-buffer))
-  (save-excursion
-    (dolist (i (buffer-list))
-      (with-current-buffer i
-	(cond
-	 ((eq major-mode 'erc-mode) (bury-buffer (current-buffer))))))))
+  (dolist (i (buffer-list))
+    (with-current-buffer i
+      (when (eq major-mode 'erc-mode)
+	  (bury-buffer)))))
 
 ;; switch to ERC with Ctrl+c e
 (global-set-key (kbd "C-c e s") 'fakedrake-erc-start-or-switch) ;; ERC
