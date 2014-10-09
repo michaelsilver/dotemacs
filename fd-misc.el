@@ -140,7 +140,9 @@ parent."
   (move-text-internal (- arg)))
 
 (global-set-key (kbd "C-M-p") 'move-text-up)
+(global-set-key (kbd "<M-up>") 'move-text-up)
 (global-set-key (kbd "C-M-n") 'move-text-down)
+(global-set-key (kbd "<M-down>") 'move-text-down)
 
 (global-set-key (kbd "C-c f d") 'find-dired)
 
@@ -215,6 +217,12 @@ as input replacing the buffer with the output."
   (dolist (b (buffer-list))
     (when (buffer-file-name b)
       (kill-buffer b))))
+
+(defun kill-fs-buffers ()
+  "Kill all filesystem related buffers."
+  (interactive)
+  (kill-file-buffers)
+  (kill-dired-buffers))
 
 (setq auto-save-timeout 0
       auto-save-interval 0)

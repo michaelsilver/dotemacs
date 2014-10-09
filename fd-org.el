@@ -198,12 +198,14 @@ means the first element is definitely not a root node."
   (interactive)
   (call-interactively 'yas-expand))
 
-(add-hook 'markdown-mode-hook (lambda ()
-				;; Minor modes
-				(flyspell-mode 1)
+(add-hook 'markdown-mode-hook 'fd-markdown-mode-hook)
 
-				;; Keys
-				(define-key markdown-mode-map (kbd "C-c q") 'refill-mode)))
+(defun fd-markdown-mode-hook ()
+  ;; Minor modes
+  (flyspell-mode 1)
+  ;; Keys
+  (define-key markdown-mode-map (kbd "C-c q") 'refill-mode)
+  (define-key markdown-mode-map (kbd "C-c -") 'markdown-insert-list-item))
 
 (defun fd--m2t-cmd ()
   (let ((pholder "placeholderkillmerightnowplease"))

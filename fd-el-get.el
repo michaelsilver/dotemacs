@@ -42,6 +42,10 @@
 	ido-ubiquitous
 	smex
 
+	;; erc
+	erc-highlight-nicknames
+	erc-image
+
 	;; Misc
 	;;	slime
 	;; helm
@@ -52,8 +56,11 @@
 	textile-mode
 	haskell-mode
 	js2-mode
+	coffee-mode
+	flymake-coffee
 	slime
 	swank-js
+	json-mode
 	graphviz-dot-mode
 	cider
 	ac-nrepl
@@ -182,7 +189,12 @@
    (:name ido-ubiquitous
 	  :description "Ido everywhere."
 	  :type github
-	  :pkgname "DarwinAwardWinner/ido-ubiquitous")))
+	  :pkgname "DarwinAwardWinner/ido-ubiquitous")
+
+   (:name erc-image
+	  :description "Image previews in erc."
+	  :type github
+	  :pkgname "kidd/erc-image.el")))
 
 ;;
 ;; Some recipes require extra tools to be installed
