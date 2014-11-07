@@ -105,27 +105,28 @@ parent."
 	ad-do-it)
     ad-do-it))
 
-
 (defun move-text-internal (arg)
-  (cond
-   ((and mark-active transient-mark-mode)
-    (if (> (point) (mark))
-	(exchange-point-and-mark))
-    (let ((column (current-column))
-	  (text (delete-and-extract-region (point) (mark))))
-      (forward-line arg)
-      (move-to-column column t)
-      (set-mark (point))
-      (insert text)
-      (exchange-point-and-mark)
-      (setq deactivate-mark nil)))
-   (t
-    (beginning-of-line)
-    (when (or (> arg 0) (not (bobp)))
-      (forward-line)
-      (when (or (< arg 0) (not (eobp)))
-	(transpose-lines arg))
-      (forward-line -1)))))
+  (let ((cc (current-column)))
+    (cond
+     ((and mark-active transient-mark-mode)
+      (if (> (point) (mark))
+	  (exchange-point-and-mark))
+      (let ((column (current-column))
+	    (text (delete-and-extract-region (point) (mark))))
+	(forward-line arg)
+	(move-to-column column t)
+	(set-mark (point))
+	(insert text)
+	(exchange-point-and-mark)
+	(setq deactivate-mark nil)))
+     (t
+      (beginning-of-line)
+      (when (or (> arg 0) (not (bobp)))
+	(forward-line)
+	(when (or (< arg 0) (not (eobp)))
+	  (transpose-lines arg))
+	(forward-line (min (- arg 1) -1))
+	(move-to-column cc))))))
 
 (defun move-text-down (arg)
   "Move region (transient-mark-mode active) or current line
@@ -141,8 +142,8 @@ parent."
 
 (global-set-key (kbd "C-M-p") 'move-text-up)
 (global-set-key (kbd "<M-up>") 'move-text-up)
-(global-set-key (kbd "C-M-n") 'move-text-down)
 (global-set-key (kbd "<M-down>") 'move-text-down)
+(global-set-key (kbd "C-M-n") 'move-text-down)
 
 (global-set-key (kbd "C-c f d") 'find-dired)
 
@@ -235,5 +236,17 @@ as input replacing the buffer with the output."
 		(lambda () (interactive) (enlarge-window -10 t)))
 (global-set-key (kbd "M-S-<right>")
 		(lambda () (interactive) (enlarge-window 10 t)))
+
+;; key bindings
+(when (eq system-type 'darwin) ;; mac specific settings
+  ;; Fn screws thing up in macs
+  (global-set-key (kbd "<S-backspace>") 'backward-kill-word)
+  (global-set-key (kbd "<end>") 'forward-word)
+  (global-set-key (kbd "<home>") 'backward-word)
+
+  (setq mac-option-modifier 'meta
+	mac-command-modifier 'meta
+	mac-function-modifier 'control)
+  (global-set-key [kp-delete] 'delete-char)) ;; sets fn-delete to be right-delete
 
 (provide 'fd-misc)

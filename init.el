@@ -1,12 +1,11 @@
 (require 'cl)
 
-(load-file "~/.emacs.d/fd-essential.el")
-
-(require 'fd-perliminaries)
+(load-file "~/.emacs.d/lisp/fd-perliminaries.el")
 (require 'fd-el-get)
 (require 'fd-misc)
 (require 'fd-misc-programming)
 (require 'fd-automode)
+(require 'fd-javascript)
 (require 'fd-visual)
 (require 'fd-clipboard)
 (require 'fd-ido)
@@ -16,12 +15,12 @@
 (require 'fd-undotree)
 (require 'fd-recentfiles)
 (require 'fd-erc)
+
 (require 'fd-bookmarks)
 (require 'fd-tags)
 (require 'fd-expand-region)
 (require 'fd-lisp)
 (require 'fd-cc-mode)
-(require 'fd-javascript)
 (require 'fd-prolog)
 (require 'fd-vimperator)
 (require 'fd-org)

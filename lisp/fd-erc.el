@@ -1,4 +1,3 @@
-
 ;; ERC
 ;; check channels
 (require 'erc)
@@ -56,9 +55,9 @@
 
 (erc-notifications-mode t)
 
-(require 'erc-image)
-(add-to-list 'erc-modules 'image)
-(erc-update-modules)
-(setq erc-image-inline-rescale 5)
+;; (require 'erc-image)
+;; (add-to-list 'erc-modules 'image)
+;; (erc-update-modules)
+;; (setq erc-image-inline-rescale 5)
 
 (provide 'fd-erc)

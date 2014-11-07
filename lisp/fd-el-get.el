@@ -26,6 +26,7 @@
 	python
 	django-mode
 	jedi
+	ein
 
 	;; Auto Complete packages
 	yasnippet
@@ -43,23 +44,24 @@
 	smex
 
 	;; erc
+	erc
 	erc-highlight-nicknames
-	erc-image
+	;; erc-image
 
 	;; Misc
 	;;	slime
 	;; helm
 	;; nxhtml ; this is obsolete crap, stay away.
+	realgud
 	twiki-mode
 	lua-mode
-	php-mode-improved
 	textile-mode
 	haskell-mode
 	js2-mode
 	coffee-mode
-	flymake-coffee
-	slime
-	swank-js
+       ;;flymake-coffee-load
+;;	slime
+	;; swank-js
 	json-mode
 	graphviz-dot-mode
 	cider
@@ -78,20 +80,17 @@
 	org-mode
 	markdown-mode
 	expand-region
-	etags-table
-	etags-select
+	ggtags
 	zencoding-mode
 	git-emacs
 	bm
-	compilation-setup
-	undo-tree))
+	compilation-setup))
 
 (setq
  el-get-sources
  '(el-get
    zencoding-mode
    python-pep8
-   python-mode
 
    (:name yasnippet-snippets
 	  :description "Some snippets."
@@ -101,12 +100,6 @@
 	  :post-init (add-to-list 'yas/root-directory
 				  (concat el-get-dir
 					  (file-name-as-directory "yasnippet-snippets"))))
-
-   (:name python
-	  :description "Python's flying circus support for Emacs"
-	  :type github
-	  :pkgname "fgallina/python.el"
-	  :branch "emacs-24")
 
    (:name vimperator-mode
 	  :description "Edit vimperator files"

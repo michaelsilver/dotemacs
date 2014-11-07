@@ -23,13 +23,6 @@
     (indent-region (point-min) (point-max) nil)))
 (global-set-key "\C-x\\" 'indent-buffer)
 
-;; PATH in emacs
-(defun set-exec-path-from-shell-PATH ()
-  (interactive)
-  (let ((path-from-shell (car (reverse (split-string (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))))
-    (setenv "PATH" path-from-shell)
-    (setq exec-path (split-string path-from-shell path-separator))))
-
 ;; Ediff
 (setq ediff-split-window-function 'split-window-horizontally)
 
