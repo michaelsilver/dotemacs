@@ -24,8 +24,12 @@
   ;; (select-frame (make-frame '((name . "Emacs IRC")
   ;; 			      (minibuffer . t))))
   (if (get-buffer "irc.freenode.net:6667") ;; ERC already active?
-      (erc-track-switch-buffer 1) ;; yes: switch to last active
-      (erc :server "irc.freenode.net" :port 6667 :nick my-freenode-nick :full-name my-freenode-fullname :password my-freenode-password)))
+      (fd-digup-erc)
+      (erc :server "irc.freenode.net"
+	   :port 6667
+	   :nick my-freenode-nick
+	   :full-name my-freenode-fullname
+	   :password my-freenode-password)))
 
 (defun my-destroy-erc ()
   "Kill all erc buffers!!"
@@ -36,6 +40,15 @@
       (with-current-buffer i
 	(cond
 	 ((eq major-mode 'erc-mode) (kill-buffer (current-buffer))))))))
+
+(defun fd-digup-erc ()
+  "Kill all erc buffers!!"
+  (interactive)
+  (message "Digging up ERC buffers...")
+  (dolist (i (reverse (buffer-list)))
+    (with-current-buffer i
+      (when (eq major-mode 'erc-mode)
+	  (switch-to-buffer i)))))
 
 (defun fd-bury-erc ()
   "Kill all erc buffers!!"

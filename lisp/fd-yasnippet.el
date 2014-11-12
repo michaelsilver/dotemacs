@@ -11,11 +11,12 @@ keep, defaults to 1."
 (add-to-list 'yas-snippet-dirs (my-expand-path "my-snippets/"))
 (yas-global-mode 1)
 
-(global-set-key (kbd "C-h y") 'yas-describe-tables)
-(global-set-key (kbd "<backtab>") 'yas-expand) ; S-Tab
+(define-key yas-minor-mode-map (kbd "C-h y") 'yas-describe-tables)
+(define-key yas-minor-mode-map (kbd "<backtab>") 'yas-expand) ; S-Tab
 (define-key yas-minor-mode-map [(tab)] nil)
 (define-key yas-minor-mode-map (kbd "TAB") nil)
 
+;; Helper functions for snippet definitions
 (defun fd-snippet-python-arguments (text)
   (let* ((targs (replace-regexp-in-string "\\*[^,]" "" text))
 	 (args (split-string targs
