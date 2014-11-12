@@ -14,9 +14,9 @@
 ;; name can be be a bit different, which would screw up autoconnect
 (erc-autojoin-mode t)
 (setq erc-autojoin-channels-alist
-      '((".*\\.freenode.net" "#emacs")
-	(".*\\.freenode.net" "#codebender.cc")
-	(".*\\.freenode.net" "#p-space")))
+      '((".*\\.freenode.net" "#node.js")
+	(".*\\.freenode.net" "#p-space")
+	(".*\\.freenode.net" "#codebender.cc")))
 
 (defun fakedrake-erc-start-or-switch ()
   "Connect to ERC, or switch to last active buffer"
