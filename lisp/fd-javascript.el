@@ -18,7 +18,14 @@
 
 (defvar js-compilation-error-regex-alist
   ;; REGEX FILE-GROUP LINE-GROUP COLUMN-GROUP ERROR-TYPE LINK-GROUP
-  '((nodejs
+  '(
+    ;; When selenium runs pipe it through `sed
+    ;; 's_http://localhost:8080_$(CURDIR)_g'`
+    (my-selenium
+     "^BrowserLog: \\(\\(.*\.js\\) \\([0-9]*\\):\\([0-9]*\\)\\) "
+     2 3 4 nil 1)
+
+    (nodejs
      "^[ \\t]*at.* (?\\(file://\\)?\\(\\(.*?\\):\\([0-9]*\\)\\(:\\([0-9]*\\)\\)?\\))?$"
      3 4 6 nil 2)
     (jasmine
