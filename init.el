@@ -1,6 +1,7 @@
 (require 'cl)
 
 (load-file "~/.emacs.d/lisp/fd-perliminaries.el")
+(require 'fd-personal)
 (require 'fd-el-get)
 (require 'fd-misc)
 (require 'fd-misc-programming)

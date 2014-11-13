@@ -13,23 +13,29 @@
 ;; make sure to use wildcards for e.g. freenode as the actual server
 ;; name can be be a bit different, which would screw up autoconnect
 (erc-autojoin-mode t)
-(setq erc-autojoin-channels-alist
-      '((".*\\.freenode.net" "#node.js")
-	(".*\\.freenode.net" "#p-space")
-	(".*\\.freenode.net" "#codebender.cc")))
+(setq erc-use-znc-astaroth t)
 
 (defun fakedrake-erc-start-or-switch ()
   "Connect to ERC, or switch to last active buffer"
   (interactive)
   ;; (select-frame (make-frame '((name . "Emacs IRC")
   ;; 			      (minibuffer . t))))
+  (setq erc-autojoin-channels-alist
+	'((".*\\.freenode.net" "#node.js")
+	  (".*\\.freenode.net" "#p-space")
+	  (".*\\.freenode.net" "#codebender.cc")))
   (if (get-buffer "irc.freenode.net:6667") ;; ERC already active?
       (fd-digup-erc)
+    (if erc-use-znc-astaroth
+	(erc :server "astaroth"
+	     :port 5000
+	     :nick my-znc-nick
+	     :password (format "%s:%s" my-znc-nick my-znc-password))
       (erc :server "irc.freenode.net"
 	   :port 6667
 	   :nick my-freenode-nick
 	   :full-name my-freenode-fullname
-	   :password my-freenode-password)))
+	   :password my-freenode-password))))
 
 (defun my-destroy-erc ()
   "Kill all erc buffers!!"
@@ -48,7 +54,7 @@
   (dolist (i (reverse (buffer-list)))
     (with-current-buffer i
       (when (eq major-mode 'erc-mode)
-	  (switch-to-buffer i)))))
+	(switch-to-buffer i)))))
 
 (defun fd-bury-erc ()
   "Kill all erc buffers!!"
@@ -57,7 +63,7 @@
   (dolist (i (buffer-list))
     (with-current-buffer i
       (when (eq major-mode 'erc-mode)
-	  (bury-buffer)))))
+	(bury-buffer)))))
 
 ;; switch to ERC with Ctrl+c e
 (global-set-key (kbd "C-c e s") 'fakedrake-erc-start-or-switch) ;; ERC

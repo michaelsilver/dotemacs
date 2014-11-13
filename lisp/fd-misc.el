@@ -5,11 +5,6 @@
 
 (require 'fd-cookbook)
 
-(let ((personal-el  "~/.emacs.d/personal.el"))
-  (if (file-readable-p personal-el)
-      (load-file personal-el)
-    (load-file (my-expand-path "dummy-personal.el"))))
-
 ;; Server configuration
 (require 'server)
 (if (server-running-p)

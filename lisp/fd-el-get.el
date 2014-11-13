@@ -184,6 +184,18 @@
 	  :type github
 	  :pkgname "DarwinAwardWinner/ido-ubiquitous")
 
+   (:name web-beautify
+	  :description "Beautify CSS, HTML and JS/JSON."
+	  :depends (js-beautify)
+	  :type github
+	  :pkgname "yasuyk/web-beautify")
+
+   (:name js-beautify
+	  :description "Beautify on node"
+	  :type npm
+	  :pkgname "js-beautify")
+
+
    (:name erc-image
 	  :description "Image previews in erc."
 	  :type github
