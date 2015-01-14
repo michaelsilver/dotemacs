@@ -57,7 +57,7 @@ With negative N, comment out original line and use the absolute value."
   (interactive)
   (if buffer-file-name
       (let ((new-mode (logior #o111 (file-modes buffer-file-name))))
-	(set-file-modes buffer-file-name new-mode))
+        (set-file-modes buffer-file-name new-mode))
     (message "No such file to make executable.")))
 
 ;; Rename files
@@ -65,18 +65,18 @@ With negative N, comment out original line and use the absolute value."
   "Renames current buffer and file it is visiting."
   (interactive)
   (let ((name (buffer-name))
-	(filename (buffer-file-name)))
+        (filename (buffer-file-name)))
     (if (not (and filename (file-exists-p filename)))
-	(error "Buffer '%s' is not visiting a file!" name)
+        (error "Buffer '%s' is not visiting a file!" name)
       (let ((new-name (read-file-name "New name: " filename)))
-	(cond ((get-buffer new-name)
-	       (error "A buffer named '%s' already exists!" new-name))
-	      (t
-	       (rename-file filename new-name 1)
-	       (rename-buffer new-name)
-	       (set-visited-file-name new-name)
-	       (set-buffer-modified-p nil)
-	       (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
+        (cond ((get-buffer new-name)
+               (error "A buffer named '%s' already exists!" new-name))
+              (t
+               (rename-file filename new-name 1)
+               (rename-buffer new-name)
+               (set-visited-file-name new-name)
+               (set-buffer-modified-p nil)
+               (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
 
 (setq require-final-newline t)
 
@@ -84,13 +84,19 @@ With negative N, comment out original line and use the absolute value."
   "Get the parent dir of the fname. If fname is a dir get the
 parent."
   (replace-regexp-in-string "[^/]+$" ""
-			    (directory-file-name fname)))
+                            (directory-file-name fname)))
 
 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 
+(defvar-local untabify-on-save nil
+  "Automatically untabify the buffer before saving")
 (defadvice save-buffer (around save-buffer-as-root-around activate)
   "Use sudo to save the current buffer."
   (interactive "p")
+  (when untabify-on-save
+    (save-excursion
+      (mark-whole-buffer)
+      (call-interactively 'untabify)))
   (if (and (buffer-file-name)
 	   (file-accessible-directory-p
 	    (file-directory-name (buffer-file-name)))
@@ -243,5 +249,20 @@ as input replacing the buffer with the output."
 	mac-command-modifier 'meta
 	mac-function-modifier 'control)
   (global-set-key [kp-delete] 'delete-char)) ;; sets fn-delete to be right-delete
+
+(setq ring-bell-function 'ignore)
+(setq-default indent-tabs-mode nil)
+
+(defun hide-carriage-return-characters ()
+  "Do not show ^M in files containing mixed UNIX and DOS line endings."
+  (interactive)
+  (setq buffer-display-table (make-display-table))
+  (aset buffer-display-table ?\^M []))
+
+(defun unfill-paragraph (&optional region)
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (interactive (progn (barf-if-buffer-read-only) '(t)))
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil region)))
 
 (provide 'fd-misc)

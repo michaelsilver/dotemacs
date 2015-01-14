@@ -1,6 +1,6 @@
 ;;; fd-compilation.el
 ;; Stuff related to compilation.
-
+(require 's)
 (require 'notifications)
 (defun compilation-end-defun (compilation-buffer result)
   (with-current-buffer compilation-buffer
@@ -32,19 +32,19 @@
 
 (defalias 'read-directory-name 'ido-read-directory-name)
 
-(defun fd-compile (command directory &optional arg)
+(defun fd-compile (command directory)
   (interactive (list
-		(read-shell-command "Compile command: " compile-command)
-		(read-directory-name "Root directory: " (or compilation-directory default-directory))
-		current-prefix-arg))
-  (let ((compilation-directory (concat directory "/"))
-	(compile-command command))
-    (if arg (fd-recompile)
-      (add-dir-local-variable nil 'compile-command compile-command)
-      (add-dir-local-variable nil 'compilation-directory compilation-directory)
-      (save-buffer)
-      (bury-buffer)
-      (fd-recompile))))
+		(read-shell-command "Compile command: "
+				    compile-command)
+		(read-directory-name "Root directory: "
+				     (or compilation-directory default-directory))))
+  (let ((cd (if (s-ends-with-p "/" directory) directory (concat directory "/")))
+	(cc command))
+    (add-dir-local-variable nil 'compile-command cc)
+    (add-dir-local-variable nil 'compilation-directory cd)
+    (save-buffer)
+    (bury-buffer)
+    (fd-recompile)))
 
 (global-set-key (kbd "C-c r") 'fd-recompile)
 (global-set-key (kbd "C-c c c") 'fd-compile)

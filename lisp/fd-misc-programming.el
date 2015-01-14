@@ -9,10 +9,10 @@
 
 
 (add-hook 'term-mode-hook
-	  #'(lambda ()
-	      (setq autopair-dont-activate t) ;; for emacsen < 24
-	      (autopair-mode -1))             ;; for emacsen >= 24
-	  )
+          #'(lambda ()
+              (setq autopair-dont-activate t) ;; for emacsen < 24
+              (autopair-mode -1))             ;; for emacsen >= 24
+          )
 
 ;; Indent buffer
 (defun indent-buffer ()
@@ -39,14 +39,14 @@
 (global-set-key (kbd "M-n") 'forward-paragraph)
 
 (defvar projects-alist '(("wikipedia-base" . "/home/fakedrake/Projects/CSAIL/Python/WikipediaBase/PLAN.org")
-			 ("overlay-parse" . "/home/fakedrake/Projects/CSAIL/Python/py/src/overlay-parse/overlay_parse/dates.py")
-			 ("dotemacs" . "~/.emacs.d/fd-misc-programming.el")
-			 ("csail-plan" . "~/Projects/CSAIL/PLAN.org")
-			 ("wikipedia-mirror-futuna" . "/ssh:cperivol@futuna.csail.mit.edu:/scratch/cperivol/wikipedia-mirror/")
-			 ("wikipedia-mirror-ashmore" . "/ssh:cperivol@ashmore.csail.mit.edu:/local/cperivol/wikipedia-mirror/")
-			 ("wikipedia-mirror-tuvalu" . "/ssh:cperivol@tuvalu.csail.mit.edu:/local/cperivol/wikipedia-mirror/")
-			 ("xilinx-zynq-bootstrap-purple" . "/ssh:cperivol@purple:/homes/cperivol/Projects/xilinx-zynq-bootstrap")
-			 ("wikipedia-base-futuna" . "/ssh:cperivol@futuna.csail.mit.edu:/scratch/cperivol/wikipediabase/"))
+                         ("overlay-parse" . "/home/fakedrake/Projects/CSAIL/Python/py/src/overlay-parse/overlay_parse/dates.py")
+                         ("dotemacs" . "~/.emacs.d/fd-misc-programming.el")
+                         ("csail-plan" . "~/Projects/CSAIL/PLAN.org")
+                         ("wikipedia-mirror-futuna" . "/ssh:cperivol@futuna.csail.mit.edu:/scratch/cperivol/wikipedia-mirror/")
+                         ("wikipedia-mirror-ashmore" . "/ssh:cperivol@ashmore.csail.mit.edu:/local/cperivol/wikipedia-mirror/")
+                         ("wikipedia-mirror-tuvalu" . "/ssh:cperivol@tuvalu.csail.mit.edu:/local/cperivol/wikipedia-mirror/")
+                         ("xilinx-zynq-bootstrap-purple" . "/ssh:cperivol@purple:/homes/cperivol/Projects/xilinx-zynq-bootstrap")
+                         ("wikipedia-base-futuna" . "/ssh:cperivol@futuna.csail.mit.edu:/scratch/cperivol/wikipediabase/"))
   "An alist of projects and the most relatd file.")
 
 (defun read-project-name ()
@@ -64,4 +64,5 @@ PROJECTS-ALIST."
 
 (setq git--commit-args "--cleanup=whitespace")
 
+(add-hook 'sql-mode-hook (lambda () (setq-local untabify-on-save t)))
 (provide 'fd-misc-programming)

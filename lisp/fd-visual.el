@@ -36,9 +36,12 @@
 ;; Zoom
 (defun djcb-zoom (n)
   "with positive N, increase the font size, otherwise decrease it"
-  (set-face-attribute 'default (selected-frame) :height
-		      (+ (face-attribute 'default :height) (* (if (> n 0) 1 -1) 5)))
-  (message (format "Font size: %d" (face-attribute 'default :height))))
+  (set-face-attribute
+   'default nil :height
+   (+ (face-attribute 'default :height)
+      (* (if (> n 0) 1 -1) 5)))
+  (message (format "Font size: %d"
+		   (face-attribute 'default :height))))
 
 (global-set-key (kbd "M-+")      #'(lambda nil (interactive) (djcb-zoom 1)))
 (global-set-key (kbd "M--")      #'(lambda nil (interactive) (djcb-zoom -1)))

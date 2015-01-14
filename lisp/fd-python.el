@@ -262,4 +262,9 @@ of hook."
    "__package__ = '%s';import '%s'; from ppring import pprint as pp")
   (call-interactively (python-shell-send-buffer)))
 
+(defun fd-ein:hook ()
+  (define-key ein:notebook-mode-map (kbd "C-c r") 'ein:worksheet-execute-all-cell))
+
+(add-hook 'ein:notebook-mode-hook 'fd-ein:hook)
+
 (provide 'fd-python)

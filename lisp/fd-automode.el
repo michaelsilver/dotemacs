@@ -15,5 +15,7 @@
 (add-to-list 'auto-mode-alist '("[.]jsm$" . js2-mode))
 (add-to-list 'auto-mode-alist '("[.]json$" . json-mode))
 (add-to-list 'auto-mode-alist '("[.]java" . java-mode))
+(add-to-list 'auto-mode-alist '("[.]ino" . c++-mode))
+(add-to-list 'auto-mode-alist '("[.]pde" . c++-mode))
 
 (provide 'fd-automode)

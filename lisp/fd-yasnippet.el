@@ -86,4 +86,4 @@ sphinx describing the arguments."
 (defun last-sym-before (regex)
   (car (last-syms-before regex)))
 
-  (provide 'fd-yasnippet)
+(provide 'fd-yasnippet)

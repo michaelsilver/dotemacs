@@ -1,11 +1,13 @@
 ;; ORG mode
-(load-library "org-compat") 		;XXX this is bad but i see no better way.
+;; (load-library "org-compat") 		;XXX this is bad but i see no better way.
 
-(load-library "org-list")
-(require 'org-element)
-(require 'org)
+;; (load-library "org-list")
+;; (require 'org-element)
+(load-library "org")			; Requiring doesnt get the
+					; defvar for some reason
 
-
+(setq my-orgmode-dir "~/.org-y"
+      my-notes-file "~/.org-y/notes.org")
 ;; Set up org-mode capture system
 (if (and (file-exists-p my-orgmode-dir)
 	 (eq t (car (file-attributes my-orgmode-dir)))) ; It is actually a directory

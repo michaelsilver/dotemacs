@@ -24,7 +24,7 @@
 	'((".*\\.freenode.net" "#node.js")
 	  (".*\\.freenode.net" "#p-space")
 	  (".*\\.freenode.net" "#codebender.cc")))
-  (if (get-buffer "irc.freenode.net:6667") ;; ERC already active?
+  (if (get-erc-buffer (buffer-list)) ;; ERC already active?
       (fd-digup-erc)
     (if erc-use-znc-astaroth
 	(erc :server "astaroth"
@@ -36,6 +36,12 @@
 	   :nick my-freenode-nick
 	   :full-name my-freenode-fullname
 	   :password my-freenode-password))))
+
+(defun get-erc-buffer (buffers)
+  (if (or (null (car buffers))
+	   (eq (with-current-buffer (car buffers) major-mode) 'erc-mode))
+      (car buffers)
+    (get-erc-buffer (cdr buffers))))
 
 (defun my-destroy-erc ()
   "Kill all erc buffers!!"
@@ -72,11 +78,17 @@
 
 (add-hook 'erc-mode-hook '(lambda() (set (make-local-variable 'global-hl-line-mode) nil)))
 
+(add-hook 'erc-mode-hook 'fd-erc-hook)
+
+(defun fd-erc-hook ()
+  (define-key erc-mode-map (kbd "M-m") 'erc-bol))
+
 (erc-notifications-mode t)
 
 ;; (require 'erc-image)
 ;; (add-to-list 'erc-modules 'image)
-;; (erc-update-modules)
-;; (setq erc-image-inline-rescale 5)
+(erc-update-modules)
+(setq erc-image-inline-rescale 5)
 
+(ignore-errors (fakedrake-erc-start-or-switch))
 (provide 'fd-erc)

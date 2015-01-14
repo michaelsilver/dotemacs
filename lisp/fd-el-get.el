@@ -30,7 +30,7 @@
 
 	;; Auto Complete packages
 	yasnippet
-	yasnippet-snippets
+        auto-yasnippet
 	auto-complete
 
 	;; themes I like
@@ -110,11 +110,6 @@
 	  :description "Visualize undo history as a tree"
 	  :type github
 	  :pkgname "emacsmirror/undo-tree")
-
-   (:name etags-table
-	  :description "Etags is smart enough to look for a table in fs."
-	  :type github
-	  :pkgname "fakedrake/etags-table")
 
    ;; This is temporary until the pull request is dealt with in upstream
    (:name compilation-setup
@@ -199,7 +194,15 @@
    (:name erc-image
 	  :description "Image previews in erc."
 	  :type github
-	  :pkgname "kidd/erc-image.el")))
+	  :pkgname "kidd/erc-image.el")
+   (:name ein
+       :description "IPython notebook client in Emacs"
+       :type github
+       :pkgname "millejoh/emacs-ipython-notebook"
+       :depends (websocket request auto-complete)
+       :load-path ("lisp")
+       :submodule nil
+       :features ein)))
 
 ;;
 ;; Some recipes require extra tools to be installed
