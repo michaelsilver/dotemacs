@@ -48,10 +48,10 @@
 
 ;; XXX: Have this be the last thing you do. Apparently things get
 ;; overriden if it is at the beginning of the file.
+(require 'naquadah-theme)
 (if window-system
     (let ((comment "IndianRed2"))
       (global-hl-line-mode t)
-      (require 'naquadah-theme)
       (load-theme 'naquadah t)
       (custom-theme-set-faces
        'naquadah
@@ -122,5 +122,7 @@
 		"  " mode-line-modes
 		mode-line-misc-info
 		mode-line-end-spaces))
+
+(setq-default cursor-type 'box)
 
 (provide 'fd-visual)

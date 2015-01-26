@@ -238,18 +238,6 @@ as input replacing the buffer with the output."
 (global-set-key (kbd "M-S-<right>")
 		(lambda () (interactive) (enlarge-window 10 t)))
 
-;; key bindings
-(when (eq system-type 'darwin) ;; mac specific settings
-  ;; Fn screws thing up in macs
-  (global-set-key (kbd "<S-backspace>") 'backward-kill-word)
-  (global-set-key (kbd "<end>") 'forward-word)
-  (global-set-key (kbd "<home>") 'backward-word)
-
-  (setq mac-option-modifier 'meta
-	mac-command-modifier 'meta
-	mac-function-modifier 'control)
-  (global-set-key [kp-delete] 'delete-char)) ;; sets fn-delete to be right-delete
-
 (setq ring-bell-function 'ignore)
 (setq-default indent-tabs-mode nil)
 

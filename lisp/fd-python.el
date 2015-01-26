@@ -20,7 +20,7 @@
 ;; 	(next-line) (end-of-line)))))
 
 
-(add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))
+; (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))
 
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:setup-keys t)

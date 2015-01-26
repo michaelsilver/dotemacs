@@ -16,7 +16,7 @@
   (setq js2-basic-offset 2)
   (define-key js2-mode-map (kbd "C-j") 'my-js-newline-and-indent)
   (setq-local untabify-on-save t))
-
+(require 'compile)
 (defvar js-compilation-error-regex-alist
   ;; REGEX FILE-GROUP LINE-GROUP COLUMN-GROUP ERROR-TYPE LINK-GROUP
   '(
@@ -35,7 +35,7 @@
 
 (setq compilation-error-regexp-alist
       (append (mapcar 'car js-compilation-error-regex-alist)
-	      compilation-error-regexp-alist))
+	      (or compilation-error-regexp-alist nil)))
 
 (setq compilation-error-regexp-alist-alist
       (append js-compilation-error-regex-alist
