@@ -62,7 +62,48 @@ PROJECTS-ALIST."
 
 (global-set-key (kbd "C-x j p") 'jump-to-project)
 
-(setq git--commit-args "--cleanup=whitespace")
+(setq git--commit-buttonize-filenames-regex "^\t[^:]+: +\\(.*\\)")
 
+(defmacro btn-cmd (&rest body)
+  "Builds a function that runs the specified body and remembers
+the point position in the commit buffer between calls of each
+function created this way."
+  `(lambda ()
+     (interactive)
+     (let ((commit-buffer (current-buffer)))
+       (save-excursion
+         ;; Make sure there is a mark
+         (unless (boundp 'button-mark)
+           (setq-local button-mark (make-marker))
+           (set-marker button-mark (point-min)))
+
+         (goto-char (marker-position button-mark))
+         (let ((eval-val (progn ,@body)))
+           (with-current-buffer-safe commit-buffer
+             (set-marker button-mark (point)))
+           eval-val)))))
+
+(defun activate-previous-button ()
+  (let ((btn (previous-button (point))))
+    (if btn
+        (progn
+          (goto-char (button-end btn))
+          (button-activate btn))
+      (message "Before the first button"))))
+
+(defun activate-next-button ()
+  (let ((btn (next-button (point))))
+    (if btn
+        (progn
+          (goto-char (button-end btn))
+          (button-activate btn))
+      (message "After last button"))))
+
+(defun fd-compilation-git-commit-bindings ()
+  (local-set-key (kbd "C-x `") (btn-cmd (activate-next-button)))
+  (local-set-key (kbd "M-g n") (btn-cmd (activate-next-button)))
+  (local-set-key (kbd "M-g p") (btn-cmd (activate-previous-button))))
+
+(add-hook 'git-comment-hook 'fd-compilation-git-commit-bindings)
 (add-hook 'sql-mode-hook (lambda () (setq-local untabify-on-save t)))
 (provide 'fd-misc-programming)
