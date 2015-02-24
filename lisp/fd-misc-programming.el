@@ -7,7 +7,7 @@
 (defun fd-git-remotes ()
   "Get or set-and-get git remotes. Caching function"
   (if (boundp 'fd-git-remotes) fd-git-remotes
-    (setq-local fd-git-remotes (git--exec-string "remote" "-v")))))
+    (setq-local fd-git-remotes (git--exec-string "remote" "-v"))))
 
 (defun in-own-git-repo-p ()
   (some (lambda (x)
