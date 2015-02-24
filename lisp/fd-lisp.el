@@ -16,27 +16,27 @@
 
 (add-hook 'emacs-lisp-mode-hook 'fd-elisp-hooks)
 
-;; Slime
-(require 'clojure-mode)
-(require 'cider)
-(defvar fd-clojure-etags-gen-command "find . \! -name '.*' -name '*.clj' \
-    | xargs etags \
-    --regex='/[ \t\(]*def[a-zA-Z!$%&*+\-.\/:<=>?@^_~]*[ \n\t]+\(^{[^}]*}[ \n\t]+\|\)\([a-zA-Z!$%&*+\-.\/:<=>?@^_~]+\)/\2/s' \
-    --regex='/[ \t\(]*ns \([a-z.]+\)/\1/'"
-  "Found see here http://stackoverflow.com/questions/1481842/clojure-emacs-etags#6726061")
+;; ;; Slime
+;; (require 'clojure-mode)
+;; (require 'cider)
+;; (defvar fd-clojure-etags-gen-command "find . \! -name '.*' -name '*.clj' \
+;;     | xargs etags \
+;;     --regex='/[ \t\(]*def[a-zA-Z!$%&*+\-.\/:<=>?@^_~]*[ \n\t]+\(^{[^}]*}[ \n\t]+\|\)\([a-zA-Z!$%&*+\-.\/:<=>?@^_~]+\)/\2/s' \
+;;     --regex='/[ \t\(]*ns \([a-z.]+\)/\1/'"
+;;   "Found see here http://stackoverflow.com/questions/1481842/clojure-emacs-etags#6726061")
 
-(defun fd-clojure-mode-hook ()
-  "Hooks for all clojure."
-  (setq-local etags-table-create-table-command fd-clojure-etags-gen-command))
+;; (defun fd-clojure-mode-hook ()
+;;   "Hooks for all clojure."
+;;   (setq-local etags-table-create-table-command fd-clojure-etags-gen-command))
 
-(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-(add-hook 'clojure-mode-hook 'fd-clojure-mode-hook)
+;; (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+;; (add-hook 'clojure-mode-hook 'fd-clojure-mode-hook)
 
-(require 'ac-nrepl)
-(add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
-(add-hook 'cider-mode-hook 'ac-nrepl-setup)
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'cider-repl-mode))
+;; (require 'ac-nrepl)
+;; (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
+;; (add-hook 'cider-mode-hook 'ac-nrepl-setup)
+;; (eval-after-load "auto-complete"
+;;   '(add-to-list 'ac-modes 'cider-repl-mode))
 
 
 (provide 'fd-lisp)

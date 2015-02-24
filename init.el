@@ -2,6 +2,8 @@
 
 (load-file "~/.emacs.d/lisp/fd-perliminaries.el")
 (require 'fd-personal)
+(when (eq system-type 'darwin) ;; mac specific settings
+  (require 'fd-macosx))
 (require 'fd-el-get)
 (require 'fd-misc)
 (require 'fd-misc-programming)
@@ -19,7 +21,6 @@
 (require 'fd-desktop)
 (require 'fd-bookmarks)
 (require 'fd-tags)
-(require 'fd-expand-region)
 (require 'fd-lisp)
 (require 'fd-cc-mode)
 (require 'fd-prolog)

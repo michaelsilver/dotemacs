@@ -1,6 +1,6 @@
 ;; EL-GET
 (add-to-list 'load-path (concat dotemacs-dir "el-get/el-get"))
-
+(setq el-get-dir (concat dotemacs-dir "el-get"))
 (require 'package)
 (package-initialize)
 
@@ -14,23 +14,23 @@
 
 (setq my:el-get-packages
       '(;; Dependencies from who-kows-where
-	dash
+	queue
 	s
 	pkg-info
 	request
 
-	;; Elisp hepers
-	f
+	;; ;; Elisp hepers
+	;; f
 
 	;; Python
 	python
-	django-mode
+	; django-mode ; snippets get fucked up
 	jedi
 	ein
 
 	;; Auto Complete packages
 	yasnippet
-        auto-yasnippet
+        ; auto-yasnippet
 	auto-complete
 
 	;; themes I like
@@ -44,62 +44,54 @@
 	smex
 
 	;; erc
-	erc
 	erc-highlight-nicknames
-	;; erc-image
+	; erc-image
 
 	;; Misc
 	;;	slime
 	;; helm
 	;; nxhtml ; this is obsolete crap, stay away.
-	realgud
-	twiki-mode
+	;; realgud ; Can't install test-simple
+	; twiki-mode ; problem with dependency
 	lua-mode
 	textile-mode
 	haskell-mode
 	js2-mode
 	coffee-mode
-       ;;flymake-coffee-load
-;;	slime
+        ;; flymake-coffee-load
+        ;; slime
 	;; swank-js
 	json-mode
 	graphviz-dot-mode
 	cider
-	ac-nrepl
+	; ac-nrepl
 	clojure-mode
-	cscope
+	;; cscope
 	cmake-mode
 	multi-term
 	yaml-mode
 	autopair
 	vimperator-mode
 	c-eldoc
-	dired-sort
-	hide-region
+	;; sort
+	;; hide-region
 	gist
 	org-mode
 	markdown-mode
-	expand-region
 	ggtags
 	zencoding-mode
 	git-emacs
 	bm
-	compilation-setup))
+	compilation-setup
+
+        w3m-emacs
+        w3m-type-ahead))
 
 (setq
  el-get-sources
  '(el-get
    zencoding-mode
    python-pep8
-
-   (:name yasnippet-snippets
-	  :description "Some snippets."
-	  :type github
-	  :pkgname "AndreaCrotti/yasnippet-snippets"
-	  :depends yasnippet
-	  :post-init (add-to-list 'yas/root-directory
-				  (concat el-get-dir
-					  (file-name-as-directory "yasnippet-snippets"))))
 
    (:name vimperator-mode
 	  :description "Edit vimperator files"
@@ -191,10 +183,10 @@
 	  :pkgname "js-beautify")
 
 
-   (:name erc-image
-	  :description "Image previews in erc."
-	  :type github
-	  :pkgname "kidd/erc-image.el")
+   ;; (:name erc-image
+   ;;        :description "Image previews in erc."
+   ;;        :type github
+   ;;        :pkgname "kidd/erc-image.el")
    (:name ein
        :description "IPython notebook client in Emacs"
        :type github
