@@ -13,13 +13,53 @@
 
 (setq compilation-finish-function 'compilation-end-defun)
 
+(defun mapcdr (fn seq)
+  (and seq (cons (funcall fn seq) (mapcdr fn (cdr seq)))))
+
+(defun eval-or-nil (fn val)
+  (when (funcall fn val) val))
+
+(defun fd-file-in-directory-p (file dir)
+  (let* ((true-dir (file-truename dir))
+         (default-directory (concat true-dir "/"))
+         (true-file (file-truename file)))
+    (and (file-exists-p true-file)
+         (file-directory-p true-dir)
+         (string-prefix-p true-dir true-file))))
+
+(defun fd-project-root (dir-or-file &optional marker)
+  "Get the closest ancestor directory containing
+  marker-file. marker-file defaults to \".git\""
+  (let ((dir (file-truename
+              (if (file-directory-p dir-or-file)
+                  dir-or-file
+                (file-directory-name dir-or-file))))
+        (is-root (or (when (functionp marker) marker)
+                     (apply-partially 'fd-file-in-directory-p (or marker ".git")))))
+    (car
+     (remove-if 'null
+                (mapcdr
+                 (lambda (dl)
+                   ;; Keep only the dirs that contain a .dir-locals.el
+                   (let ((ds (concat "/" (s-join "/" (reverse dl)))))
+                     (when (funcall is-root ds)
+                       ds))) (nreverse (s-split "/" dir t)))))))
+
+(defun fd-compilation-root (filename)
+  (file-name-as-directory
+   (or (when (boundp 'compilation-root) compilation-root)
+       (fd-project-root filename ".dir-locals.el")
+       (fd-project-root filename))))
+
 (defun fd-recompile ()
   (interactive)
-  (hack-local-variables)
-  (let ((default-directory (file-name-as-directory
-			    (or compilation-directory default-directory "/tmp"))))
-    (message "Compiling with %s in %s" compile-command compilation-directory)
-    (compilation-start compile-command t)))
+  (save-excursion
+    (hack-local-variables)
+    (let ((default-directory
+            (fd-compilation-root
+             (buffer-file-name))))
+      (message "Compiling with %s in %s" compile-command default-directory)
+      (compilation-start compile-command))))
 
 (defun fd-last-error ()
   "Jump to last error."
@@ -38,13 +78,16 @@
 				    compile-command)
 		(read-directory-name "Root directory: "
 				     (or compilation-directory default-directory))))
-  (let ((cd (if (s-ends-with-p "/" directory) directory (concat directory "/")))
-	(cc command))
-    (add-dir-local-variable nil 'compile-command cc)
-    (add-dir-local-variable nil 'compilation-directory cd)
-    (save-buffer)
-    (bury-buffer)
-    (fd-recompile)))
+  (save-excursion
+    (let ((default-directory
+            (if (s-ends-with-p "/" directory) directory (concat directory "/"))))
+      (find-file ".dir-locals.el")
+      (save-buffer)
+      (add-dir-local-variable nil 'compile-command command)
+      (add-dir-local-variable nil 'compile-root nil)
+      (save-buffer)
+      (bury-buffer)
+      (fd-recompile))))
 
 (global-set-key (kbd "C-c r") 'fd-recompile)
 (global-set-key (kbd "C-c c c") 'fd-compile)
