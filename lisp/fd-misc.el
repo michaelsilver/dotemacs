@@ -148,6 +148,8 @@ parent."
 
 (global-set-key (kbd "C-c f d") 'find-dired)
 
+(when (fboundp 'old-y-or-n-p)
+  (defalias 'y-or-n-p 'old-y-or-n-p))
 (defalias 'yes-or-no-p 'y-or-n-p
   "Faster yes or no's")
 
@@ -226,6 +228,17 @@ as input replacing the buffer with the output."
   (kill-file-buffers)
   (kill-dired-buffers))
 
+
+(defun bury-directory-buffers (dir)
+  (interactive
+   (list (ido-read-directory-name
+          "Bury buffers under directory: ")))
+  (dolist (b (buffer-list))
+    (with-current-buffer b
+      (when (equal default-directory dir)
+        (bury-buffer)))))
+
+
 (setq auto-save-timeout 0
       auto-save-interval 0)
 
@@ -252,5 +265,8 @@ as input replacing the buffer with the output."
   (interactive (progn (barf-if-buffer-read-only) '(t)))
   (let ((fill-column (point-max)))
     (fill-paragraph nil region)))
+
+(unless (boundp 'pcache-version-constant)
+  (setq pcache-version-constant "fake-version"))
 
 (provide 'fd-misc)
