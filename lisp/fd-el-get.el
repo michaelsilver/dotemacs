@@ -84,8 +84,11 @@
 	bm
 	compilation-setup
 
-        w3m-emacs
-        w3m-type-ahead))
+        emacs-w3m
+        w3m-type-ahead
+
+        web-mode
+        ))
 
 (setq
  el-get-sources
@@ -176,6 +179,11 @@
 	  :depends (js-beautify)
 	  :type github
 	  :pkgname "yasuyk/web-beautify")
+
+   (:name js-doc
+	  :description " Insert JsDoc style comment easily in Emacs."
+	  :type github
+	  :pkgname "mooz/js-doc")
 
    (:name js-beautify
 	  :description "Beautify on node"

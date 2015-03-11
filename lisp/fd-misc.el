@@ -150,6 +150,7 @@ parent."
 
 (when (fboundp 'old-y-or-n-p)
   (defalias 'y-or-n-p 'old-y-or-n-p))
+
 (defalias 'yes-or-no-p 'y-or-n-p
   "Faster yes or no's")
 

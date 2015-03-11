@@ -1,4 +1,12 @@
 ;; GGtags
+;;
+;; Add new directories with
+;; $ export GTAGSLIBPATH=/usr/src/lib:/usr/src/sys
+;; Or put that in .globalrc at the root of the project.
+;;
+;; Use only specific files with
+;; $ find */myproject -type f -print >gtags.files
+;; $ gtags
 
 (require 'ggtags)
 (defun fd-tagging-hook ()
@@ -11,5 +19,7 @@
 	     python-mode
 	     js2-mode))
   (add-hook m 'fd-tagging-hook))
+
+(global-set-key (kbd "M-.") 'ggtags-find-tag-dwim)
 
 (provide 'fd-tags)

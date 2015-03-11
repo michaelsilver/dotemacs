@@ -1,5 +1,6 @@
 ;; Extra automodes
 (add-to-list 'auto-mode-alist '("[.]zcml" . nxml-mode))
+(add-to-list 'auto-mode-alist '("[.]html" . web-mode))
 (add-to-list 'auto-mode-alist '("[.]list" . conf-unix-mode))
 (add-to-list 'auto-mode-alist '("[.]pt" . html-mode))
 (add-to-list 'auto-mode-alist '("[.]sim" . asm-mode))
@@ -17,5 +18,6 @@
 (add-to-list 'auto-mode-alist '("[.]java" . java-mode))
 (add-to-list 'auto-mode-alist '("[.]ino" . c++-mode))
 (add-to-list 'auto-mode-alist '("[.]pde" . c++-mode))
+(add-to-list 'auto-mode-alist '("[.]rdf" . html-mode))
 
 (provide 'fd-automode)

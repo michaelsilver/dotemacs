@@ -30,4 +30,6 @@
   (interactive)
   (dired-sort-other (concat dired-listing-switches "")))
 
+(setq find-ls-option '("-print0 | xargs -0 ls -alhd" . ""))
+
 (provide 'fd-dired)

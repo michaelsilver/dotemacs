@@ -1,0 +1,31 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: install.rdf
+# key: rdf
+# --
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+    <em:id>${1:extension-name}@drninjabatman.me</em:id>
+    <em:version>1.0</em:version>
+    <em:type>2</em:type>
+
+    <!-- Target Application this extension can install into,
+         with minimum and maximum supported versions. -->
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>1.5</em:minVersion>
+      </Description>
+    </em:targetApplication>
+
+    <!-- Front End MetaData -->
+    <em:name>$1</em:name>
+    <em:description>${2:An extension}</em:description>
+    <em:creator>${3:Chris Perivolaropoulos}</em:creator>
+    <em:homepageURL>${4:http://github.com/fakedrake/$1}</em:homepageURL>
+  </Description>
+</RDF>
+
+<!-- XXX: defaults/preferences/*.js for prefs like. -->
+<!-- pref("extensions.sample.pref", {"Joe"|true,2}); -->

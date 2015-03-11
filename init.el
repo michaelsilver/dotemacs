@@ -18,7 +18,7 @@
 (require 'fd-undotree)
 (require 'fd-recentfiles)
 (require 'fd-erc)
-(require 'fd-desktop)
+;; (require 'fd-desktop)
 (require 'fd-bookmarks)
 (require 'fd-tags)
 (require 'fd-lisp)
@@ -40,8 +40,6 @@
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
-
-(find-file "~/FrontPage.org")
 
 (message "Welcome to emacs!")
 (custom-set-variables

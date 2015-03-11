@@ -27,7 +27,9 @@
   project."
   (when (or (in-own-git-repo-p)
             (not (in-git-repo-p))
-            (y-or-n-p "Foreign git origin. Delete trailing whitespaces? "))
+            (and (save-excursion (goto-char (point-min))
+                                 (re-search-forward "\\s-$" nil t))
+                 (y-or-n-p "Foreign git origin. Delete trailing whitespaces? ")))
     (delete-trailing-whitespace)))
 
 (add-hook 'before-save-hook 'maybe-delete-trailing-whitespace)
