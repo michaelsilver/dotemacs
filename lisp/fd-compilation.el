@@ -47,7 +47,7 @@
 
 (defun fd-compilation-root (filename)
   (file-name-as-directory
-   (or (when (boundp 'compilation-root) compilation-root)
+   (or (when (boundp 'compile-root) compile-root)
        (fd-project-root filename ".dir-locals.el")
        (fd-project-root filename))))
 
