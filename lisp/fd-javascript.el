@@ -31,7 +31,10 @@
      3 4 6 nil 2)
     (jasmine
      "^[ \\t]*\\(file://\\(.*\\):\\([0-9]*\\)\\)$"
-     2 3 nil nil  1)))
+     2 3 nil nil  1)
+    (browserify
+     "Error: .*?\\(\\(/.*\\): Line \\([0-9]*\\)\\)"
+     2 3 nil nil 1)))
 
 (setq compilation-error-regexp-alist
       (append (mapcar 'car js-compilation-error-regex-alist)
