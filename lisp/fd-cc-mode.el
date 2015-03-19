@@ -32,7 +32,7 @@ at least one .cpp file in the same directory."
   (define-key c-mode-base-map (kbd "M-p") 'c-beginning-of-statement)
   (define-key c-mode-base-map (kbd "C-j") 'my-cc-newline-and-indent)
   (define-key c-mode-base-map (kbd "C-x <SPC>") 'gud-break)
-  (setq c-default-style "linux" c-basic-offset 4))
+  (setq c-default-style "google" c-basic-offset 4))
 
 (setq compilation-scroll-output t)
 (add-hook 'c-mode-common-hook 'fakedrake-cc-mode-init)
