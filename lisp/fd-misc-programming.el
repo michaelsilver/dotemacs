@@ -1,4 +1,7 @@
+;; Package
 ;; Programming realted miscelaneous
+;;; Code:
+
 (which-function-mode t)
 
 (setq own-git-repo-regex-list '("origin[ \t]*git@github.com:fakedrake.*"
@@ -139,4 +142,7 @@ function created this way."
 
 (add-hook 'git-comment-hook 'fd-compilation-git-commit-bindings)
 (add-hook 'sql-mode-hook (lambda () (setq-local untabify-on-save t)))
+
+(add-hook 'after-init-hook #'global-flycheck-mode)
 (provide 'fd-misc-programming)
+;;; fd-misc-programming ends here

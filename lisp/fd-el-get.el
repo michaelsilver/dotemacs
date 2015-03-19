@@ -19,6 +19,7 @@
 	pkg-info
 	request
 
+        flycheck
 	;; ;; Elisp hepers
 	;; f
 
@@ -83,6 +84,8 @@
 	git-emacs
 	bm
 	compilation-setup
+
+        google-c-style
 
         emacs-w3m
         w3m-type-ahead
