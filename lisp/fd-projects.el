@@ -1,84 +1,112 @@
-;;; fd-projects.el
-;; A file-centeric project system. Files and buffers are king,
-;; projects are just a set of shared properties that our enhanced
-;; files have.
-
+;;; fd-projects.el --- Summary
+;;; Commetary:
+;; Open and bury projects intuitively.
+;;
 ;; TODO:
-;;
-;; Project Compilation: Have a wrapper for compile/recompile that will
-;; be project aware.
-;;
-;; Project Matching: Given a buffer decide which of the know projects
-;; is most probably the one or create one using git.
-;;
-;; Dynamic Project creation: we need to be able to create a
-;; project from a git repo
-;;
-;; Project File: It will be aware of it's buffer if open, it will be
-;; able to open, it will know a short version of it's name, it's
-;; modification date and it will be extensible. Also this can be
-;; cached using a local buffer variable.
+;; - Prioritize open buffers over
+;;; Code:
+(require 'recentf)
+
+(defvar project--commit-files-command
+  "for i in  $(git rev-list HEAD~%d..HEAD); do git show --pretty='format:' --name-only  $i; done | sort | uniq -c | sort -n -r | sed 's/^ *[0-9]* *//'"
+  "Command to be formated with the number of commits to be looked
+  into.")
+
+(defvar project--commit-depth 20
+  "Number of commits to look into when looking for recently
+  edited files")
+
+(defvar project--max-files 5
+  "Number of files to open for a project.")
+
+(defun project-roots (&optional files)
+  "Project roots of files if they are in a git repository. If
+files is not provided use recent files."
+  (delete-if-not
+   (apply-partially 'string-prefix-p "/")
+   (delete-dups
+    (mapcar
+     (lambda (d)
+       (string-trim
+        (shell-command-to-string
+         (format "git -C %s rev-parse --show-toplevel" d))))
+     (delete-dups
+      (mapcar
+       'file-directory-name
+       (delete-if-not 'file-exists-p
+                      (or files recentf-list))))))))
+
+(defun project-buffer-in-project (project buffer)
+  (projects-file-in-project
+   (or (buffer-file-name buffer)
+       (with-current-buffer buffer
+         default-directory))))
+
+(defun project-file-in-project (project file)
+  "Check if buffer corresponds to the project"
+  (= 0
+     (call-process "git" nil nil nil "-C"
+                   project
+                   "ls-files"
+                   file
+                   "--error-unmatch")))
+
+(defun project-common-files (project)
+  "List interesting files in a project using
+`project--comit-files-command' and `project--commit-depth'. These
+are the filesystem files."
+  (mapcar (apply-partially 'concat project "/")
+          (split-string
+           (shell-command-to-string
+            (format "cd %s && %s | head -%d"
+                    project
+                    (format project--commit-files-command project--commit-depth)
+                    project--max-files))
+           "\n")))
+
+(defun project-recent-files (project)
+  "Recently opened files of project"
+  (delete-if-not (apply-partially 'projects-file-in-project)
+                 recentf-list))
+
+(defun project-files (project)
+  "A prioritized list of some of the files in project."
+  (delete-dups (append
+                (project-recent-files project)
+                (project-common-files project))))
+
+(defun project-read-root (pred)
+  (let ((roots (project-roots)))
+    (ido-completing-read pred roots nil t)))
 
 
-;; Files should return absolute paths
+(defun project-buffers (project)
+  "A list of open buffers in the project. Ordered as they were in
+buffer-list."
+  (delete-if-not
+   (apply-partially 'projects-buffer-in-project project)
+   (buffer-list)))
 
-(defun default-project-files (root)
-  "Default files function."
-  (directory-files root))
+(defun project-open (project)
+  "Open project. Preserve the sequence of buffers in the buffer
+list and prioritize recent buffers over unopened ones. Unopened
+buffers are ones that have recent commits."
+  (interactive
+   (list (project-read-root "Open project: ")))
+  (let ((bufs (project-buffers project)))
+    ;; First get all the files we dont have, they will mess up the
+    ;; buffer-list ordering
+    (mapc 'find-file (reverse (project-files project)))
+    ;; Restore ordering for our old buffers and put them at the top.
+    (mapc 'switch-to-buffer (reverse bufs))))
 
-(defstruct (project
-	    (:constructor nil)
-	    (:constructor new-project (name root &key
-					    (files 'default-project-files)
-					    (regexp nil)
-					    (recursive t))))
-  name root files regexp recursive)
-
-(defun project-file-list (pr)
-  "Get the project files of a project."
-  (let* ((df (project-files pr))
-	 (root (project-root pr))
-	 (all-files (funcall df root))
-	 (regex (project-regexp pr))
-	 (filtered-files (if regex
-			     (remove-if-not
-			      (lambda (x) (string-match regex x)) all-files)
-			   all-files)))
-    filtered-files))
-
-(defvar projects-list (list (new-project "emacs" "~/.emacs.d/" :regexp "\\.el$"))
-  "List of project structs.")
-
-(defun projects-completion-alist (projects)
-  "Get an alist suitable for completing read."
-  (mapcar (lambda (x) (cons (project-name x) x))
-	  projects))
-
-(defun project-files-completion-alist (files)
-  "Get a list of files to complete. Sort them by modification
-  date."
-  (mapcar (lambda (x) x)
-	  files))
-
-(defun filename-in-project (fname pr)
-  (file-truename
-   (format "%s/%s" (project-root pr) fname)))
-
-(defun projects-file-open (p)
-  "Interactively find a project and open it."
-  (interactive (let ((completions (projects-completion-alist projects-list)))
-		 (list (cdr (assoc
-			     (ido-completing-read "Open project: "
-					      completions
-					      nil t) completions)))))
-  (message (format "Project %s" (project-name p)))
-  (find-file (filename-in-project (ido-completing-read "Open file of a project: "
-						   (project-files-completion-alist (project-file-list p)))
-				  p)))
+(defun bury-project ()
+  "Burry the current project."
+  (interactive)
+  (let ((root (car (project-roots))))
+    (dolist (b (buffer-list))
+      (when (file-in-directory-p (buffer-file-name b) root)
+        (bury-buffer b)))))
 
 (provide 'fd-projects)
-(defun test-project ()
-  (let ((pr (new-project "emacs" "~/.emacs.d/" :regexp "\\.el$")))
-    (project-file-list pr)))
-
-(test-project)
+;;; fd-projects.el ends here
