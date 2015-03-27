@@ -12,7 +12,7 @@
   "Command to be formated with the number of commits to be looked
   into.")
 
-(defvar project--commit-depth 20
+(defvar project--commit-depth 10
   "Number of commits to look into when looking for recently
   edited files")
 
@@ -43,7 +43,7 @@ files is not provided use recent files."
          default-directory))))
 
 (defun project-file-in-project (project file)
-  "Check if buffer corresponds to the project"
+  "Check if buffer corresponds to the project."
   (= 0
      (call-process "git" nil nil nil "-C"
                    project
