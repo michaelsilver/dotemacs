@@ -20,12 +20,12 @@
 ;; 	(next-line) (end-of-line)))))
 
 
-; (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))
+(add-to-list 'auto-mode-alist '("\\.djhtml$" . web-mode))
 
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:setup-keys t)
 (setq jedi:complete-on-dot t)
-(setq python-shell-virtualenv-path "~/bin/py")
+(setq-default python-shell-virtualenv-path "~/bin/py")
 
 (defun fd-venv-path (path)
   (interactive (list (ido-read-directory-name "Virtualenv root: ")))

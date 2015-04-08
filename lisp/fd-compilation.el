@@ -56,10 +56,9 @@
   (save-excursion
     (hack-local-variables)
     (let ((default-directory
-            (fd-compilation-root
-             (buffer-file-name))))
+            (fd-compilation-root default-directory)))
       (message "Compiling with %s in %s" compile-command default-directory)
-      (compilation-start compile-command))))
+      (compilation-start compile-command t))))
 
 (defun fd-last-error ()
   "Jump to last error."
@@ -129,5 +128,33 @@ the top."
 		     error-trace-max-distance))
 	(internal-end-of-trace nep reverse)
       pt)))
+
+
+;; A nice stack for pdb would be:
+;;
+;; - create buffer with fd-compilation
+;; - set inferior-python-mode
+;; - use that buffer to initialize gud-pdb
+;;
+;; To do that I will replace make-comint while running pdb that should
+;; create a buffer named
+
+(defadvice make-comint (around ad-create-a-gud-buffer first activate)
+  "if `create-gud-buffer-fn' is non-nil. Use that insetaed of the
+  standard way. Do not use this outside of the provided macros."
+  (let ((cbuffer (or gud-buffer
+                     (funcall gud-buffer))))
+    (if cbuffer
+        (with-current-buffer cbuffer (rename-buffer (ad-get-arg 1)))
+      ad-do-it)))
+
+(defvar gud-buffer nil
+  "Either a function that evaluates to a buffer or a buffer we
+  can switch to. This will override the buffer creation mechanism
+  of gud.")
+
+(defmacro gud-recomple (gud-command &rest args)
+  (let ((gud-buffer (apply 'fd-recompile args)))
+    (funcall gud-command "compilation")))
 
 (provide 'fd-compilation)
