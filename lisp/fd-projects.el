@@ -27,7 +27,7 @@ files is not provided use recent files."
    (delete-dups
     (mapcar
      (lambda (d)
-       (string-trim
+       (s-trim
         (shell-command-to-string
          (format "git -C %s rev-parse --show-toplevel" d))))
      (delete-dups
@@ -37,10 +37,10 @@ files is not provided use recent files."
                       (or files recentf-list))))))))
 
 (defun project-buffer-in-project (project buffer)
-  (projects-file-in-project
-   (or (buffer-file-name buffer)
-       (with-current-buffer buffer
-         default-directory))))
+  (project-file-in-project project
+                           (or (buffer-file-name buffer)
+                               (with-current-buffer buffer
+                                 default-directory))))
 
 (defun project-file-in-project (project file)
   "Check if buffer corresponds to the project."
@@ -66,7 +66,7 @@ are the filesystem files."
 
 (defun project-recent-files (project)
   "Recently opened files of project"
-  (delete-if-not (apply-partially 'projects-file-in-project)
+  (remove-if-not (apply-partially 'project-file-in-project project)
                  recentf-list))
 
 (defun project-files (project)
@@ -84,7 +84,7 @@ are the filesystem files."
   "A list of open buffers in the project. Ordered as they were in
 buffer-list."
   (delete-if-not
-   (apply-partially 'projects-buffer-in-project project)
+   (apply-partially 'project-buffer-in-project project)
    (buffer-list)))
 
 (defun project-open (project)
@@ -107,6 +107,10 @@ buffers are ones that have recent commits."
     (dolist (b (buffer-list))
       (when (file-in-directory-p (buffer-file-name b) root)
         (bury-buffer b)))))
+
+(global-set-key (kbd "C-c p f") 'project-open)
+(global-set-key (kbd "C-c p o") 'project-open)
+(global-set-key (kbd "C-c p b") 'bury-project)
 
 (provide 'fd-projects)
 ;;; fd-projects.el ends here
