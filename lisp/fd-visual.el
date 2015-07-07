@@ -31,7 +31,7 @@
 		       (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
 (global-set-key [f11] 'fullscreen)
 
-(set-face-attribute 'default nil :height 135)
+(set-face-attribute 'default nil :height 140)
 
 ;; Zoom
 (defun djcb-zoom (n)
@@ -39,12 +39,12 @@
   (set-face-attribute
    'default nil :height
    (+ (face-attribute 'default :height)
-      (* (if (> n 0) 1 -1) 5)))
+      (* n 5)))
   (message (format "Font size: %d"
 		   (face-attribute 'default :height))))
 
 (global-set-key (kbd "M-+")      #'(lambda nil (interactive) (djcb-zoom 1)))
-(global-set-key (kbd "M--")      #'(lambda nil (interactive) (djcb-zoom -1)))
+(global-set-key (kbd "M--")      #'(lambda nil (interactive) (djcb-zoom -2)))
 
 ;; XXX: Have this be the last thing you do. Apparently things get
 ;; overriden if it is at the beginning of the file.
@@ -124,5 +124,10 @@
 		mode-line-end-spaces))
 
 (setq-default cursor-type 'box)
+
+
+(add-to-list 'display-buffer-alist
+ '("\\*compilation\\*" display-buffer-reuse-window
+   ((reusable-frames . t))))
 
 (provide 'fd-visual)

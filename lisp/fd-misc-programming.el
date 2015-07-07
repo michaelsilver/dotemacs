@@ -116,7 +116,7 @@ function created this way."
          (goto-char (marker-position button-mark))
          (let ((eval-val (progn ,@body)))
            (with-current-buffer-safe commit-buffer
-             (set-marker button-mark (point)))
+                                     (set-marker button-mark (point)))
            eval-val)))))
 
 (defun activate-previous-button ()
@@ -143,6 +143,31 @@ function created this way."
 (add-hook 'git-comment-hook 'fd-compilation-git-commit-bindings)
 (add-hook 'sql-mode-hook (lambda () (setq-local untabify-on-save t)))
 
-(add-hook 'after-init-hook #'global-flycheck-mode)
+(setq git--commit-filename-line-regexp "^[ \t]\\([^:\n]+\\):[ \t]+\\(.+?\\) ?\\((.* content)\\|\\)$")
+
+(defun git-next-diff ()
+  (interactive)
+  (git-filename-modify-buttons)
+  (let ((cur
+         (if git--last-button-pressed
+             (button-end git--last-button-pressed) (point-min))))
+    (if cur (button-activate (next-button cur))
+      (error "No more files"))))
+
+(defun git-filename-modify-buttons ()
+  (when (not (local-variable-p 'git--last-button-pressed))
+    (setq-local git--last-button-pressed nil)
+    (dolist (ovl (git--commit-file-overlays))
+      (lexical-let*
+          ((btn (button-at (overlay-start ovl)))
+           (act (button-get btn 'action)))
+        (button-put btn 'action
+                    (lambda (btn)
+                      (setq-local git--last-button-pressed btn)
+                      (funcall act btn)
+                      (when (not (string= (buffer-name) "*git-commit*"))
+                        (previous-window))))))))
+
+;; (add-hook 'after-init-hook #'global-flycheck-mode)
 (provide 'fd-misc-programming)
 ;;; fd-misc-programming ends here

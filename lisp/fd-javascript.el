@@ -29,6 +29,9 @@
     (nodejs
      "^[ \\t]*at.* (?\\(file://\\)?\\(\\(.*?\\):\\([0-9]*\\)\\(:\\([0-9]*\\)\\)?\\))?$"
      3 4 6 nil 2)
+    (mocha
+     "^\\(\\(/.*\\):\\([0-9]*\\)\\)$"
+     2 3 nil nil  1)
     (jasmine
      "^[ \\t]*\\(file://\\(.*\\):\\([0-9]*\\)\\)$"
      2 3 nil nil  1)
@@ -57,5 +60,41 @@
   (interactive)
   (shell-command-on-region (region-beginning) (region-end)
 			   js2-beatify-cmd nil t))
+
+(defun top-level-functions ()
+  (when (search-forward-regexp "^function\s+\\([a-zA-Z0-9_]+\\)" nil t)
+    (cons (match-string 1) (top-level-functions))))
+
+(defun js2-export-top-functions ()
+  (interactive)
+  (mapcar (lambda (f) (insert (format "module.exports.%s = %s;\n" f f)))
+          (save-excursion
+            (beginning-of-buffer)
+            (top-level-functions))))
+
+(defun js2-test-this-file ()
+  (interactive)
+  (compilation-start (format "mocha %s" (buffer-file-name))))
+
+(require 'ffap)
+(defun js2-relative-path (&optional decorate-string)
+  "Change the path of the file at point to relative"
+  (interactive)
+  (let* ((fname (ffap-string-at-point))
+         (rg ffap-string-at-point-region)
+         (start (car rg))
+         (end (cadr rg)))
+    (when (> end start)
+      (delete-region start end)
+      (insert (funcall (or decorate-string 'identity)
+                       (file-relative-name fname)))
+      (goto-char start))))
+
+(defun js2-require-abs-file ()
+  "Require the filename at point."
+  (interactive)
+  (js2-relative-path
+   (lambda (rel-fname)
+     (format "require('%s');" rel-fname))))
 
 (provide 'fd-javascript)

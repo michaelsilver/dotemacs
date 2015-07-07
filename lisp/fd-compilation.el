@@ -139,14 +139,14 @@ the top."
 ;; To do that I will replace make-comint while running pdb that should
 ;; create a buffer named
 
-(defadvice make-comint (around ad-create-a-gud-buffer first activate)
-  "if `create-gud-buffer-fn' is non-nil. Use that insetaed of the
-  standard way. Do not use this outside of the provided macros."
-  (let ((cbuffer (or gud-buffer
-                     (funcall gud-buffer))))
-    (if cbuffer
-        (with-current-buffer cbuffer (rename-buffer (ad-get-arg 1)))
-      ad-do-it)))
+;; (defadvice make-comint (around ad-create-a-gud-buffer first activate)
+;;   "if `create-gud-buffer-fn' is non-nil. Use that insetaed of the
+;;   standard way. Do not use this outside of the provided macros."
+;;   (let ((cbuffer (or gud-buffer
+;;                      (funcall 'gud-buffer))))
+;;     (if cbuffer
+;;         (with-current-buffer cbuffer (rename-buffer (ad-get-arg 1)))
+;;       ad-do-it)))
 
 (defvar gud-buffer nil
   "Either a function that evaluates to a buffer or a buffer we
@@ -156,5 +156,11 @@ the top."
 (defmacro gud-recomple (gud-command &rest args)
   (let ((gud-buffer (apply 'fd-recompile args)))
     (funcall gud-command "compilation")))
+
+(ignore-errors
+  (require 'ansi-color)
+  (defun my-colorize-compilation-buffer ()
+    (ansi-color-apply-on-region compilation-filter-start (point-max)))
+  (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
 
 (provide 'fd-compilation)

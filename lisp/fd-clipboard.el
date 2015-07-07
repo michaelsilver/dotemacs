@@ -1,3 +1,4 @@
+
 ;; CLIPBOARD
 (defun copy-from-osx ()
   (let ((default-directory "~"))
@@ -9,8 +10,6 @@
     (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
       (process-send-string proc text)
       (process-send-eof proc))))
-
-
 
 (if (eq system-type 'darwin)
     (setq interprogram-cut-function 'paste-to-osx

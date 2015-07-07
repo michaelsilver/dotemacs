@@ -19,7 +19,7 @@
 	pkg-info
 	request
 
-        flycheck
+        ; flycheck
 	;; ;; Elisp hepers
 	;; f
 
@@ -91,6 +91,7 @@
         w3m-type-ahead
 
         web-mode
+        twittering-mode
         ))
 
 (setq

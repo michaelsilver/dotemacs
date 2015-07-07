@@ -22,6 +22,12 @@ at least one .cpp file in the same directory."
               (directory-files default-directory)))
     (c++-mode)))
 
+(setq google-like-c-style
+  '("google"
+    (c-offsets-alist
+      (access-label . [1]))))
+
+
 (defun fakedrake-cc-mode-init ()
   "Just some initializations I need for C"
   (c++-to-headers-mode)
@@ -32,7 +38,8 @@ at least one .cpp file in the same directory."
   (define-key c-mode-base-map (kbd "M-p") 'c-beginning-of-statement)
   (define-key c-mode-base-map (kbd "C-j") 'my-cc-newline-and-indent)
   (define-key c-mode-base-map (kbd "C-x <SPC>") 'gud-break)
-  (setq c-default-style "google" c-basic-offset 4))
+  (c-add-style "google-like" google-like-c-style)
+  (setq c-default-style "google-like" c-basic-offset 4))
 
 (setq compilation-scroll-output t)
 (add-hook 'c-mode-common-hook 'fakedrake-cc-mode-init)

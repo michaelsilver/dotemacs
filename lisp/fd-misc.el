@@ -4,7 +4,7 @@
 ;; with emacs here.
 
 (require 'fd-cookbook)
-
+(require 's)
 ;; Server configuration
 (require 'server)
 (if (server-running-p)
@@ -331,5 +331,21 @@ ignore buffers with."
             (interactive)
             (call-interactively (intern (format "%s-buffers-expr" prefix))
                                 key (format "%s buffers: " prefix) ignore-list)))))
+
+
+;; PATH in emacs
+(defun set-exec-path-from-shell-PATH ()
+  (interactive)
+  (let ((path-from-shell (car (reverse (split-string (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))))
+    (setenv "PATH" path-from-shell)
+    (setenv "EDITOR" "emacsclient")
+    (setenv "EMACS" (s-trim (shell-command-to-string "echo $EMACS")))
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(set-exec-path-from-shell-PATH)
+(global-unset-key (kbd "M-`"))
+
+(windmove-default-keybindings)
+(setq windmove-wrap-around t)
 
 (provide 'fd-misc)

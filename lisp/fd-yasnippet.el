@@ -86,4 +86,6 @@ sphinx describing the arguments."
 (defun last-sym-before (regex)
   (car (last-syms-before regex)))
 
+(setq yas-wrap-around-region t)
+
 (provide 'fd-yasnippet)

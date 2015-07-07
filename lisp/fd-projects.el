@@ -36,11 +36,15 @@ files is not provided use recent files."
        (delete-if-not 'file-exists-p
                       (or files recentf-list))))))))
 
+(defun project-buffer-file-name (buffer)
+  "Buffer file name or default-directory"
+  (or (buffer-file-name buffer)
+      (with-current-buffer buffer
+        default-directory)))
+
 (defun project-buffer-in-project (project buffer)
   (project-file-in-project project
-                           (or (buffer-file-name buffer)
-                               (with-current-buffer buffer
-                                 default-directory))))
+                           (project-buffer-file-name buffer)))
 
 (defun project-file-in-project (project file)
   "Check if buffer corresponds to the project."
@@ -105,8 +109,9 @@ buffers are ones that have recent commits."
   (interactive)
   (let ((root (car (project-roots))))
     (dolist (b (buffer-list))
-      (when (file-in-directory-p (buffer-file-name b) root)
-        (bury-buffer b)))))
+      (when (file-in-directory-p (project-buffer-file-name b) root)
+        (with-current-buffer b (bury-buffer))))
+    (message (format "Buried buffers under '%s'" root))))
 
 (global-set-key (kbd "C-c p f") 'project-open)
 (global-set-key (kbd "C-c p o") 'project-open)
