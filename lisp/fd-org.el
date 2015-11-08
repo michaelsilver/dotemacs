@@ -1,7 +1,13 @@
 ;; ORG mode
-(require 'org)
-(load-library "org-compat") 		;XXX this is bad but i see no better way.
+;; (load-library "org-compat") 		;XXX this is bad but i see no better way.
 
+;; (load-library "org-list")
+;; (require 'org-element)
+(load-library "org")			; Requiring doesnt get the
+					; defvar for some reason
+
+(setq my-orgmode-dir "~/.org-y"
+      my-notes-file "~/.org-y/notes.org")
 ;; Set up org-mode capture system
 (if (and (file-exists-p my-orgmode-dir)
 	 (eq t (car (file-attributes my-orgmode-dir)))) ; It is actually a directory
@@ -187,17 +193,21 @@ means the first element is definitely not a root node."
 
 (add-hook 'org-mode-hook 'fd/org-latex-hook)
 
+(global-set-key (kbd "C-c l") 'org-store-link)
+
 ;; Markdown
 (defun markdown-shifttab ()
   (interactive)
   (call-interactively 'yas-expand))
 
-(add-hook 'markdown-mode-hook (lambda ()
-				;; Minor modes
-				(flyspell-mode 1)
+(add-hook 'markdown-mode-hook 'fd-markdown-mode-hook)
 
-				;; Keys
-				(define-key markdown-mode-map (kbd "C-c q") 'refill-mode)))
+(defun fd-markdown-mode-hook ()
+  ;; Minor modes
+  (flyspell-mode 1)
+  ;; Keys
+  (define-key markdown-mode-map (kbd "C-c q") 'refill-mode)
+  (define-key markdown-mode-map (kbd "C-c -") 'markdown-insert-list-item))
 
 (defun fd--m2t-cmd ()
   (let ((pholder "placeholderkillmerightnowplease"))

@@ -1,12 +1,14 @@
 (require 'cl)
 
-(load-file "~/.emacs.d/fd-essential.el")
-
-(require 'fd-perliminaries)
+(load-file "~/.emacs.d/lisp/fd-perliminaries.el")
+(require 'fd-personal)
+(when (eq system-type 'darwin) ;; mac specific settings
+  (require 'fd-macosx))
 (require 'fd-el-get)
 (require 'fd-misc)
 (require 'fd-misc-programming)
 (require 'fd-automode)
+(require 'fd-javascript)
 (require 'fd-visual)
 (require 'fd-clipboard)
 (require 'fd-ido)
@@ -16,9 +18,9 @@
 (require 'fd-undotree)
 (require 'fd-recentfiles)
 (require 'fd-erc)
+;; (require 'fd-desktop)
 (require 'fd-bookmarks)
 (require 'fd-tags)
-(require 'fd-expand-region)
 (require 'fd-lisp)
 (require 'fd-cc-mode)
 (require 'fd-prolog)
@@ -29,10 +31,13 @@
 (require 'fd-term)
 (require 'fd-compilation)
 (require 'fd-imenu)
-
-(if fd-secretary-enabled
-    (require 'fd-mail)
-  (require 'fd-desktop))
+(require 'fd-codebender)
+(require 'fd-sql)
+(require 'fd-agenda)
+(require 'fd-notify)
+(require 'fd-projects)
+(require 'fd-haskell)
+(require 'fd-jstest)
 
 (setq enable-local-variables :all)
 

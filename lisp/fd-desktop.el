@@ -18,6 +18,4 @@
 
 (global-set-key "\C-ckb" (lambda nil (interactive) (when (y-or-n-p "Really kill all buffers?") (desktop-clear))))
 
-
-
 (provide 'fd-desktop)

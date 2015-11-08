@@ -63,6 +63,6 @@
        ;; (imenu--set-compilation-mode)
 )
 
-(global-set-key (kbd "C-x i") 'fd-selection-buffer)
+;;(global-set-key (kbd "C-x i") 'fd-selection-buffer)
 
 (provide 'fd-imenu)

@@ -1,5 +1,14 @@
 ;;; fd-perliminaries.el
 
+;; Require this in every module to make sure it can run independently.
+
+(setq dotemacs-dir "~/.emacs.d/")
+(defun my-expand-path (f) (concat dotemacs-dir f))
+(add-to-list 'load-path (my-expand-path "lisp"))
+(add-to-list 'load-path (my-expand-path "el-get/el-get"))
+;; (eval-when-compile
+;;   (load-file (my-expand-path "fd-el-get.el")))
+
 (defvar fd-secretary-enabled nil
   "Secretary mode loads configurations for gnus and automatically
   opens erc and other stuff. You may also have a slightly
@@ -14,4 +23,3 @@
   (setq fd-secretary-enabled t)
   (message "Secretary mode!!"))
 
-(provide 'fd-perliminaries)

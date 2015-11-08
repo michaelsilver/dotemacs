@@ -31,24 +31,27 @@
 		       (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
 (global-set-key [f11] 'fullscreen)
 
-(set-face-attribute 'default nil :height 110)
+(set-face-attribute 'default nil :height 140)
 
 ;; Zoom
 (defun djcb-zoom (n)
   "with positive N, increase the font size, otherwise decrease it"
-  (set-face-attribute 'default (selected-frame) :height
-		      (+ (face-attribute 'default :height) (* (if (> n 0) 1 -1) 5)))
-  (message (format "Font size: %d" (face-attribute 'default :height))))
+  (set-face-attribute
+   'default nil :height
+   (+ (face-attribute 'default :height)
+      (* n 5)))
+  (message (format "Font size: %d"
+		   (face-attribute 'default :height))))
 
 (global-set-key (kbd "M-+")      #'(lambda nil (interactive) (djcb-zoom 1)))
-(global-set-key (kbd "M--")      #'(lambda nil (interactive) (djcb-zoom -1)))
+(global-set-key (kbd "M--")      #'(lambda nil (interactive) (djcb-zoom -2)))
 
 ;; XXX: Have this be the last thing you do. Apparently things get
 ;; overriden if it is at the beginning of the file.
+(require 'naquadah-theme)
 (if window-system
     (let ((comment "IndianRed2"))
       (global-hl-line-mode t)
-      (require 'naquadah-theme)
       (load-theme 'naquadah t)
       (custom-theme-set-faces
        'naquadah
@@ -119,5 +122,12 @@
 		"  " mode-line-modes
 		mode-line-misc-info
 		mode-line-end-spaces))
+
+(setq-default cursor-type 'box)
+
+
+(add-to-list 'display-buffer-alist
+ '("\\*compilation\\*" display-buffer-reuse-window
+   ((reusable-frames . t))))
 
 (provide 'fd-visual)
