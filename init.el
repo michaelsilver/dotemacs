@@ -15,7 +15,6 @@
 (require 'fd-yasnippet)
 (require 'fd-autocomplete)
 (require 'fd-python)
-(require 'fd-recentfiles)
 ;; (require 'fd-desktop)
 (require 'fd-bookmarks)
 (require 'fd-tags)
