@@ -7,7 +7,7 @@ date: `(format-time-string "%Y-%m-%d %R")`
 tags:
 category:
 slug: `(file-name-base)`
-author: Chris Perivolaropoulos
+author: Michael Silver
 status: draft
 summary:
 
