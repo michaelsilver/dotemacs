@@ -45,7 +45,7 @@
 	smex
 
 	;; erc
-	erc-highlight-nicknames
+	; erc-highlight-nicknames
 	; erc-image
 
 	;; Misc

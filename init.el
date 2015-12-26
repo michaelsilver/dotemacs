@@ -17,7 +17,6 @@
 (require 'fd-python)
 (require 'fd-undotree)
 (require 'fd-recentfiles)
-(require 'fd-erc)
 ;; (require 'fd-desktop)
 (require 'fd-bookmarks)
 (require 'fd-tags)
