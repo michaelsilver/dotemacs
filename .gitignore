@@ -1,4 +1,5 @@
 ms-personal.el
+ms-tramp.el
 *.python-environments
 *.elc
 *~

@@ -7,6 +7,7 @@
 (require 'fd-el-get)
 (require 'fd-misc)
 (require 'fd-misc-programming)
+(require 'ms-tramp)                     ; if not Michael Silver, delete this line
 (require 'fd-automode)
 (require 'fd-javascript)
 (require 'fd-visual)
