@@ -72,7 +72,6 @@
 	multi-term
 	yaml-mode
 	autopair
-	vimperator-mode
 	c-eldoc
 	;; sort
 	;; hide-region
@@ -99,11 +98,6 @@
  '(el-get
    zencoding-mode
    python-pep8
-
-   (:name vimperator-mode
-	  :description "Edit vimperator files"
-	  :type github
-	  :pkgname "xcezx/vimperator-mode")
 
    (:name undo-tree
 	  :description "Visualize undo history as a tree"

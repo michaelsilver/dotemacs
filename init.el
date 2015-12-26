@@ -22,7 +22,6 @@
 (require 'fd-lisp)
 (require 'fd-cc-mode)
 (require 'fd-prolog)
-(require 'fd-vimperator)
 (require 'fd-org)
 (require 'fd-dired)
 (require 'fd-term)
