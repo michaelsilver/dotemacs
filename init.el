@@ -27,7 +27,6 @@
 (require 'fd-term)
 (require 'fd-compilation)
 (require 'fd-imenu)
-(require 'fd-codebender)
 (require 'fd-sql)
 (require 'fd-agenda)
 (require 'fd-notify)

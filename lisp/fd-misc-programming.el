@@ -4,8 +4,7 @@
 
 (which-function-mode t)
 
-(setq own-git-repo-regex-list '("origin[ \t]*git@github.com:fakedrake.*"
-                                "origin[ \t]*git@github.com:codebendercc.*"))
+(setq own-git-repo-regex-list '("origin[ \t]*git@github.com:fakedrake.*"))
 
 (defun fd-git-remotes ()
   "Get or set-and-get git remotes. Caching function"
