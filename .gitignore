@@ -1,4 +1,5 @@
 ms-personal.el
+*.python-environments
 *.elc
 *~
 .saves*
