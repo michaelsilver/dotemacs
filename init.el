@@ -3,7 +3,7 @@
 (load-file "~/.emacs.d/lisp/fd-preliminaries.el")
 (require 'ms-personal)
 (when (eq system-type 'darwin) ;; mac specific settings
-  (require 'fd-macosx))
+  (require 'ms-macosx))
 (require 'fd-el-get)
 (require 'fd-misc)
 (require 'fd-misc-programming)
