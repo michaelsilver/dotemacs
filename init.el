@@ -31,7 +31,6 @@
 (require 'fd-agenda)
 (require 'fd-notify)
 (require 'fd-projects)
-(require 'fd-haskell)
 (require 'fd-jstest)
 
 (setq enable-local-variables :all)
