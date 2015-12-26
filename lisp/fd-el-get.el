@@ -207,8 +207,8 @@
 ;;
 ;; Note: el-get-install requires git, so we know we have at least that.
 ;;
-(when (el-get-executable-find "cvs")
-  (add-to-list 'el-get-sources 'emacs-goodies-el)) ; the debian addons for emacs
+;; (when (el-get-executable-find "cvs")
+;;   (add-to-list 'el-get-sources 'emacs-goodies-el)) ; the debian addons for emacs
 
 (when (el-get-executable-find "svn")
   (loop for p in '(psvn    		; M-x svn-status
