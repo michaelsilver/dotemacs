@@ -1,6 +1,6 @@
 (require 'cl)
 
-(load-file "~/.emacs.d/lisp/fd-perliminaries.el")
+(load-file "~/.emacs.d/lisp/fd-preliminaries.el")
 (require 'fd-personal)
 (when (eq system-type 'darwin) ;; mac specific settings
   (require 'fd-macosx))
