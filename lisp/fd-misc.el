@@ -12,6 +12,7 @@
   (server-start))
 
 ;; Configurations
+(setq default-directory (concat (getenv "HOME") "/"))
 (delete-selection-mode t)
 (setq backup-directory-alist (list (cons "." (my-expand-path "backup/"))))
 (set-input-method 'greek)
