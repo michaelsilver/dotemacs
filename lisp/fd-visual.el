@@ -58,7 +58,7 @@
       (custom-theme-set-faces
        'naquadah
        `(default ((t (:family "Ubuntu Mono"))))
-       `(mode-line ((t (:height 1.1 :background "gray30"))))
+       `(mode-line ((t (:height 1.03 :background "gray30"))))
        `(minibuffer-prompt ((t (:foreground "orange1"))))
        `(region ((t (:background "gray35"))))
        `(hl-line ((t (:background "gray25"))))
