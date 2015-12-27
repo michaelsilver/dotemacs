@@ -45,7 +45,7 @@
 	smex
 
 	;; erc
-	erc-highlight-nicknames
+	; erc-highlight-nicknames
 	; erc-image
 
 	;; Misc
@@ -72,7 +72,6 @@
 	multi-term
 	yaml-mode
 	autopair
-	vimperator-mode
 	c-eldoc
 	;; sort
 	;; hide-region
@@ -99,11 +98,6 @@
  '(el-get
    zencoding-mode
    python-pep8
-
-   (:name vimperator-mode
-	  :description "Edit vimperator files"
-	  :type github
-	  :pkgname "xcezx/vimperator-mode")
 
    (:name undo-tree
 	  :description "Visualize undo history as a tree"
@@ -213,8 +207,8 @@
 ;;
 ;; Note: el-get-install requires git, so we know we have at least that.
 ;;
-(when (el-get-executable-find "cvs")
-  (add-to-list 'el-get-sources 'emacs-goodies-el)) ; the debian addons for emacs
+;; (when (el-get-executable-find "cvs")
+;;   (add-to-list 'el-get-sources 'emacs-goodies-el)) ; the debian addons for emacs
 
 (when (el-get-executable-find "svn")
   (loop for p in '(psvn    		; M-x svn-status

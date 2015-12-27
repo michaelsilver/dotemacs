@@ -1,4 +1,4 @@
-;;; fd-perliminaries.el
+;;; fd-preliminaries.el
 
 ;; Require this in every module to make sure it can run independently.
 

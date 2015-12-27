@@ -1,4 +1,6 @@
 ;; Visual Settings
+(x-focus-frame nil)
+
 (setq-default
  frame-title-format
  (list '((buffer-file-name " %f" (dired-directory

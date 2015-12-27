@@ -1,4 +1,6 @@
-fd-personal.el
+ms-personal.el
+ms-tramp.el
+*.python-environments
 *.elc
 *~
 .saves*

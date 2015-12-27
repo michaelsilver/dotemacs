@@ -146,6 +146,7 @@ parent."
 (global-set-key (kbd "<M-down>") 'move-text-down)
 (global-set-key (kbd "C-M-n") 'move-text-down)
 
+(global-set-key (kbd "C-x g") 'goto-line)
 (global-set-key (kbd "C-c f d") 'find-dired)
 
 (when (fboundp 'old-y-or-n-p)
